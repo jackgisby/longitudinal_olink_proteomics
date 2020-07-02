@@ -355,6 +355,4 @@ olink_pca_plot <- function (df,
     set_plot_theme() 
   
   return(pca_plot)
-  
-  
 }

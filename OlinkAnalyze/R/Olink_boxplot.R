@@ -104,6 +104,16 @@ olink_boxplot <- function(df,
   
 }
 
+sample_boxplot <- function(df,
+                           variable,
+                           sampleid_list
+) {
 
+}
 
-
+protein_boxplot <- function(df,
+                            variable,
+                            olinkid_list
+) {
+  
+}

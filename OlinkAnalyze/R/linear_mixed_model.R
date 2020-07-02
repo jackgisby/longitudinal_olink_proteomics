@@ -7,7 +7,7 @@
 #'Numerical variables are not converted to factors. 
 #'If a numerical variable is to be used as a factor, this conversion needs to be done on the dataframe before the function call. \cr\cr
 #'Crossed analysis, i.e. A*B formula notation, is inferred from the variable argument in the following cases: \cr
-#'\itemize{ 
+#'\itemize{
 #' \item c('A','B')
 #' \item c('A:B') 
 #' \item c('A:B', 'B') or c('A:B', 'A')
@@ -57,9 +57,11 @@ olink_lmer <- function(df,
   withCallingHandlers({
     
     #Filtering on valid OlinkID
-    df <- df %>%
-      filter(stringr::str_detect(OlinkID,
-                                 "OID[0-9]{5}"))
+    if (FALSE %in% stringr::str_detect(OlinkID, "OID[0-9]{5}")) {
+      message("Invalid OlinkID detected")
+    }
+    
+    df <- df %>% filter(stringr::str_detect(OlinkID, "OID[0-9]{5}"))
     
     #Allow for :/* notation in covariates
     variable <- gsub("\\*",":",variable)
@@ -77,6 +79,7 @@ olink_lmer <- function(df,
       variable <- union(variable,unlist(strsplit(variable,":")))
       variable <- variable[!grepl(":",variable)]
     }
+    
     #If variable is in both variable and covariate, keep it in variable or will get removed from final table
     covariates <- setdiff(covariates,variable)
     add.main.effects <- setdiff(add.main.effects, variable)
