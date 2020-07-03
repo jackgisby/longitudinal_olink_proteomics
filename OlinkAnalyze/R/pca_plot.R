@@ -356,11 +356,3 @@ olink_pca_plot <- function (df,
   
   return(pca_plot)
 }
-
-#' Quick PCA Plotting
-#' 
-#' @export
-
-quick_pca <- function(n_loadings=10, color_g="QC_Warning") { 
-  print(olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=2))
-}
