@@ -43,7 +43,7 @@ Character columns in the input dataframe are automatically converted to factors 
 Numerical variables are not converted to factors. 
 If a numerical variable is to be used as a factor, this conversion needs to be done on the dataframe before the function call. \cr\cr
 Crossed analysis, i.e. A*B formula notation, is inferred from the variable argument in the following cases: \cr
-\itemize{ 
+\itemize{
 \item c('A','B')
 \item c('A:B') 
 \item c('A:B', 'B') or c('A:B', 'A')

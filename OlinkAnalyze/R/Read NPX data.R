@@ -1,4 +1,4 @@
-#' Function to read NPX data into long format
+'#' Function to read NPX data into long format
 #'
 #' Imports an NPX file exported from NPX Manager. 
 #' No alterations to the output NPX Manager format is allowed.
@@ -33,7 +33,7 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
   meta_dat <-  readxl::read_excel(filename, skip = 12 + skip_mod, n_max = 4,col_names = F,.name_repair="minimal", sheet=tab)
   
   NR_DEVIATIONS <- sum(stringr::str_detect(meta_dat[1,], 'QC Deviation from median'))
-  print(meta_dat)
+  
   control_index <- (stringr::str_detect(meta_dat[2,], 'Det Ctrl') |
                       stringr::str_detect(meta_dat[2,], 'Inc Ctrl 2') |
                       stringr::str_detect(meta_dat[2,], 'Inc Ctrl 1') |
@@ -147,7 +147,7 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
   
   assay_name_list[[i]]<-tibble(ID=c(t(meta_data_list[[i]][4,])),
                                Name=c(t(meta_data_list[[i]][2,])),
-                               UniProt = c(t(meta_data_list[[i]][3,])),
+                               UniProt = c(t(meta_data_list[[i]][2,])),
                                Panel=c(t(meta_data_list[[i]][1,])),
                                MissingFreq=c(t(meta_data_list[[i]][5,])),
                                LOD = as.numeric(c(t(meta_data_list[[i]][6,]))))
@@ -156,8 +156,6 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
     assay_name_list[[i]] <- bind_cols(assay_name_list[[i]], 
                                       Normalization = c(t(meta_data_list[[i]][7,])))
   }
-  
-  #return(meta_data_list[[i]])
   
   panel_list_long[[i]] <- panel_list[[i]] %>%
     mutate(SampleID = SampleID) %>%
@@ -177,6 +175,9 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
   return(panel_list_long[[i]])
 }
 
+#' Multitab NPX data parsing
+#' 
+#' @export
 
 read_multitab_NPX <- function(filename, sample_manifest=NULL, num_tabs=1) {
   for (i in 1:num_tabs) {

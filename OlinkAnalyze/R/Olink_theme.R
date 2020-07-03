@@ -6,5 +6,5 @@
 #' 
 
 set_plot_theme <- function() {
-  olink_theme <- theme_pubr(border=TRUE)
+  olink_theme <- ggpubr::theme_pubr(border=TRUE)
 }

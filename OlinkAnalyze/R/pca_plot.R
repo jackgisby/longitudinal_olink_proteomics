@@ -357,21 +357,10 @@ olink_pca_plot <- function (df,
   return(pca_plot)
 }
 
-quick_pca <- function(n_loadings=10, color_g="QC_Warning", arrange=FALSE) { 
-  if (arrange) {
-    gridExtra::grid.arrange(
-      olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=2),
-      olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=3),
-      olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=4),
-      olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=2, y_val=3),
-      nrow=2,
-      top=color_g
-    )
-  } else {
-    print(olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=2))
-    print(olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=3))
-    print(olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=4))
-    print(olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=2, y_val=3))
-  }
+#' Quick PCA Plotting
+#' 
+#' @export
 
+quick_pca <- function(n_loadings=10, color_g="QC_Warning") { 
+  print(olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=2))
 }
