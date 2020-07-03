@@ -57,7 +57,7 @@ olink_lmer <- function(df,
   withCallingHandlers({
     
     #Filtering on valid OlinkID
-    if (FALSE %in% stringr::str_detect(OlinkID, "OID[0-9]{5}")) {
+    if (FALSE %in% stringr::str_detect(df$OlinkID, "OID[0-9]{5}")) {
       message("Invalid OlinkID detected")
     }
     

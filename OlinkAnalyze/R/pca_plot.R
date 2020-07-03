@@ -19,7 +19,7 @@
 #' @keywords NPX, PCA
 #' @export
 #' @examples \donttest{olink_pca_plot(df=npx.data, color_g = "QC_Warning")  }
-#' @import dplyr stringr tidyr ggfortify ggrepel
+#' @import dplyr stringr tidyr ggfortify ggrepel, gridExtra
 
 olink_pca_plot <- function (df, 
                             color_g = "QC_Warning", 
@@ -250,7 +250,7 @@ olink_pca_plot <- function (df,
     as.matrix
   
   pca_fit <- prcomp(df_wide_matrix, scale. = T, center = T)
-  
+
   #Standardizing and selecting components
   
   scaling_factor_lambda <- pca_fit$sdev*sqrt(nrow(df_wide_matrix))
@@ -355,4 +355,23 @@ olink_pca_plot <- function (df,
     set_plot_theme() 
   
   return(pca_plot)
+}
+
+quick_pca <- function(n_loadings=10, color_g="QC_Warning", arrange=FALSE) { 
+  if (arrange) {
+    gridExtra::grid.arrange(
+      olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=2),
+      olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=3),
+      olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=4),
+      olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=2, y_val=3),
+      nrow=2,
+      top=color_g
+    )
+  } else {
+    print(olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=2))
+    print(olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=3))
+    print(olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=1, y_val=4))
+    print(olink_pca_plot(long %>% filter(!grepl("Ctrl", SampleID)), n_loadings = n_loadings, color_g = color_g, x_val=2, y_val=3))
+  }
+
 }
