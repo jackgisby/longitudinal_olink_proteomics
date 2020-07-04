@@ -170,7 +170,7 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
   
   if (!is.null(sample_manifest)) {
     panel_list_long[[i]] <- panel_list_long[[i]] %>%
-      left_join(manifest, by = c("SampleID", "SampleID"))
+      left_join(manifest)
   }
   
   return(panel_list_long[[i]])
