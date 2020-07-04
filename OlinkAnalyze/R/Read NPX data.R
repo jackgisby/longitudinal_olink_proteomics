@@ -173,14 +173,13 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
       left_join(manifest, by = c("SampleID", "SampleID"))
   }
   
-  print(nrow(panel_list_long[[i]]))
-  print(ncol(panel_list_long[[i]]))
   return(panel_list_long[[i]])
 }
 
 #' Multitab NPX data parsing
 #' 
 #' @export
+#' @import dplyr stringr tidyr
 
 read_multitab_NPX <- function(filename, sample_manifest=NULL, num_tabs=1) {
   for (i in 1:num_tabs) {

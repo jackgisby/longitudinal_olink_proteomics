@@ -19,7 +19,7 @@
 #' @keywords NPX, PCA
 #' @export
 #' @examples \donttest{olink_pca_plot(df=npx.data, color_g = "QC_Warning")  }
-#' @import dplyr stringr tidyr ggfortify ggrepel, gridExtra
+#' @import dplyr stringr tidyr ggfortify ggrepel gridExtra
 
 olink_pca_plot <- function (df, 
                             color_g = "QC_Warning", 

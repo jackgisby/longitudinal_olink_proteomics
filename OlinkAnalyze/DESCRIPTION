@@ -6,5 +6,5 @@ Author: DS at Olink (given="Data", family="Science", email = "biostattools@olink
 Description: Package for working with Olink NPX data, primarily exported from Olink NPX Manager. 
 Encoding: UTF-8
 LazyData: true
-Depends: broom, car, emmeans, ggfortify, ggrepel, lmerTest, openxlsx, stringr, tidyverse, readxl
+Depends: broom, car, emmeans, ggfortify, ggrepel, lmerTest, openxlsx, stringr, tidyverse, readxl, dplyr
 RoxygenNote: 7.1.0
