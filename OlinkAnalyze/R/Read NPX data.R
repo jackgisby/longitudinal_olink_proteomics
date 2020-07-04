@@ -1,4 +1,4 @@
-'#' Function to read NPX data into long format
+#' Function to read NPX data into long format
 #'
 #' Imports an NPX file exported from NPX Manager. 
 #' No alterations to the output NPX Manager format is allowed.
@@ -61,7 +61,8 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
     rename(Name = "1")
   
   dat <- readxl::read_excel(filename, skip = 17 + skip_mod, col_names = F,.name_repair="minimal", col_types = c('text'), sheet=tab)
-  
+  dat <- dat[-which(is.na(dat[,1]))[1],]
+
   nr_col<-ncol(dat)
   names(dat)<-as.character(1:nr_col)
   
@@ -166,12 +167,14 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
     rename(PlateID ="Plate ID") %>%
     rename(QC_Warning = "QC Warning") %>%
     rename(OlinkID = Assay, Assay = Name)
-    
+  
   if (!is.null(sample_manifest)) {
     panel_list_long[[i]] <- panel_list_long[[i]] %>%
       left_join(manifest, by = c("SampleID", "SampleID"))
   }
   
+  print(nrow(panel_list_long[[i]]))
+  print(ncol(panel_list_long[[i]]))
   return(panel_list_long[[i]])
 }
 
