@@ -4,7 +4,7 @@
 \alias{read_multitab_NPX}
 \title{Multitab NPX data parsing}
 \usage{
-read_multitab_NPX(filename, sample_manifest = NULL, num_tabs = 1)
+read_multitab_NPX(filename, sample_manifest = NULL, pheno = NULL, num_tabs = 1)
 }
 \description{
 Multitab NPX data parsing

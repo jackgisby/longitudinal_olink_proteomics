@@ -4,7 +4,7 @@
 \alias{read_NPX}
 \title{Function to read NPX data into long format}
 \usage{
-read_NPX(filename, sample_manifest = NULL, tab = 1)
+read_NPX(filename, sample_manifest = NULL, pheno = NULL, tab = 1)
 }
 \arguments{
 \item{filename}{Path to file NPX Manager output file.}

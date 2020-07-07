@@ -8,13 +8,21 @@
 #' @keywords NPX
 #' @export
 #' @examples \donttest{read_NPX("~/NPX data.xlsx")}
-#' @import dplyr stringr tidyr biomaRt Biobase
+#' @import dplyr stringr tidyr biomaRt
 
-read_NPX <- function(filename, sample_manifest=NULL, tab=1){
+read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, tab=1){
   
   if (!is.null(sample_manifest)) {
     manifest <- read.csv(sample_manifest, sep="\t")
     colnames(manifest) <- sub(colnames(manifest), pattern="Sample.ID", replacement = "SampleID")
+    
+    if (!is.null(pheno)) {
+      pheno_df <- read.csv(pheno, sep="\t")
+      colnames(pheno_df) <- sub(colnames(pheno_df), pattern="Research.ID", replacement = "Individual.ID")
+      
+      manifest <- manifest %>%
+        left_join(pheno_df)
+    }
   }
   
   NORM_FLAG <-  F
@@ -200,14 +208,15 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
 #' @export
 #' @import dplyr stringr tidyr
 
-read_multitab_NPX <- function(filename, sample_manifest=NULL, num_tabs=1) {
+read_multitab_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, num_tabs=1) {
   for (i in 1:num_tabs) {
     if (i == 1) {
-      long_npx <- read_NPX(filename=filename, sample_manifest=sample_manifest)
+      long_npx <- read_NPX(filename=filename, sample_manifest=sample_manifest, pheno=pheno)
     } else {
       long_npx <- rbind(long_npx,
                         read_NPX(filename=filename, 
                                  sample_manifest=sample_manifest,
+                                 pheno=pheno,
                                  tab=i))
     }
   }

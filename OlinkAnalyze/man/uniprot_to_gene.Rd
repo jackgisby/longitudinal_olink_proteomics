@@ -4,7 +4,7 @@
 \alias{uniprot_to_gene}
 \title{Map protein IDs to gene IDs.}
 \usage{
-uniprot_to_gene(df, tab = NULL)
+uniprot_to_gene(df)
 }
 \arguments{
 \item{df}{meta_dat dataframe}
