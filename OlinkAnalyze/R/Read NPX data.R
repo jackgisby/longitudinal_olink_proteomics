@@ -8,7 +8,7 @@
 #' @keywords NPX
 #' @export
 #' @examples \donttest{read_NPX("~/NPX data.xlsx")}
-#' @import dplyr stringr tidyr
+#' @import dplyr stringr tidyr biomaRt Biobase
 
 read_NPX <- function(filename, sample_manifest=NULL, tab=1){
   
@@ -19,15 +19,27 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
   
   NORM_FLAG <-  F
   
-  # hard coded number of lines to skip as it differs between each tab haha :)
+  # hard coded number of lines to skip as it differs between each tab :)
   if (tab == 1) {
     skip_mod <- 0
-  } else if (tab == 2 | tab == 3) {
+    panel <- "CardMet"
+    
+  } else if (tab == 2) {
     skip_mod <- -2
+    panel <- "CVD2"
+    
+  } else if (tab == 3) {
+    skip_mod <- -2
+    panel <- "CVD3"
+    
   } else if (tab == 4) {
     skip_mod <- 1
+    panel <- "Inf"
+    
   } else if (tab == 5) {
     skip_mod <- -1
+    panel <- "ImmResp"
+    
   }
   
   meta_dat <-  readxl::read_excel(filename, skip = 12 + skip_mod, n_max = 4,col_names = F,.name_repair="minimal", sheet=tab)
@@ -80,7 +92,11 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
     NORM_FLAG <- T
   }
   
-  meta_dat<-rbind(meta_dat,missfreq,LOD,norm_method)
+  gene_ids <- uniprot_to_gene(data.frame(UniProt=as.character(meta_dat[2,-1]), target=as.character(meta_dat[1,-1])))
+  gene_ids <- data.frame(cbind(colnames(gene_ids), t(gene_ids)))
+  names(gene_ids) <- names(meta_dat)
+  
+  meta_dat<-rbind(meta_dat,missfreq,LOD,norm_method,gene_ids)
   nr_panel <- 1
   SampleID<-dat$Name
   
@@ -151,19 +167,20 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
                                UniProt = c(t(meta_data_list[[i]][2,])),
                                Panel=c(t(meta_data_list[[i]][1,])),
                                MissingFreq=c(t(meta_data_list[[i]][5,])),
-                               LOD = as.numeric(c(t(meta_data_list[[i]][6,]))))
+                               LOD = as.numeric(c(t(meta_data_list[[i]][6,]))),
+                               GeneID=c(t(meta_data_list[[i]][18,])))
   
   if(NORM_FLAG == T){
     assay_name_list[[i]] <- bind_cols(assay_name_list[[i]], 
                                       Normalization = c(t(meta_data_list[[i]][7,])))
   }
-  
+
   panel_list_long[[i]] <- panel_list[[i]] %>%
     mutate(SampleID = SampleID) %>%
     mutate(Index = Index_nr) %>%
     gather(Assay, NPX, -SampleID,-"QC Warning",-"Plate ID",-Index,-matches("QC Deviation Inc Ctrl"), -matches("QC Deviation Det Ctrl")) %>%
     left_join(assay_name_list[[i]], by = c('Assay' = 'ID')) %>%
-    select(SampleID,Index,Assay, UniProt, Name,MissingFreq,Panel,"Plate ID","QC Warning",LOD,NPX,matches("Normalization"), matches("QC Deviation Inc Ctrl"), matches("QC Deviation Det Ctrl")) %>%
+    dplyr::select(SampleID, Index, Assay, UniProt, GeneID, Name, MissingFreq, Panel, "Plate ID", "QC Warning", LOD, NPX, matches("Normalization"), matches("QC Deviation Inc Ctrl"), matches("QC Deviation Det Ctrl")) %>%
     rename(PlateID ="Plate ID") %>%
     rename(QC_Warning = "QC Warning") %>%
     rename(OlinkID = Assay, Assay = Name)
@@ -172,6 +189,8 @@ read_NPX <- function(filename, sample_manifest=NULL, tab=1){
     panel_list_long[[i]] <- panel_list_long[[i]] %>%
       left_join(manifest)
   }
+  
+  panel_list_long[[i]]$panel_name <- panel
   
   return(panel_list_long[[i]])
 }
@@ -194,4 +213,200 @@ read_multitab_NPX <- function(filename, sample_manifest=NULL, num_tabs=1) {
   }
   
   return(long_npx)
+}
+
+#' Map protein IDs to gene IDs. 
+#' 
+#' @param df meta_dat dataframe
+#' @param tab (optional) tab number
+#' 
+#' @return Gene IDs
+
+uniprot_to_gene <- function(df) {
+  df$uniprot <- df$UniProt
+  
+  # data input error by Olink 'o' instead of 'O'
+  df$target <- gsub("IL-2oRA", "IL-20RA", df$target)
+  
+  # turns out TWEAK labelled with an out of date or inferior UP id
+  if (TRUE %in% grepl('TWEAK', df$target)) {
+    df$uniprot[grep('TWEAK', df$target)] <- "O43508"
+  }
+  
+  # no uniprot id for NT-proBNP - there is for proBNP
+  if ("NT-proBNP" %in% df$target) {
+    df[df$target == "NT-proBNP",]$uniprot <- "P16860"
+  }
+  # Clean up 1. identify bad entries: Olink have made some errors and Excel import causes some problems
+  
+  # clean whitespace
+  df$uniprot <- gsub('\\\r\\\n', ";", df$uniprot, ignore.case = F)
+  df$uniprot <- gsub(', |,', ";", df$uniprot, ignore.case = F)
+  df$uniprot <- gsub("[[:space:]]", "", df$uniprot)
+  
+  # Clean up 2. '-' represents isoform notation eg O43521-2
+  
+  df$uniprot.isoform <- NA
+  
+  df$uniprot.isoform[grep('-', df$uniprot)] <- grep('-', df$uniprot, v=T)
+  df$uniprot <- gsub("-[0-9]$", "", df$uniprot)
+
+  # Special circumstances 2:two ids for protein complex eg IL12A-IL12B
+  # uniprot ids sep by ';'
+  # df[grep(";", df$uniprot), ]
+  
+  df$multiple.proteins <- FALSE
+  df$multiple.proteins[grep(";", df$uniprot)] <- TRUE
+  
+  df$protein.1 <- df$uniprot  
+  df$protein.2 <- NA
+  
+  df$protein.2[which(df$multiple.proteins==T)] <- str_extract(string=df$uniprot, pattern = ";[A-Z0-9]+")[which(df$multiple.proteins==T)]
+  df$protein.2 <- gsub("^;", "", df$protein.2)
+  
+  df$protein.1[which(df$multiple.proteins==T)] <- str_extract(string=df$uniprot, pattern = "^[A-Z0-9]+;")[which(df$multiple.proteins==T)]
+  df$protein.1 <- gsub(";$", "", df$protein.1)
+  
+  # where there are 2 uniprot ids (eg protein complex) the uniprot ids are not always in consistent order
+  # lets make them in consistent alphabetical order
+  df$uniprot.ordered <- NA
+  df$uniprot.ordered[!df$multiple.proteins] <- df$uniprot[!df$multiple.proteins]
+  
+  alphabetize.up <- function(x) {
+    if( !inherits(x, what='data.frame')){
+      stop('argument must be a data.frame')
+    }
+    y <- paste(sort(c( x$protein.1, x$protein.2)),collapse=';')
+    y
+  }
+  
+  inds <- which(df$multiple.proteins)
+  
+  for (i in inds){
+    df$uniprot.ordered[i] <- alphabetize.up(df[i,]) 
+  }
+  
+  #annoying that p1 and p2 are arbitrary: now we've ordered things let's start over on this front
+  df$protein.1 <- df$protein.2 <-NULL
+  
+  # now repeat the exercise for p1 and p2 using the alphabetized concatenation
+  
+  df$protein.1 <- df$uniprot.ordered  
+  df$protein.2 <- NA
+  
+  df$protein.2[which(df$multiple.proteins==T)] <- str_extract(string=df$uniprot.ordered, pattern = ";[A-Z0-9]+")[which(df$multiple.proteins==T)]
+  df$protein.2 <- gsub("^;", "", df$protein.2)
+  
+  df$protein.1[which(df$multiple.proteins==T)] <- str_extract(string=df$uniprot.ordered, pattern = "^[A-Z0-9]+;")[which(df$multiple.proteins==T)]
+  df$protein.1 <- gsub(";$", "", df$protein.1)
+  
+  # col to identify dup proteins and which panels
+  
+  dup.prots <- union( which( duplicated(df$uniprot.ordered)), which( duplicated(df$uniprot.ordered, fromLast = T)) )
+  df$prot.on.multiple.panel <- FALSE
+  df$prot.on.multiple.panel[dup.prots] <- TRUE
+  
+  df$panels.with.prot <- NA
+  
+  
+  tmp.list <- split( df[dup.prots,], f=df$uniprot.ordered[dup.prots] )
+  
+  mylist <- lapply(tmp.list, FUN = function(x) paste( as.character(x$panel), collapse=";" ) )
+  
+  for (i in dup.prots){
+    uprot <- df$uniprot.ordered[i]
+    df[i, "panels.with.prot"] <- mylist[[uprot]]
+  }
+  
+  #--------------------- Gene symbol annotation ---------------------#
+  
+  # matching to gene symbols: do for p1 and p2
+  
+  #ensembl <- biomaRt::useMart(biomart="ensembl",
+  #                   dataset="hsapiens_gene_ensembl",
+  #                   host='http://jul2018.archive.ensembl.org')
+
+  #filters <- biomaRt::listFilters(ensembl)
+
+  #x <- biomaRt::getBM(attributes = c('uniprotswissprot', 'hgnc_symbol', 'entrezgene', 'chromosome_name'),
+  #             filters = 'uniprotswissprot',
+  #             values = df$protein.1,
+  #             mart = ensembl)
+
+  # some UP ids not found by BioMart: turns out we have outdated IDs
+  #df[which(!df$protein.1 %in% x$uniprotswissprot),]
+  
+  #--------------------- Try an archived version of Ensembl ---------------------#
+  
+  # find urls for old ensembl versions
+  biomaRt::listEnsemblArchives()
+  
+  # hg19/GRCh37
+  ensembl.hg19 <- biomaRt::useMart(biomart= "ENSEMBL_MART_ENSEMBL",
+                          dataset="hsapiens_gene_ensembl",
+                          host = 'http://grch37.ensembl.org')
+  
+  # note attribute names differ in the older release
+  gene.pos <- biomaRt::getBM(attributes = c('uniprotswissprot', 'hgnc_symbol', # 'entrezgene',
+                                   'chromosome_name', 'start_position', 'end_position'), 
+                    filters = 'uniprotswissprot', 
+                    values = unique(df$protein.1), 
+                    mart = ensembl.hg19)
+  
+  # P0DOY2 / IGLC2 is present within db but swissprot id is NA
+  missing_to_add <- biomaRt::getBM(
+    attributes = c('uniprotswissprot', 'hgnc_symbol', # 'entrezgene', 
+                   'chromosome_name', 'start_position', 'end_position'), 
+    filters = 'hgnc_symbol', 
+    values = "IGLC2", 
+    mart = ensembl.hg19)
+  
+  missing_to_add[missing_to_add$hgnc_symbol == "IGLC2",]$uniprotswissprot <- "P0DOY2"
+  
+  # same for hgnc_symbol
+  missing_to_add <- rbind(missing_to_add, data.frame(biomaRt::getBM(
+    attributes = c('uniprotswissprot', 'hgnc_symbol', # 'entrezgene', 
+                   'chromosome_name', 'start_position', 'end_position'), 
+    filters = 'hgnc_symbol', 
+    values = "PECAM1", 
+    mart = ensembl.hg19)))
+  
+  missing_to_add[missing_to_add$hgnc_symbol == "PECAM1",]$uniprotswissprot <- "P16284"
+  
+  # same for CDSN
+  missing_to_add <- rbind(missing_to_add, data.frame(biomaRt::getBM(
+    attributes = c('uniprotswissprot', 'hgnc_symbol', # 'entrezgene', 
+                   'chromosome_name', 'start_position', 'end_position'), 
+    filters = 'hgnc_symbol', 
+    values = "CDSN", 
+    mart = ensembl.hg19)))
+  
+  missing_to_add[missing_to_add$hgnc_symbol == "CDSN",]$uniprotswissprot <- "Q15517"
+
+  gene.pos <- rbind(gene.pos, missing_to_add)
+
+  # there are some duplicated genes
+  dup.ind <- union( which(duplicated(gene.pos$hgnc_symbol)),
+                    which(duplicated(gene.pos$hgnc_symbol, fromLast = T))
+  )
+  
+  # strange chr names
+  
+  strange.ind <- which(!gene.pos$chromosome_name %in% c(1:22, 'X', 'Y'))
+  
+  to.cut <- intersect(dup.ind, strange.ind)
+  
+  gene.pos2 <- gene.pos[-to.cut,]
+
+  #-------------------------------------------------------------------------------#
+  # some proteins map to multiple genes
+  map_ids <- vector("integer", nrow(df)) 
+  for (i in 1:nrow(df)) {
+    map_ids[i] <- which(gene.pos2$uniprotswissprot == df$protein.1[i])[1]
+  }
+  gene.pos2 <- gene.pos2[map_ids,]
+  
+  df2 <- left_join(df, gene.pos2, by=c("protein.1" = "uniprotswissprot"))
+
+  return(df2)
 }
