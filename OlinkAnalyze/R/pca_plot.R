@@ -13,7 +13,7 @@
 #' @param drop_assays Logical. All assays with any missing values will be dropped. Takes precedence over sample drop.
 #' @param drop_samples Logical. All samples with any missing values will be dropped.
 #' @param n_loadings Integer. Will plot the top n_loadings based on size.
-#' @param loadings_list Character vector indicating for which OlinkID's to plot as loadings. It is possible to use n_loadings and loadings_list simultaneously.
+#' @param loadings_list Character vector indicating for which UniqueGeneID's to plot as loadings. It is possible to use n_loadings and loadings_list simultaneously.
 #' @param verbose Logical. Whether warnings about the number of samples and/or assays dropped or imputed should be printed to the console.
 #' @return An object of class "ggplot"
 #' @keywords NPX, PCA
@@ -32,7 +32,7 @@ olink_pca_plot <- function (df,
                             loadings_list = NULL,
                             verbose = T){ 
   
-  #Filtering on valid OlinkID
+  #Filtering on valid UniqueGeneID
   df <- df %>%
     filter(stringr::str_detect(OlinkID,
                                "OID[0-9]{5}"))
@@ -79,7 +79,7 @@ olink_pca_plot <- function (df,
   #Checking if there are any proteins with 0 variance, they are filtered out
   
   df_temp <- df_temp %>% 
-    group_by(OlinkID) %>%
+    group_by(UniqueGeneID) %>%
     mutate(assay_var = var(NPX, na.rm = T)) %>%
     ungroup() %>%
     filter(!(assay_var == 0 | is.na(assay_var))) %>%
@@ -88,9 +88,9 @@ olink_pca_plot <- function (df,
   #wide format
   
   df_wide <- df_temp %>% 
-    select(SampleID, Index, OlinkID, NPX) %>% 
+    select(SampleID, Index, UniqueGeneID, NPX) %>% 
     filter(!is.na(NPX)) %>% 
-    spread(OlinkID, NPX)
+    spread(UniqueGeneID, NPX)
   
   
   #Dropping any cols with NA

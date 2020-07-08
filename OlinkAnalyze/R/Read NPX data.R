@@ -30,7 +30,7 @@ read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, tab=1){
   # hard coded number of lines to skip as it differs between each tab :)
   if (tab == 1) {
     skip_mod <- 0
-    panel <- "CardMet"
+    panel <- "CM"
     
   } else if (tab == 2) {
     skip_mod <- -2
@@ -46,7 +46,7 @@ read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, tab=1){
     
   } else if (tab == 5) {
     skip_mod <- -1
-    panel <- "ImmResp"
+    panel <- "IR"
     
   }
   
