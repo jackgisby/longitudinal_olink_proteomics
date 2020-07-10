@@ -10,7 +10,7 @@
 #' @examples \donttest{read_NPX("~/NPX data.xlsx")}
 #' @import dplyr stringr tidyr biomaRt
 
-read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, tab=1){
+read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_mod=0, panel="NA", tab=1){
   
   if (!is.null(sample_manifest)) {
     manifest <- read.csv(sample_manifest, sep="\t")
@@ -26,29 +26,6 @@ read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, tab=1){
   }
   
   NORM_FLAG <-  F
-  
-  # hard coded number of lines to skip as it differs between each tab :)
-  if (tab == 1) {
-    skip_mod <- 0
-    panel <- "CM"
-    
-  } else if (tab == 2) {
-    skip_mod <- -2
-    panel <- "CVD2"
-    
-  } else if (tab == 3) {
-    skip_mod <- -2
-    panel <- "CVD3"
-    
-  } else if (tab == 4) {
-    skip_mod <- 1
-    panel <- "Inf"
-    
-  } else if (tab == 5) {
-    skip_mod <- -1
-    panel <- "IR"
-    
-  }
   
   meta_dat <-  readxl::read_excel(filename, skip = 12 + skip_mod, n_max = 4,col_names = F,.name_repair="minimal", sheet=tab)
   
@@ -208,16 +185,16 @@ read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, tab=1){
 #' @export
 #' @import dplyr stringr tidyr
 
-read_multitab_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, num_tabs=1) {
+read_multitab_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_mod=c(0), panel=c("NA"), num_tabs=1) {
   for (i in 1:num_tabs) {
     if (i == 1) {
-      long_npx <- read_NPX(filename=filename, sample_manifest=sample_manifest, pheno=pheno)
+      long_npx <- read_NPX(filename=filename, sample_manifest=sample_manifest, pheno=pheno, skip_mod=skip_mod[i], panel=panel[i])
     } else {
       long_npx <- rbind(long_npx,
                         read_NPX(filename=filename, 
                                  sample_manifest=sample_manifest,
                                  pheno=pheno,
-                                 tab=i))
+                                 tab=i, skip_mod=skip_mod[i], panel=panel[i]))
     }
   }
   

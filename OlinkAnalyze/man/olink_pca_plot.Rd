@@ -14,7 +14,8 @@ olink_pca_plot(
   drop_samples = F,
   n_loadings = 0,
   loadings_list = NULL,
-  verbose = T
+  verbose = T,
+  return_prcomp = FALSE
 )
 }
 \arguments{

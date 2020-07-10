@@ -30,7 +30,8 @@ olink_pca_plot <- function (df,
                             drop_samples = F, 
                             n_loadings = 0, 
                             loadings_list = NULL,
-                            verbose = T){ 
+                            verbose = T,
+                            return_prcomp=FALSE){ 
   
   #Filtering on valid UniqueGeneID
   df <- df %>%
@@ -161,12 +162,7 @@ olink_pca_plot <- function (df,
   percent_missingness <- colSums(is.na(df_wide[, -c(1:2)]))/nrow(df_wide)
   
   # assays with missingness > 10% are dropped from the PCA
-  PERCENT_CUTOFF <- 0.1
-  
-  #If there are fewer samples than one plate (88), the PERCENT_CUTOFF is 0.05
-  if(nrow(df_wide) <= 88){
-    PERCENT_CUTOFF <- 0.05
-  }
+  PERCENT_CUTOFF <- 0.25
   
   if(any(percent_missingness > PERCENT_CUTOFF)){
     
@@ -250,6 +246,10 @@ olink_pca_plot <- function (df,
     as.matrix
   
   pca_fit <- prcomp(df_wide_matrix, scale. = T, center = T)
+  
+  if (return_prcomp) {
+    return(pca_fit)
+  }
 
   #Standardizing and selecting components
   
