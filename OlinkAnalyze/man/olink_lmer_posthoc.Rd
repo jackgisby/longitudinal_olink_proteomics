@@ -7,7 +7,7 @@
 olink_lmer_posthoc(
   df,
   variable,
-  olinkid_list = NULL,
+  UniqueGeneID_list = NULL,
   effect,
   outcome = "NPX",
   random,
@@ -17,13 +17,13 @@ olink_lmer_posthoc(
 )
 }
 \arguments{
-\item{df}{NPX data frame in long format with at least protein name (Assay), OlinkID, UniProt, 1-2 variables with at least 2 levels and subject ID.}
+\item{df}{NPX data frame in long format with at least protein name (Assay), UniqueGeneID, UniProt, 1-2 variables with at least 2 levels and subject ID.}
 
 \item{variable}{Single character value or character array. 
 Variable(s) to test. If length > 1, the included variable names will be used in crossed analyses .
 Also takes ':'/'*' notation.}
 
-\item{olinkid_list}{Character vector of OlinkID's on which to perform post hoc analysis. If not specified, all assays in df are used.}
+\item{UniqueGeneID_list}{Character vector of UniqueGeneID's on which to perform post hoc analysis. If not specified, all assays in df are used.}
 
 \item{effect}{Term on which to perform post-hoc. Character vector. Must be subset of or identical to variable.}
 
@@ -39,7 +39,7 @@ Covariates to include. Takes ':'/'*' notation. Crossed analysis will not be infe
 \item{verbose}{Boolean. Deafult: True. If information about removed samples, factor conversion and final model formula is to be printed to the console.}
 }
 \value{
-A tibble containing the results of the pairwise comparisons between given variable levels for proteins specified in olinkid_list (or full df).
+A tibble containing the results of the pairwise comparisons between given variable levels for proteins specified in UniqueGeneID_list (or full df).
 }
 \description{
 Similar to olink_lmer but performs a post hoc analysis based on a linear mixed model effects model using lmerTest::lmer and emmeans::emmeans on proteins. 
@@ -58,12 +58,12 @@ random = c('Subject'))
 
 assay_list <- lmer_results \%>\%
 filter(Threshold == 'Significant' & term == 'Time:Treatment') \%>\%
-select(OlinkID) \%>\%
+select(UniqueGeneID) \%>\%
 distinct() \%>\%
 pull()
 
 results_lmer_posthoc <- local_lmer_posthoc(df = NPX, 
-olinkid_list = assay_list, 
+UniqueGeneID_list = assay_list, 
 variable=c("Time", 'Treatment'),
 effect = 'Time:Treatment', 
 random = 'Subject',

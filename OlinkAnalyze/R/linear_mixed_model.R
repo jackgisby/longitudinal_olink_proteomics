@@ -1,6 +1,6 @@
 #'Function which performs a linear mixed model per protein
 #'
-#'Fits a linear mixed effects model for every protein (by OlinkID) in every panel, using lmerTest::lmer and stats::anova.
+#'Fits a linear mixed effects model for every protein (by UniqueGeneID) in every panel, using lmerTest::lmer and stats::anova.
 #'The function handles both factor and numerical variables and/or covariates. \cr\cr
 #'Samples that have no variable information or missing factor levels are automatically removed from the analysis (specified in a messsage if verbose = T).
 #'Character columns in the input dataframe are automatically converted to factors (specified in a message if verbose = T). 
@@ -19,7 +19,7 @@
 #'Output p-values are adjusted by stats::p.adjust according to the Benjamini-Hochberg method (“fdr”). 
 #'Adjusted p-values are logically evaluated towards adjusted p-value<0.05. 
 #'
-#' @param df NPX data frame in long format with at least protein name (Assay), OlinkID, UniProt, 1-2 variables with at least 2 levels.
+#' @param df NPX data frame in long format with at least protein name (Assay), UniqueGeneID, UniProt, 1-2 variables with at least 2 levels.
 #' @param variable Single character value or character array. 
 #' Variable(s) to test. If length > 1, the included variable names will be used in crossed analyses .
 #' Also takes ':'/'*' notation. 
@@ -30,7 +30,7 @@
 #' @param return.covariates Boolean. Default: False. Returns results for the covariates. Note: Adjusted p-values will be NA for the covariates.
 #' @param verbose Boolean. Deafult: True. If information about removed samples, factor conversion and final model formula is to be printed to the console. 
 #'
-#' @return A tibble containing the results of fitting the linear mixed effects model to every protein by OlinkID, ordered by ascending p-value. 
+#' @return A tibble containing the results of fitting the linear mixed effects model to every protein by UniqueGeneID, ordered by ascending p-value. 
 #' @export
 #' @examples
 #' \donttest{
@@ -39,14 +39,15 @@
 #' variable=c("Time", 'Treatment'),
 #' random = c('Subject', 'Site'))
 #' }
-#' @import dplyr stringr tidyr lmerTest
+#' @import dplyr stringr tidyr lmerTest purrr
 
 olink_lmer <- function(df,                        
                        variable,                  
                        outcome="NPX",            
                        random,                    
                        covariates = NULL,         
-                       return.covariates=F,       
+                       return.covariates=F,
+                       return.models=FALSE,
                        verbose=T                  
 ) {  
   
@@ -55,13 +56,6 @@ olink_lmer <- function(df,
   }
   
   withCallingHandlers({
-    
-    #Filtering on valid OlinkID
-    if (FALSE %in% stringr::str_detect(df$OlinkID, "OID[0-9]{5}")) {
-      message("Invalid OlinkID detected")
-    }
-    
-    df <- df %>% filter(stringr::str_detect(OlinkID, "OID[0-9]{5}"))
     
     #Allow for :/* notation in covariates
     variable <- gsub("\\*",":",variable)
@@ -96,11 +90,11 @@ olink_lmer <- function(df,
     
     #Not testing assays that have all NA:s
     all_nas <- df  %>%
-      group_by(OlinkID) %>%
+      group_by(UniqueGeneID) %>%
       summarise(n = n(), n_na = sum(is.na(!!rlang::ensym(outcome)))) %>%
       ungroup() %>%
       filter(n == n_na) %>%
-      pull(OlinkID)
+      pull(UniqueGeneID)
     
     
     if(length(all_nas) > 0) {
@@ -143,13 +137,13 @@ olink_lmer <- function(df,
     for(effect in single_fixed_effects){
       
       current_nas <- df %>%
-        filter(!(OlinkID %in% all_nas)) %>%
-        group_by(OlinkID, !!rlang::ensym(effect)) %>%
+        filter(!(UniqueGeneID %in% all_nas)) %>%
+        group_by(UniqueGeneID, !!rlang::ensym(effect)) %>%
         summarise(n = n(), n_na = sum(is.na(!!rlang::ensym(outcome)))) %>%
         ungroup() %>%
         filter(n == n_na) %>%
-        distinct(OlinkID) %>%
-        pull(OlinkID)
+        distinct(UniqueGeneID) %>%
+        pull(UniqueGeneID)
       
       if(length(current_nas) > 0) {
         
@@ -229,30 +223,49 @@ olink_lmer <- function(df,
     }else{
       covariate_filter_string <- covariates
     }
-    
-    ##make LMM
-    lmer_model<-df %>%
-      filter(!(OlinkID %in% all_nas)) %>%
-      filter(!(OlinkID %in% nas_in_var)) %>%
-      group_by(Assay, OlinkID, UniProt, Panel) %>%
-      group_modify(~tidy(anova(single_lmer(data=.x, formula_string = formula_string)))) %>%
-      ungroup() %>%
-      mutate(covariates = term %in% covariate_filter_string) %>% 
-      group_by(covariates) %>% 
-      mutate(Adjusted_pval=p.adjust(p.value,method="fdr")) %>%
-      mutate(Threshold  = ifelse(Adjusted_pval<0.05,"Significant","Non-significant")) %>%
-      mutate(Adjusted_pval = ifelse(covariates,NA,Adjusted_pval),
-             Threshold = ifelse(covariates,NA,Threshold)) %>% 
-      ungroup() %>% 
-      select(-covariates) %>% 
-      arrange(p.value)
-    
-    if(return.covariates){
+    if (return.models) {
+      #make LMM
+      lmer_model<- df %>%
+        filter(!(UniqueGeneID %in% all_nas)) %>%
+        filter(!(UniqueGeneID %in% nas_in_var)) %>%
+        group_by(Assay, UniqueGeneID, UniProt, Panel) %>%
+        group_map(~single_lmer(data=.x, formula_string = formula_string))
+      
+      mod_names <- df %>%
+        filter(!(UniqueGeneID %in% all_nas)) %>%
+        filter(!(UniqueGeneID %in% nas_in_var)) %>%
+        group_by(Assay, UniqueGeneID, UniProt, Panel) %>%
+        group_data() %>% 
+        select("UniqueGeneID")
+      
+      names(lmer_model) <- as.vector(mod_names$UniqueGeneID)
+      
       return(lmer_model)
-    } else{
-      return(lmer_model %>% filter(!term%in%covariate_filter_string))
+
+    } else {
+      ##make LMM
+      lmer_model<-df %>%
+        filter(!(UniqueGeneID %in% all_nas)) %>%
+        filter(!(UniqueGeneID %in% nas_in_var)) %>%
+        group_by(Assay, UniqueGeneID, UniProt, Panel) %>%
+        group_modify(~tidy(anova(single_lmer(data=.x, formula_string = formula_string)))) %>%
+        ungroup() %>%
+        mutate(covariates = term %in% covariate_filter_string) %>% 
+        group_by(covariates) %>% 
+        mutate(Adjusted_pval=p.adjust(p.value,method="fdr")) %>%
+        mutate(Threshold  = ifelse(Adjusted_pval<0.05,"Significant","Non-significant")) %>%
+        mutate(Adjusted_pval = ifelse(covariates,NA,Adjusted_pval),
+               Threshold = ifelse(covariates,NA,Threshold)) %>% 
+        ungroup() %>% 
+        select(-covariates) %>% 
+        arrange(p.value)
+      
+      if(return.covariates){
+        return(lmer_model)
+      } else{
+        return(lmer_model %>% filter(!term%in%covariate_filter_string))
+      }
     }
-    
   }, warning = function(w) {
     if (grepl(x = w, pattern = glob2rx("*not recognized or transformed: NumDF, DenDF*")) |
         grepl(x = w, pattern = glob2rx("*contains implicit NA, consider using*"))){
@@ -299,8 +312,8 @@ single_lmer <- function(data, formula_string){
 #'mean NPX at mean(numerical variable) versus mean NPX at mean(numerical variable) + 1*SD(numerical variable).
 #'The output tibble is arranged by ascending Tukey adjusted p-values.
 #'
-#' @param df NPX data frame in long format with at least protein name (Assay), OlinkID, UniProt, 1-2 variables with at least 2 levels and subject ID.
-#' @param olinkid_list Character vector of OlinkID's on which to perform post hoc analysis. If not specified, all assays in df are used.
+#' @param df NPX data frame in long format with at least protein name (Assay), UniqueGeneID, UniProt, 1-2 variables with at least 2 levels and subject ID.
+#' @param UniqueGeneID_list Character vector of UniqueGeneID's on which to perform post hoc analysis. If not specified, all assays in df are used.
 #' @param effect Term on which to perform post-hoc. Character vector. Must be subset of or identical to variable.  
 #' @param outcome Character. The dependent variable. Default: NPX.
 #' @param random Single character value or character array.
@@ -312,7 +325,7 @@ single_lmer <- function(data, formula_string){
 #' Variable(s) to test. If length > 1, the included variable names will be used in crossed analyses .
 #' Also takes ':'/'*' notation. 
 #'
-#' @return A tibble containing the results of the pairwise comparisons between given variable levels for proteins specified in olinkid_list (or full df).
+#' @return A tibble containing the results of the pairwise comparisons between given variable levels for proteins specified in UniqueGeneID_list (or full df).
 #' @export
 #' @examples
 #' \donttest{lmer_results <- olink_lmer(df = npx_df,
@@ -321,12 +334,12 @@ single_lmer <- function(data, formula_string){
 #' 
 #' assay_list <- lmer_results %>%
 #' filter(Threshold == 'Significant' & term == 'Time:Treatment') %>%
-#' select(OlinkID) %>%
+#' select(UniqueGeneID) %>%
 #' distinct() %>%
 #' pull()
 #' 
 #' results_lmer_posthoc <- local_lmer_posthoc(df = NPX, 
-#' olinkid_list = assay_list, 
+#' UniqueGeneID_list = assay_list, 
 #' variable=c("Time", 'Treatment'),
 #' effect = 'Time:Treatment', 
 #' random = 'Subject',
@@ -336,7 +349,7 @@ single_lmer <- function(data, formula_string){
 
 olink_lmer_posthoc <- function(df,                        
                                variable,                 
-                               olinkid_list = NULL,              
+                               UniqueGeneID_list = NULL,              
                                effect,                   
                                outcome="NPX",             
                                random,                   
@@ -356,14 +369,14 @@ olink_lmer_posthoc <- function(df,
   }
   
   withCallingHandlers({
-    #Filtering on valid OlinkID
+    #Filtering on valid UniqueGeneID
     df <- df %>%
-      filter(stringr::str_detect(OlinkID,
+      filter(stringr::str_detect(UniqueGeneID,
                                  "OID[0-9]{5}"))
     
-    if(is.null(olinkid_list)){
-      olinkid_list <- df %>%
-        select(OlinkID) %>%
+    if(is.null(UniqueGeneID_list)){
+      UniqueGeneID_list <- df %>%
+        select(UniqueGeneID) %>%
         distinct() %>%
         pull()
     }
@@ -453,15 +466,15 @@ olink_lmer_posthoc <- function(df,
     
     
     output_df <- df %>%
-      filter(OlinkID %in% olinkid_list) %>%
-      group_by(Assay, OlinkID, UniProt, Panel) %>%
+      filter(UniqueGeneID %in% UniqueGeneID_list) %>%
+      group_by(Assay, UniqueGeneID, UniProt, Panel) %>%
       group_modify(~single_posthoc(data = .x, 
                                    formula_string=formula_string, 
                                    effect = effect,
                                    mean_return = mean_return)) %>%
       ungroup() %>%
       mutate(term=paste(effect,collapse=":"))  %>%
-      select(Assay, OlinkID, UniProt, Panel, term, everything())
+      select(Assay, UniqueGeneID, UniProt, Panel, term, everything())
     
     if("Adjusted_pval" %in% colnames(output_df)){
       output_df <- output_df %>%
@@ -516,8 +529,8 @@ single_posthoc <- function(data, formula_string, effect, mean_return){
 #'Generates a point-range plot faceted by Assay using ggplot and ggplot2::geom_pointrange based on a linear mixed effects model using lmerTest:lmer and emmeans::emmeans.
 #'See \code{olink_lmer} for details of input notation. 
 #'
-#' @param df NPX data frame in long format with at least protein name (Assay), OlinkID, UniProt, 1-2 variables with at least 2 levels.
-#' @param olinkid_list Character vector indicating which proteins (by OlinkID) for which to create figures.
+#' @param df NPX data frame in long format with at least protein name (Assay), UniqueGeneID, UniProt, 1-2 variables with at least 2 levels.
+#' @param UniqueGeneID_list Character vector indicating which proteins (by UniqueGeneID) for which to create figures.
 #' @param number_of_proteins_per_plot Number plots to include in the list of point-range plots. Defaults to 6 plots per figure
 #' @param variable Single character value or character array. 
 #' Variable(s) to test. If length > 1, the included variable names will be used in crossed analyses .
@@ -539,7 +552,7 @@ single_posthoc <- function(data, formula_string, effect, mean_return){
 #' 
 #' assay_list <- lmer_results %>%
 #' filter(Threshold == 'Significant' & term == 'Time:Treatment') %>%
-#' select(OlinkID) %>%
+#' select(UniqueGeneID) %>%
 #' distinct() %>%
 #' pull()
 #' 
@@ -549,7 +562,7 @@ single_posthoc <- function(data, formula_string, effect, mean_return){
 #' x_axis_variable = 'Time',                  
 #' col_variable = 'Treatment',              
 #' verbose=T,
-#' olinkid_list = assay_list,
+#' UniqueGeneID_list = assay_list,
 #' number_of_proteins_per_plot = 10)}
 #' @import dplyr stringr tidyr broom
 
@@ -557,7 +570,7 @@ olink_lmer_plot <- function(df,
                             variable,                        
                             outcome="NPX",                   
                             random,                           
-                            olinkid_list = NULL,                    
+                            UniqueGeneID_list = NULL,                    
                             covariates = NULL,                
                             x_axis_variable,                 
                             col_variable = NULL,              
@@ -579,14 +592,14 @@ olink_lmer_plot <- function(df,
     }
   }
   
-  #Filtering on valid OlinkID
+  #Filtering on valid UniqueGeneID
   df <- df %>%
-    filter(stringr::str_detect(OlinkID,
+    filter(stringr::str_detect(UniqueGeneID,
                                "OID[0-9]{5}"))
   
-  if(is.null(olinkid_list)){
-    olinkid_list <- df %>%
-      select(OlinkID) %>%
+  if(is.null(UniqueGeneID_list)){
+    UniqueGeneID_list <- df %>%
+      select(UniqueGeneID) %>%
       distinct() %>%
       pull()
   }
@@ -610,19 +623,19 @@ olink_lmer_plot <- function(df,
                                  variable = variable,
                                  random = random,
                                  outcome = outcome,
-                                 olinkid_list = olinkid_list,
+                                 UniqueGeneID_list = UniqueGeneID_list,
                                  covariates=covariates,
                                  effect = current_fixed_effect,
                                  mean_return = T,
                                  verbose=verbose) %>%
-    mutate(Name_Assay = paste0(Assay,"_",OlinkID)) 
+    mutate(Name_Assay = paste0(Assay,"_",UniqueGeneID)) 
   
   
-  #Keep olinkid_list input order
+  #Keep UniqueGeneID_list input order
   assay_name_list <- lm.means %>%
-    mutate(OlinkID = factor(OlinkID, 
-                            levels = olinkid_list)) %>% 
-    arrange(OlinkID) %>% 
+    mutate(UniqueGeneID = factor(UniqueGeneID, 
+                            levels = UniqueGeneID_list)) %>% 
+    arrange(UniqueGeneID) %>% 
     pull(Name_Assay) %>% 
     unique()
   

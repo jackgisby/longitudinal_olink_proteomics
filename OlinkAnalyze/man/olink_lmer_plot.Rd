@@ -9,7 +9,7 @@ olink_lmer_plot(
   variable,
   outcome = "NPX",
   random,
-  olinkid_list = NULL,
+  UniqueGeneID_list = NULL,
   covariates = NULL,
   x_axis_variable,
   col_variable = NULL,
@@ -18,7 +18,7 @@ olink_lmer_plot(
 )
 }
 \arguments{
-\item{df}{NPX data frame in long format with at least protein name (Assay), OlinkID, UniProt, 1-2 variables with at least 2 levels.}
+\item{df}{NPX data frame in long format with at least protein name (Assay), UniqueGeneID, UniProt, 1-2 variables with at least 2 levels.}
 
 \item{variable}{Single character value or character array. 
 Variable(s) to test. If length > 1, the included variable names will be used in crossed analyses .
@@ -28,7 +28,7 @@ Also takes ':'/'*' notation.}
 
 \item{random}{Single character value or character array.}
 
-\item{olinkid_list}{Character vector indicating which proteins (by OlinkID) for which to create figures.}
+\item{UniqueGeneID_list}{Character vector indicating which proteins (by UniqueGeneID) for which to create figures.}
 
 \item{covariates}{Single character value or character array. Default: NULL.
 Covariates to include. Takes ':'/'*' notation. Crossed analysis will not be inferred from main effects.}
@@ -55,7 +55,7 @@ random = c('Subject'))
 
 assay_list <- lmer_results \%>\%
 filter(Threshold == 'Significant' & term == 'Time:Treatment') \%>\%
-select(OlinkID) \%>\%
+select(UniqueGeneID) \%>\%
 distinct() \%>\%
 pull()
 
@@ -65,6 +65,6 @@ random = c('Subject'),
 x_axis_variable = 'Time',                  
 col_variable = 'Treatment',              
 verbose=T,
-olinkid_list = assay_list,
+UniqueGeneID_list = assay_list,
 number_of_proteins_per_plot = 10)}
 }
