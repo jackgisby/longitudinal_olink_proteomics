@@ -48,7 +48,8 @@ olink_lmer <- function(df,
                        covariates = NULL,         
                        return.covariates=F,
                        return.models=FALSE,
-                       verbose=T                  
+                       verbose=T,
+                       reorder=NULL
 ) {  
   
   if(missing(df) | missing(variable) | missing(random)){
@@ -110,7 +111,10 @@ olink_lmer <- function(df,
     converted.vars <- NULL
     num.vars <- NULL
     for(i in variable_testers){
-      if(is.character(df[[i]])){
+      if (i == variable & !is.null(reorder)) {
+        df[[i]] <- ordered(df[[i]], levels=reorder)
+        converted.vars <- c(converted.vars,i)
+      } else if(is.character(df[[i]])){
         df[[i]] <- factor(df[[i]])
         converted.vars <- c(converted.vars,i)
       } else if(is.numeric(df[[i]])){
@@ -223,6 +227,7 @@ olink_lmer <- function(df,
     }else{
       covariate_filter_string <- covariates
     }
+    
     if (return.models) {
       #make LMM
       lmer_model<- df %>%
@@ -241,7 +246,7 @@ olink_lmer <- function(df,
       names(lmer_model) <- as.vector(mod_names$UniqueGeneID)
       
       return(lmer_model)
-
+      
     } else {
       ##make LMM
       lmer_model<-df %>%
@@ -266,6 +271,7 @@ olink_lmer <- function(df,
         return(lmer_model %>% filter(!term%in%covariate_filter_string))
       }
     }
+    
   }, warning = function(w) {
     if (grepl(x = w, pattern = glob2rx("*not recognized or transformed: NumDF, DenDF*")) |
         grepl(x = w, pattern = glob2rx("*contains implicit NA, consider using*"))){
@@ -275,7 +281,7 @@ olink_lmer <- function(df,
   
 }
 
-single_lmer <- function(data, formula_string){
+single_lmer <- function(data, formula_string) {
   
   out.model <- tryCatch(lmerTest::lmer(as.formula(formula_string),
                                        data=data,
@@ -294,9 +300,10 @@ single_lmer <- function(data, formula_string){
   )
   
   
-  if(class(out.model)=="lmerModLmerTest"){
+  if(class(out.model)=="lmerModLmerTest") {
     return(out.model)
-  } else{
+    
+  } else {
     stop("Convergence issue not caught by single_lmer")
   }
 }

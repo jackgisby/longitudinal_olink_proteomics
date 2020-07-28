@@ -12,7 +12,8 @@ olink_lmer(
   covariates = NULL,
   return.covariates = F,
   return.models = FALSE,
-  verbose = T
+  verbose = T,
+  reorder = NULL
 )
 }
 \arguments{
