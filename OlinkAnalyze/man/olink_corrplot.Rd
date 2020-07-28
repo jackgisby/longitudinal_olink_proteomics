@@ -11,7 +11,8 @@ olink_corrplot(
   GeneIDs = NULL,
   SampleIDs = NULL,
   verbose = TRUE,
-  clusters = NA
+  clusters = NA,
+  additional_annotation = NULL
 )
 }
 \arguments{

@@ -125,7 +125,8 @@ olink_corrplot <- function(
   GeneIDs=NULL,
   SampleIDs=NULL,
   verbose=TRUE,
-  clusters=NA
+  clusters=NA,
+  additional_annotation=NULL
 ) {
   
   # filter based on genes/samples
@@ -215,6 +216,7 @@ olink_corrplot <- function(
   } else {
     annotations <- data.frame(case.control=df_wide$case.control, WHO.severity=df_wide$WHO.severity)
     rownames(annotations) <- df_wide$SampleID
+    annotations$WHO.severity[is.na(annotations$WHO.severity)] <- "NEGATIVE"
     
     df_wide_matrix <- df_wide %>% 
       select(-Index, -case.control, -WHO.severity) %>%
@@ -222,6 +224,18 @@ olink_corrplot <- function(
       as.matrix
     
     df_wide_matrix <- t(df_wide_matrix)
+  }
+  
+  if (!is.null(additional_annotation)) {
+    annotations$SampleID <- rownames(annotations)
+    additional_annotation <- data.frame(SampleID=names(additional_annotation),
+                                        kmeans=as.character(additional_annotation))
+    
+    annotations <- left_join(annotations, additional_annotation, by=c("SampleID" = "SampleID"))
+    sID <- annotations$SampleID
+    annotations <- data.frame(WHO.severity=annotations$WHO.severity,
+                              kmeans=annotations$kmeans)
+    rownames(annotations) <- sID
   }
   
   cor_matrix <- cor(df_wide_matrix)

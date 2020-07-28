@@ -4,7 +4,14 @@
 \alias{olink_consensus_clustering}
 \title{consensus clustering}
 \usage{
-olink_consensus_clustering(df, clusteralg = "km", iters = 25, reps = 100)
+olink_consensus_clustering(
+  df,
+  clusteralg = "km",
+  iters = 100,
+  reps = 200,
+  x_val = 1,
+  y_val = 2
+)
 }
 \description{
 identify what k should be set to
