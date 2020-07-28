@@ -34,20 +34,40 @@ olink_kmeans <- function (
 olink_consensus_clustering <- function(
   df,
   clusteralg="km",
-  iters=25,
-  reps=100
+  iters=100,
+  reps=200,
+  x_val=1,
+  y_val=2
 ) {
   df_wide_matrix <- median_impute(df)
   
-  return(M3C(t(df_wide_matrix), iters=iters, repsref=reps, repsreal=reps, clusteralg=clusteralg))
+  res <- M3C::M3C(t(df_wide_matrix), iters=iters, repsref=reps, repsreal=reps, clusteralg=clusteralg, objective="PAC",
+             cores=3)
+  
+  df %>%
+    left_join(data.frame(SampleID=colnames(t(df_wide_matrix)), clusts=as.character(res$assignments)), by=c("SampleID" = "SampleID")) %>%
+    olink_pca_plot(color_g="clusts", y_val=y_val, x_val=x_val) %>%
+    print()
+  
+  return(res)
 }
 
 #' median imputation and transformation to wide matrix
+#' 
+#' @export
 
 median_impute <- function(
   df
 ) {
   verbose = TRUE
+  
+  # remove proteins w/ 0 variance
+  df <- df %>% 
+    group_by(UniqueGeneID) %>%
+    mutate(assay_var = var(NPX, na.rm = T)) %>%
+    ungroup() %>%
+    filter(!(assay_var == 0 | is.na(assay_var))) %>%
+    select(-assay_var)
   
   df_wide <- df %>% 
     select(SampleID, Index, UniqueGeneID, NPX) %>% 
