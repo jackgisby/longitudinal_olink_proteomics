@@ -10,7 +10,7 @@
 #' @examples \donttest{read_NPX("~/NPX data.xlsx")}
 #' @import dplyr stringr tidyr biomaRt
 
-read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_mod=0, panel="NA", tab=1){
+read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_mod=0, panel="NA", tab=1, this_exp="plasma"){
   
   if (!is.null(sample_manifest)) {
     manifest <- read.csv(sample_manifest, sep="\t")
@@ -18,10 +18,18 @@ read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_mod=0, pan
     
     if (!is.null(pheno)) {
       pheno_df <- read.csv(pheno, sep="\t")
-      colnames(pheno_df) <- sub(colnames(pheno_df), pattern="Research.ID", replacement = "Individual.ID")
+      
+      df <- pheno_df
+      df$Research.ID <- df$TT.code
+      df <- df %>% filter(Research.ID != "")
+      pheno_df <- rbind(pheno_df, df)
+      pheno_df <- unique(pheno_df)
+      
+      manifest$Research.ID <- manifest$Individual.ID
       
       manifest <- manifest %>%
-        left_join(pheno_df)
+        left_join(pheno_df) %>%
+        select(-Research.ID)
     }
   }
   
@@ -71,11 +79,18 @@ read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_mod=0, pan
   norm_method <- dat %>% filter(stringr::str_detect(Name, "Normalization"))
   
   if(nrow(norm_method) == 0){
+    print("No Normalisation")
     dat <- dat[c(-1*(nrow(dat) - 2):nrow(dat)),]
-  }else{
+  } else if (this_exp == "plasma") {
     dat <- dat[c(-1*(nrow(dat) - 3):nrow(dat)),]
     NORM_FLAG <- T
+  } else {
+    dat <- dat[c(-1*(nrow(dat) - 2):nrow(dat)),]
+    NORM_FLAG <- T
   }
+  
+  # return(dat)
+  
   
   gene_ids <- uniprot_to_gene(data.frame(UniProt=as.character(meta_dat[2,-1]), target=as.character(meta_dat[1,-1])))
   gene_ids <- data.frame(cbind(colnames(gene_ids), t(gene_ids)))
@@ -185,16 +200,17 @@ read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_mod=0, pan
 #' @export
 #' @import dplyr stringr tidyr
 
-read_multitab_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_mod=c(0), panel=c("NA"), num_tabs=1) {
+read_multitab_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_mod=c(0), panel=c("NA"), num_tabs=1, this_exp="plasma") {
   for (i in 1:num_tabs) {
     if (i == 1) {
-      long_npx <- read_NPX(filename=filename, sample_manifest=sample_manifest, pheno=pheno, skip_mod=skip_mod[i], panel=panel[i])
+      long_npx <- read_NPX(filename=filename, sample_manifest=sample_manifest, pheno=pheno, skip_mod=skip_mod[i], panel=panel[i], this_exp=this_exp)
     } else {
       long_npx <- rbind(long_npx,
                         read_NPX(filename=filename, 
                                  sample_manifest=sample_manifest,
                                  pheno=pheno,
-                                 tab=i, skip_mod=skip_mod[i], panel=panel[i]))
+                                 tab=i, skip_mod=skip_mod[i], panel=panel[i],
+                                 this_exp))
     }
   }
   

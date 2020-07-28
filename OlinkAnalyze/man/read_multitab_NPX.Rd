@@ -10,7 +10,8 @@ read_multitab_NPX(
   pheno = NULL,
   skip_mod = c(0),
   panel = c("NA"),
-  num_tabs = 1
+  num_tabs = 1,
+  this_exp = "plasma"
 )
 }
 \description{

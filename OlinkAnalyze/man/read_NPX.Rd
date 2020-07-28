@@ -10,7 +10,8 @@ read_NPX(
   pheno = NULL,
   skip_mod = 0,
   panel = "NA",
-  tab = 1
+  tab = 1,
+  this_exp = "plasma"
 )
 }
 \arguments{
