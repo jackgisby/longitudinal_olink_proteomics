@@ -67,10 +67,10 @@ median_impute <- function(
     mutate(assay_var = var(NPX, na.rm = T)) %>%
     ungroup() %>%
     filter(!(assay_var == 0 | is.na(assay_var))) %>%
-    select(-assay_var)
+    dplyr::select(-assay_var)
   
   df_wide <- df %>% 
-    select(SampleID, Index, UniqueGeneID, NPX) %>% 
+    dplyr::select(SampleID, Index, UniqueGeneID, NPX) %>% 
     filter(!is.na(NPX)) %>% 
     spread(UniqueGeneID, NPX)
   
@@ -150,8 +150,123 @@ median_impute <- function(
   }
   
   df_wide %>% 
-    select(-Index) %>%
+    dplyr::select(-Index) %>%
     column_to_rownames('SampleID') %>%
     as.matrix() %>%
     return()
 }
+
+
+#' ML median imputation and transformation to wide matrix
+#' 
+#' @import dplyr
+#' @export
+
+ml_median_impute <- function(
+  df,
+  grp="severity"
+) {
+  verbose = TRUE
+  
+  # remove proteins w/ 0 variance
+  df <- df %>% 
+    group_by(UniqueGeneID) %>%
+    mutate(assay_var = var(NPX, na.rm = T)) %>%
+    ungroup() %>%
+    filter(!(assay_var == 0 | is.na(assay_var))) %>%
+    dplyr::select(-assay_var)
+  
+  if (grp=="severity") {
+    df_wide <- df %>% 
+      dplyr::select(SampleID, UniqueGeneID, NPX, WHO.severity, Index) %>% 
+      filter(!is.na(NPX)) %>% 
+      spread(UniqueGeneID, NPX)
+  } else {
+    df_wide <- df %>% 
+      dplyr::select(SampleID, UniqueGeneID, NPX, case.control, Index) %>% 
+      filter(!is.na(NPX)) %>% 
+      spread(UniqueGeneID, NPX)
+  }
+  
+  
+  percent_missingness <- colSums(is.na(df_wide[, -c(1:2)]))/nrow(df_wide)
+  
+  # assays with missingness > ?% are dropped from the PCA
+  PERCENT_CUTOFF <- 0.5
+  
+  if(any(percent_missingness > PERCENT_CUTOFF)){
+    
+    removed_assays_index <- which(percent_missingness > PERCENT_CUTOFF)
+    percent_missingness <- percent_missingness[-removed_assays_index]
+    
+    removed_assays_index <- removed_assays_index + 2
+    removed_assays <- colnames(df_wide)[removed_assays_index]
+    
+    df_wide <- df_wide[, -removed_assays_index]
+    
+    if(verbose){
+      warning(paste0("There are ",
+                     paste0(length(removed_assays)), 
+                     " assay(s) dropped due to high missingness (>",
+                     round(PERCENT_CUTOFF*100),
+                     "%)."))
+    }
+    
+    if(!is.null(loadings_list)){
+      
+      dropped_loadings <- intersect(removed_assays, 
+                                    loadings_list)
+      
+      
+      if(length(dropped_loadings) > 0){
+        
+        if(verbose){
+          warning(paste0("The loading(s) ",
+                         paste0(dropped_loadings, collapse=", "),
+                         " from the loadings_list are dropped due to high missingness. "))
+        }
+        
+        loadings_list <- setdiff(loadings_list, dropped_loadings)
+        
+        if(length(loadings_list) == 0){
+          
+          loadings_list <- NULL
+          
+        }
+      }
+      
+    }
+    
+  }
+  
+  #<= PERCENT_CUTOFF assays imputed
+  
+  if(any(percent_missingness <= PERCENT_CUTOFF & percent_missingness > 0)){
+    
+    imputed_assays_index <- which(percent_missingness <= PERCENT_CUTOFF & percent_missingness > 0)
+    percent_missingness <- percent_missingness[-imputed_assays_index]
+    
+    imputed_assays_index <- imputed_assays_index + 2
+    imputed_assays <- colnames(df_wide)[imputed_assays_index]
+    
+    df_wide <- df_wide %>%
+      mutate_at(tidyselect::all_of(imputed_assays), 
+                ~ifelse(is.na(.x), median(.x, na.rm = TRUE), .x))
+    
+    if(verbose){
+      warning(paste0("There are ",
+                     paste0(length(imputed_assays)), 
+                     " assay(s) that were imputed by their medians."))
+    }
+  }
+  
+  if(!all(colSums(is.na(df_wide[, -c(1:2)])) == 0)){
+    stop('Missingness imputation failed.')
+  }
+  
+  df_wide %>% 
+    dplyr::select(-Index) %>%
+    column_to_rownames('SampleID') %>%
+    return()
+}
+
