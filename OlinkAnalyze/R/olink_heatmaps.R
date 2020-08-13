@@ -99,7 +99,8 @@ olink_heatmap <- function(
     annotation_row = ccontrol,
     annotation_col = ppanel,
     cutree_cols = col_clusters,
-    cutree_rows = row_clusters
+    cutree_rows = row_clusters,
+    scale="row"
   )
   
   return(hmap)
