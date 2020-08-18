@@ -13,7 +13,7 @@
 #' @param drop_assays Logical. All assays with any missing values will be dropped. Takes precedence over sample drop.
 #' @param drop_samples Logical. All samples with any missing values will be dropped.
 #' @param n_loadings Integer. Will plot the top n_loadings based on size.
-#' @param loadings_list Character vector indicating for which UniqueGeneID's to plot as loadings. It is possible to use n_loadings and loadings_list simultaneously.
+#' @param loadings_list Character vector indicating for which GeneID's to plot as loadings. It is possible to use n_loadings and loadings_list simultaneously.
 #' @param verbose Logical. Whether warnings about the number of samples and/or assays dropped or imputed should be printed to the console.
 #' @return An object of class "ggplot"
 #' @keywords NPX, PCA
@@ -33,7 +33,7 @@ olink_pca_plot <- function (df,
                             verbose = T,
                             return_prcomp=FALSE){ 
   
-  #Filtering on valid UniqueGeneID
+  #Filtering on valid GeneID
   df <- df %>%
     filter(stringr::str_detect(OlinkID,
                                "OID[0-9]{5}"))
@@ -80,7 +80,7 @@ olink_pca_plot <- function (df,
   #Checking if there are any proteins with 0 variance, they are filtered out
   
   df_temp <- df_temp %>% 
-    group_by(UniqueGeneID) %>%
+    group_by(GeneID) %>%
     mutate(assay_var = var(NPX, na.rm = T)) %>%
     ungroup() %>%
     filter(!(assay_var == 0 | is.na(assay_var))) %>%
@@ -89,75 +89,9 @@ olink_pca_plot <- function (df,
   #wide format
   
   df_wide <- df_temp %>% 
-    select(SampleID, Index, UniqueGeneID, NPX) %>% 
+    select(SampleID, Index, GeneID, NPX) %>% 
     filter(!is.na(NPX)) %>% 
-    spread(UniqueGeneID, NPX)
-  
-  
-  #Dropping any cols with NA
-  #drop_assays take precedence
-  if(drop_assays){
-    
-    dropped_assays <- colnames(df_wide[, -c(1:2)])[apply(df_wide[, -c(1:2)], 2, anyNA)]
-    
-    df_wide <- df_wide %>%
-      select(-tidyselect::all_of(dropped_assays))
-    
-    if(verbose){
-      warning(paste0(length(dropped_assays)), 
-              " assay(s) contain NA and are dropped. ")
-    }
-    
-    if(!is.null(loadings_list)){
-      
-      dropped_loadings <- intersect(dropped_assays, 
-                                    loadings_list)
-      
-      
-      if(length(dropped_loadings) > 0){
-        
-        if(verbose){
-          warning(paste0("The loading(s) ",
-                         paste0(dropped_loadings, collapse=", "),
-                         " from the loadings_list contain NA and are dropped . "))
-        }
-        
-        loadings_list <- setdiff(loadings_list, dropped_loadings)
-        
-        if(length(loadings_list) == 0){
-          
-          loadings_list <- NULL
-          
-        }
-      }
-      
-    }
-    
-    if(ncol(df_wide) < 4){
-      stop('Too many assays removed. Set drop_assays = F for imputation.')
-    }
-  }
-  
-  
-  if(drop_samples){
-    
-    dropped_samples <- apply(df_wide[, -c(1:2)], 1, anyNA)
-    
-    df_wide <- df_wide[!dropped_samples, ]
-    
-    if(verbose){
-      warning(paste0(sum(dropped_samples)), 
-              " sample(s) contain NA and are dropped. ")
-    }
-    
-    if(nrow(df_wide) < 2){
-      
-      stop('Too many samples removed. Set drop_samples = F for imputation.')
-    }
-    
-  }
-  
-  
+    spread(GeneID, NPX)
   
   percent_missingness <- colSums(is.na(df_wide[, -c(1:2)]))/nrow(df_wide)
   
@@ -209,31 +143,6 @@ olink_pca_plot <- function (df,
     
   }
   
-  #<= PERCENT_CUTOFF assays imputed
-  
-  if(any(percent_missingness <= PERCENT_CUTOFF & percent_missingness > 0)){
-    
-    imputed_assays_index <- which(percent_missingness <= PERCENT_CUTOFF & percent_missingness > 0)
-    percent_missingness <- percent_missingness[-imputed_assays_index]
-    
-    imputed_assays_index <- imputed_assays_index + 2
-    imputed_assays <- colnames(df_wide)[imputed_assays_index]
-    
-    df_wide <- df_wide %>%
-      mutate_at(tidyselect::all_of(imputed_assays), 
-                ~ifelse(is.na(.x), median(.x, na.rm = TRUE), .x))
-    
-    if(verbose){
-      warning(paste0("There are ",
-                     paste0(length(imputed_assays)), 
-                     " assay(s) that were imputed by their medians."))
-    }
-  }
-  
-  if(!all(colSums(is.na(df_wide[, -c(1:2)])) == 0)){
-    stop('Missingness imputation failed.')
-  }
-  
   df_wide <- df_wide %>% 
     left_join(colors_for_pca,
               by = c('SampleID',
@@ -242,10 +151,17 @@ olink_pca_plot <- function (df,
   
   df_wide_matrix <- df_wide %>% 
     select(-Index, -pca_colors) %>%
-    column_to_rownames('SampleID') %>%
-    as.matrix
+    column_to_rownames('SampleID')
   
-  pca_fit <- prcomp(df_wide_matrix, scale. = T, center = T)
+  df_wide_matrix <- preProcess(df_wide_matrix, method = c("knnImpute", "scale", "center")) %>%
+    predict(df_wide_matrix) %>%
+    as.matrix()
+  
+  if(!all(colSums(is.na(df_wide_matrix[, -c(1:2)])) == 0)){
+    stop('Missingness imputation failed.')
+  }
+  
+  pca_fit <- prcomp(df_wide_matrix, scale. = FALSE, center = FALSE)
   
   if (return_prcomp) {
     return(pca_fit)
@@ -280,7 +196,6 @@ olink_pca_plot <- function (df,
     xlab(paste0("PC", x_val,  " (", round(PoV[x_val]*100, digits = 2), "%)")) +
     ylab(paste0("PC", y_val, " (", round(PoV[y_val]*100, digits = 2), "%)")) 
   
-  
   #Drawing scores
   
   if(label_samples){
@@ -298,7 +213,6 @@ olink_pca_plot <- function (df,
       guides(size = FALSE)
     
   }
-  
   
   #Drawing loadings
   
@@ -349,10 +263,6 @@ olink_pca_plot <- function (df,
                        show.legend = F,
                        segment.colour = 'gray')
   }
-  
-  
-  pca_plot <- pca_plot + 
-    set_plot_theme() 
   
   return(pca_plot)
 }

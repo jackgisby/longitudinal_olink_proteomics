@@ -35,7 +35,7 @@ olink_pca_plot(
 
 \item{n_loadings}{Integer. Will plot the top n_loadings based on size.}
 
-\item{loadings_list}{Character vector indicating for which UniqueGeneID's to plot as loadings. It is possible to use n_loadings and loadings_list simultaneously.}
+\item{loadings_list}{Character vector indicating for which GeneID's to plot as loadings. It is possible to use n_loadings and loadings_list simultaneously.}
 
 \item{verbose}{Logical. Whether warnings about the number of samples and/or assays dropped or imputed should be printed to the console.}
 }

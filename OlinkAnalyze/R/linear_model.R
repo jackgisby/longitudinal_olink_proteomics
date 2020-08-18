@@ -194,3 +194,48 @@ olink_lm <- function(df,
     })
     
 }
+
+#' simple standard differential expression analysis plot
+#' @export
+#' @import ggplot2 dplyr
+
+simple_lm_de <- function(
+    long, 
+    case_control_to_remove=NA, 
+    variable="case.control", 
+    covariates=NULL,
+    logp_label=6,
+    fc_label=c(-0.5, 1),
+    plot_xlab="Log2 Fold Change (P-N)",
+    plot_title="plasma case/control",
+    return_pvals=FALSE
+) {
+    
+    if (!is.na(case_control_to_remove)) {
+        long <- filter(long, case.control != case_control_to_remove)
+    }
+    
+    cctrl_cov_pvals <- olink_lm(long, variable, covariates=covariates)
+    cctrl__cov_models <- olink_lm(long, variable, return.models = TRUE)
+    
+    fc <- sapply(cctrl__cov_models, function(lm_model) {return(lm_model$coefficients[2])})
+    
+    fc_df <- data.frame(UniqueGeneID=names(cctrl__cov_models), fc=fc)
+    cctrl_cov_pvals <- left_join(cctrl_cov_pvals, fc_df)
+    cctrl_cov_pvals$logp <- -log10(cctrl_cov_pvals$Adjusted_pval)
+    
+    if (return_pvals) {
+        return(cctrl_cov_pvals)
+    }
+    
+    ggplot(cctrl_cov_pvals, aes(x=fc, y=logp, colour=factor(ifelse(Adjusted_pval < 0.05, "<0.05", "NS"), levels=c("NS", "<0.05")))) +
+        geom_point(alpha=0.5) +
+        ylab("-log10(Adjusted Pvalue)") +
+        xlab(plot_xlab) +
+        labs(colour = "Adjusted Pvalue") +
+        ggtitle(plot_title) +
+        geom_text_repel(data=subset(cctrl_cov_pvals,
+                                    logp > logp_label | 
+                                        ((fc > fc_label[2] | fc < fc_label[1]) & Adjusted_pval < 0.05)),
+                        aes(fc, logp, label = UniqueGeneID), size = 3, color="steelblue")
+}

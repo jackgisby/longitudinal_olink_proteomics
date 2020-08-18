@@ -308,394 +308,48 @@ single_lmer <- function(data, formula_string) {
   }
 }
 
-#'Function which performs a linear mixed model posthoc per protein.
-#'
-#'Similar to olink_lmer but performs a post hoc analysis based on a linear mixed model effects model using lmerTest::lmer and emmeans::emmeans on proteins. 
-#'See \code{olink_lmer} for details of input notation. \cr\cr
-#'The function handles both factor and numerical variables and/or covariates. 
-#'Differences in estimated marginal means are calculated for all pairwise levels of a given variable. 
-#'Degrees of freedom are estimated using Satterthwaite’s approximation. 
-#'The posthoc test for a numerical variable compares the difference in means of the outcome variable (default: NPX) for 1 standard deviation difference in the numerical variable, e.g.
-#'mean NPX at mean(numerical variable) versus mean NPX at mean(numerical variable) + 1*SD(numerical variable).
-#'The output tibble is arranged by ascending Tukey adjusted p-values.
-#'
-#' @param df NPX data frame in long format with at least protein name (Assay), UniqueGeneID, UniProt, 1-2 variables with at least 2 levels and subject ID.
-#' @param UniqueGeneID_list Character vector of UniqueGeneID's on which to perform post hoc analysis. If not specified, all assays in df are used.
-#' @param effect Term on which to perform post-hoc. Character vector. Must be subset of or identical to variable.  
-#' @param outcome Character. The dependent variable. Default: NPX.
-#' @param random Single character value or character array.
-#' @param covariates Single character value or character array. Default: NULL.
-#' Covariates to include. Takes ':'/'*' notation. Crossed analysis will not be inferred from main effects.
-#' @param mean_return Boolean. If true, returns the mean of each factor level rather than the difference in means (default). Note that no p-value is returned for mean_return = T.
-#' @param verbose Boolean. Deafult: True. If information about removed samples, factor conversion and final model formula is to be printed to the console. 
-#' @param variable Single character value or character array. 
-#' Variable(s) to test. If length > 1, the included variable names will be used in crossed analyses .
-#' Also takes ':'/'*' notation. 
-#'
-#' @return A tibble containing the results of the pairwise comparisons between given variable levels for proteins specified in UniqueGeneID_list (or full df).
+#' simple mixed differential expression analysis plot
 #' @export
-#' @examples
-#' \donttest{lmer_results <- olink_lmer(df = npx_df,
-#' variable=c("Time", 'Treatment'),
-#' random = c('Subject'))
-#' 
-#' assay_list <- lmer_results %>%
-#' filter(Threshold == 'Significant' & term == 'Time:Treatment') %>%
-#' select(UniqueGeneID) %>%
-#' distinct() %>%
-#' pull()
-#' 
-#' results_lmer_posthoc <- local_lmer_posthoc(df = NPX, 
-#' UniqueGeneID_list = assay_list, 
-#' variable=c("Time", 'Treatment'),
-#' effect = 'Time:Treatment', 
-#' random = 'Subject',
-#' verbose = T)
-#'}
-#' @import dplyr stringr tidyr broom
+#' @import ggplot2 dplyr
 
-olink_lmer_posthoc <- function(df,                        
-                               variable,                 
-                               UniqueGeneID_list = NULL,              
-                               effect,                   
-                               outcome="NPX",             
-                               random,                   
-                               covariates = NULL,         
-                               mean_return=F,             
-                               verbose=T                  
-){
+simple_mixed_de <- function(
+  long, 
+  case_control_to_remove=NA, 
+  variable="case.control", 
+  covariates=NULL,
+  random = c("Individual.ID"),
+  logp_label=6,
+  fc_label=c(-0.5, 1),
+  plot_xlab="Log2 Fold Change (P-N)",
+  plot_title="plasma case/control",
+  return_pvals=FALSE
+) {
   
-  
-  if(missing(df) | missing(variable) | missing(effect) | missing(random)){
-    stop('The df, variable, random and effect arguments need to be specified.')
+  if (!is.na(case_control_to_remove)) {
+    long <- filter(long, case.control != case_control_to_remove)
   }
   
-  tmp <- unique(unlist(strsplit(effect,":")))
-  if(!all(tmp %in% unique(unlist(strsplit(variable,"[\\*:]"))))) { 
-    stop("All effect terms must be included in the variable argument.")
+  cctrl_cov_pvals <- olink_lmer(long, variable, random=random, covariates=covariates)
+  cctrl__cov_models <- olink_lmer(long, variable, random=random, covariates=covariates, return.models = TRUE)
+  
+  fc <- sapply(cctrl__cov_models, function(lmer_model) {return(lmer_model@beta[2])})
+  
+  fc_df <- data.frame(UniqueGeneID=names(cctrl__cov_models), fc=fc)
+  cctrl_cov_pvals <- left_join(cctrl_cov_pvals, fc_df)
+  cctrl_cov_pvals$logp <- -log10(cctrl_cov_pvals$Adjusted_pval)
+  
+  if (return_pvals) {
+    return(cctrl_cov_pvals)
   }
   
-  withCallingHandlers({
-    #Filtering on valid UniqueGeneID
-    df <- df %>%
-      filter(stringr::str_detect(UniqueGeneID,
-                                 "OID[0-9]{5}"))
-    
-    if(is.null(UniqueGeneID_list)){
-      UniqueGeneID_list <- df %>%
-        select(UniqueGeneID) %>%
-        distinct() %>%
-        pull()
-    }
-    
-    #Allow for :/* notation in covariates
-    variable <- gsub("\\*",":",variable)
-    if(!is.null(covariates)) covariates <- gsub("\\*",":",covariates)
-    
-    
-    add.main.effects <- NULL
-    if(any(grepl(":",covariates))){
-      tmp <- unlist(strsplit(covariates,":"))
-      add.main.effects <- c(add.main.effects,setdiff(tmp,covariates))
-      covariates <- union(covariates,add.main.effects)
-    }
-    if(any(grepl(":",variable))){
-      tmp <- unlist(strsplit(variable,":"))
-      add.main.effects <- c(add.main.effects,setdiff(tmp,variable))
-      variable <- union(variable,unlist(strsplit(variable,":")))
-      variable <- variable[!grepl(":",variable)]
-    }
-    #If variable is in both variable and covariate, keep it in variable or will get removed from final table
-    covariates <- setdiff(covariates,variable)
-    add.main.effects <- setdiff(add.main.effects, variable)
-    
-    variable_testers <- intersect(c(variable,covariates), names(df))
-    ##Remove rows where variables or covariate is NA (cant include in analysis anyway)
-    removed.sampleids <- NULL
-    for(i in variable_testers){
-      removed.sampleids <- unique(c(removed.sampleids,df$SampleID[is.na(df[[i]])]))
-      df <- df[!is.na(df[[i]]),]
-    }
-    
-    ##Convert character vars to factor
-    converted.vars <- NULL
-    num.vars <- NULL
-    for(i in variable_testers){
-      if(is.character(df[[i]])){
-        df[[i]] <- factor(df[[i]])
-        converted.vars <- c(converted.vars,i)
-      } else if(is.numeric(df[[i]])){
-        num.vars <- c(num.vars,i)
-      }
-    }
-    
-    
-    if(!is.null(covariates)){
-      formula_string <- paste0(outcome, "~", 
-                               paste(variable,collapse="*"),
-                               "+", 
-                               paste(covariates, sep = '', collapse = '+'),
-                               "+",
-                               paste(paste0("(1|",random,")"),collapse="+"))
-    }else{
-      
-      formula_string <- paste0(outcome, "~", paste(variable,collapse="*"),
-                               "+",
-                               paste(paste0("(1|",random,")"),collapse="+"))
-    }
-    
-    #Print verbose message
-    if(verbose){
-      if(!is.null(add.main.effects) & length(add.main.effects) > 0){
-        message("Missing main effects added to the model formula: ",
-                paste(add.main.effects,collapse=", "))
-      }
-      if(!is.null(removed.sampleids) & length(removed.sampleids) >0){
-        message("Samples removed due to missing variable or covariate levels: ",
-                paste(removed.sampleids,collapse=", "))
-      }
-      if(!is.null(converted.vars)){
-        message(paste0("Variables and covariates converted from character to factors: ",
-                       paste(converted.vars,collapse = ", ")))
-      }
-      if(!is.null(num.vars)){
-        message(paste0("Variables and covariates treated as numeric: ",
-                       paste(num.vars,collapse = ", ")))
-      }
-      if(any(variable %in% num.vars)){
-        message(paste0("Numeric variables post-hoc performed using Mean and Mean + 1SD: ",
-                       paste(num.vars[num.vars%in%variable],collapse = ", ")))
-      }
-      message(paste("Means estimated for each assay from linear mixed effects model: ",formula_string))
-    }
-    
-    
-    
-    
-    output_df <- df %>%
-      filter(UniqueGeneID %in% UniqueGeneID_list) %>%
-      group_by(Assay, UniqueGeneID, UniProt, Panel) %>%
-      group_modify(~single_posthoc(data = .x, 
-                                   formula_string=formula_string, 
-                                   effect = effect,
-                                   mean_return = mean_return)) %>%
-      ungroup() %>%
-      mutate(term=paste(effect,collapse=":"))  %>%
-      select(Assay, UniqueGeneID, UniProt, Panel, term, everything())
-    
-    if("Adjusted_pval" %in% colnames(output_df)){
-      output_df <- output_df %>%
-        arrange(Adjusted_pval)
-    }
-    
-    return(output_df)
-    
-  }, warning = function(w) {
-    if (grepl(x = w, pattern = glob2rx("*contains implicit NA, consider using*"))) 
-      invokeRestart("muffleWarning")
-  })
-  
-}
-
-single_posthoc <- function(data, formula_string, effect, mean_return){
-  
-  the_model <- emmeans::emmeans(single_lmer(data, formula_string),
-                                specs=as.formula(paste0("pairwise~", paste(effect,collapse="+"))),
-                                cov.reduce = function(x) round(c(mean(x),mean(x)+sd(x)),4),
-                                lmer.df="satterthwaite")
-  the_model <- summary(the_model,infer=c(T,T),
-                       adjust="tukey")
-  
-  if(mean_return){
-    tmp <- unique(unlist(strsplit(effect,":")))
-    return(as_tibble(the_model$emmeans) %>%  
-             rename(conf.low=lower.CL,
-                    conf.high=upper.CL) %>% 
-             select(all_of(c(tmp, "emmean", "conf.low", "conf.high")))
-    )
-    
-  }else{
-    return(as_tibble(the_model$contrasts) %>% 
-             rename(Adjusted_pval = p.value) %>%
-             mutate(Threshold = if_else(Adjusted_pval < 0.05,
-                                        'Significant',
-                                        'Non-significant')) %>%
-             rename(conf.low=lower.CL,
-                    conf.high=upper.CL) %>% 
-             select(contrast, estimate, conf.low, conf.high, Adjusted_pval,Threshold) %>%
-             arrange(Adjusted_pval)
-    )
-    
-  }
-  
-}
-
-
-#'Function which performs a point-range plot per protein on a linear mixed model
-#'
-#'Generates a point-range plot faceted by Assay using ggplot and ggplot2::geom_pointrange based on a linear mixed effects model using lmerTest:lmer and emmeans::emmeans.
-#'See \code{olink_lmer} for details of input notation. 
-#'
-#' @param df NPX data frame in long format with at least protein name (Assay), UniqueGeneID, UniProt, 1-2 variables with at least 2 levels.
-#' @param UniqueGeneID_list Character vector indicating which proteins (by UniqueGeneID) for which to create figures.
-#' @param number_of_proteins_per_plot Number plots to include in the list of point-range plots. Defaults to 6 plots per figure
-#' @param variable Single character value or character array. 
-#' Variable(s) to test. If length > 1, the included variable names will be used in crossed analyses .
-#' Also takes ':'/'*' notation. 
-#' @param outcome Character. The dependent variable. Default: NPX.
-#' @param random Single character value or character array.
-#' @param covariates Single character value or character array. Default: NULL.
-#' Covariates to include. Takes ':'/'*' notation. Crossed analysis will not be inferred from main effects.
-#' @param x_axis_variable Character. Which main effect to use as x-axis in the plot.
-#' @param col_variable Character. If provided, the interaction effect col_variable:x_axis_variable will be plotted with x_axis_variable on the x-axis and col_variable as color. 
-#' @param verbose Boolean. Deafult: True. If information about removed samples, factor conversion and final model formula is to be printed to the console. 
-#'
-#' @return A list of objects of class "ggplot"
-#' @export
-#' @examples
-#' \donttest{lmer_results <- olink_lmer(df = npx_df,
-#' variable=c("Time", 'Treatment'),
-#' random = c('Subject'))
-#' 
-#' assay_list <- lmer_results %>%
-#' filter(Threshold == 'Significant' & term == 'Time:Treatment') %>%
-#' select(UniqueGeneID) %>%
-#' distinct() %>%
-#' pull()
-#' 
-#' list_of_pointrange_plots <- olink_lmer_plot(df = npx_df,                               
-#' variable=c("Time", 'Treatment'),
-#' random = c('Subject'),
-#' x_axis_variable = 'Time',                  
-#' col_variable = 'Treatment',              
-#' verbose=T,
-#' UniqueGeneID_list = assay_list,
-#' number_of_proteins_per_plot = 10)}
-#' @import dplyr stringr tidyr broom
-
-olink_lmer_plot <- function(df,                              
-                            variable,                        
-                            outcome="NPX",                   
-                            random,                           
-                            UniqueGeneID_list = NULL,                    
-                            covariates = NULL,                
-                            x_axis_variable,                 
-                            col_variable = NULL,              
-                            number_of_proteins_per_plot = 6,  
-                            verbose=F
-                            ){
-  
-  if(missing(df) | missing(variable) | missing(x_axis_variable) | missing(random)){
-    stop('The df, variable, random and x_axis_variable arguments need to be specified.')
-  }
-  
-  if(!all(x_axis_variable %in% unique(unlist(strsplit(variable,"[\\*:]"))))) { 
-    stop("The x axis variable must be included in the variable argument.")
-  }
-  
-  if(!is.null(col_variable)){
-    if(!all(col_variable %in% unique(unlist(strsplit(variable,"[\\*:]"))))){
-      stop("The color variable must be included in the variable argument.")
-    }
-  }
-  
-  #Filtering on valid UniqueGeneID
-  df <- df %>%
-    filter(stringr::str_detect(UniqueGeneID,
-                               "OID[0-9]{5}"))
-  
-  if(is.null(UniqueGeneID_list)){
-    UniqueGeneID_list <- df %>%
-      select(UniqueGeneID) %>%
-      distinct() %>%
-      pull()
-  }
-  
-  #Setting up what needs to be plotted
-  
-  if(is.null(col_variable)){
-    
-    current_fixed_effect <- x_axis_variable
-    color_for_plot <- x_axis_variable
-    
-  }else{
-    
-    current_fixed_effect <- paste0(x_axis_variable, ':', col_variable)
-    color_for_plot <- col_variable
-    
-  }
-  
-  
-  lm.means <- olink_lmer_posthoc(df = df,
-                                 variable = variable,
-                                 random = random,
-                                 outcome = outcome,
-                                 UniqueGeneID_list = UniqueGeneID_list,
-                                 covariates=covariates,
-                                 effect = current_fixed_effect,
-                                 mean_return = T,
-                                 verbose=verbose) %>%
-    mutate(Name_Assay = paste0(Assay,"_",UniqueGeneID)) 
-  
-  
-  #Keep UniqueGeneID_list input order
-  assay_name_list <- lm.means %>%
-    mutate(UniqueGeneID = factor(UniqueGeneID, 
-                            levels = UniqueGeneID_list)) %>% 
-    arrange(UniqueGeneID) %>% 
-    pull(Name_Assay) %>% 
-    unique()
-  
-  lm.means <- lm.means %>%
-    mutate(Name_Assay = factor(Name_Assay, 
-                               levels = assay_name_list))
-  
-  
-  #Setup
-  topX <- length(assay_name_list)
-  
-  protein_index <- seq(from = 1,
-                       to = topX,
-                       by = number_of_proteins_per_plot)
-  
-  list_of_plots <- list()
-  COUNTER <- 1
-  
-  #loops
-  for (i in c(1:length(protein_index))){
-    
-    
-    from_protein <- protein_index[i]
-    to_protein <- NULL
-    
-    if((protein_index[i] + number_of_proteins_per_plot) > topX){
-      to_protein <- topX +1
-    }else{
-      to_protein <- protein_index[i+1]
-    }
-    
-    assays_for_plotting <- assay_name_list[c(from_protein:(to_protein-1))]
-    
-    
-    lmerplot <- lm.means %>%
-      filter(Name_Assay %in% assays_for_plotting) %>%
-      ggplot()+
-      theme(axis.title.x=element_blank())+
-      ylab("NPX")+
-      theme(axis.text.x =  element_text(size = 10))+
-      geom_pointrange(aes(x = as.factor(!!rlang::ensym(x_axis_variable)),
-                          y = emmean,
-                          ymin = conf.low,
-                          ymax = conf.high,
-                          color = as.factor(!!rlang::ensym(color_for_plot))),
-                      position = position_dodge(width=0.4), size=0.8)+
-      facet_wrap(~ Name_Assay,scales = "free_y")+
-      set_plot_theme()+
-      labs(x=x_axis_variable,color=color_for_plot)
-    
-    list_of_plots[[COUNTER]] <- lmerplot
-    COUNTER <- COUNTER + 1
-  }
-  
-  return(invisible(list_of_plots))
+  ggplot(cctrl_cov_pvals, aes(x=fc, y=logp, colour=factor(ifelse(Adjusted_pval < 0.05, "<0.05", "NS"), levels=c("NS", "<0.05")))) +
+    geom_point(alpha=0.5) +
+    ylab("-log10(Adjusted Pvalue)") +
+    xlab(plot_xlab) +
+    labs(colour = "Adjusted Pvalue") +
+    ggtitle(plot_title) +
+    geom_text_repel(data=subset(cctrl_cov_pvals,
+                                logp > logp_label | 
+                                  ((fc > fc_label[2] | fc < fc_label[1]) & Adjusted_pval < 0.05)),
+                    aes(fc, logp, label = UniqueGeneID), size = 3, color="steelblue")
 }
