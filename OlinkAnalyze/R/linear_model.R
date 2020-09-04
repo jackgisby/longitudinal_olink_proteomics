@@ -51,11 +51,11 @@ olink_lm <- function(df,
         
         #Not testing assays that have all NA:s
         all_nas <- df  %>%
-            group_by(UniqueGeneID) %>%
+            group_by(GeneID) %>%
             summarise(n = n(), n_na = sum(is.na(!!rlang::ensym(outcome)))) %>%
             ungroup() %>%
             filter(n == n_na) %>%
-            pull(UniqueGeneID)
+            pull(GeneID)
         
         
         if(length(all_nas) > 0) {
@@ -145,28 +145,28 @@ olink_lm <- function(df,
         if (return.models) {
             #make LMM
             lmer_model<- df %>%
-                filter(!(UniqueGeneID %in% all_nas)) %>%
-                filter(!(UniqueGeneID %in% nas_in_var)) %>%
-                group_by(Assay, UniqueGeneID, UniProt, Panel) %>%
+                filter(!(GeneID %in% all_nas)) %>%
+                filter(!(GeneID %in% nas_in_var)) %>%
+                group_by(Assay, GeneID, UniProt, Panel) %>%
                 group_map(~lm(as.formula(formula_string), data=.x))
             
             mod_names <- df %>%
-                filter(!(UniqueGeneID %in% all_nas)) %>%
-                filter(!(UniqueGeneID %in% nas_in_var)) %>%
-                group_by(Assay, UniqueGeneID, UniProt, Panel) %>%
+                filter(!(GeneID %in% all_nas)) %>%
+                filter(!(GeneID %in% nas_in_var)) %>%
+                group_by(Assay, GeneID, UniProt, Panel) %>%
                 group_data() %>% 
-                select("UniqueGeneID")
+                select("GeneID")
             
-            names(lmer_model) <- as.vector(mod_names$UniqueGeneID)
+            names(lmer_model) <- as.vector(mod_names$GeneID)
             
             return(lmer_model)
             
         } else {
             ##make LMM
             lmer_model<-df %>%
-                filter(!(UniqueGeneID %in% all_nas)) %>%
-                filter(!(UniqueGeneID %in% nas_in_var)) %>%
-                group_by(Assay, UniqueGeneID, UniProt, Panel) %>%
+                filter(!(GeneID %in% all_nas)) %>%
+                filter(!(GeneID %in% nas_in_var)) %>%
+                group_by(Assay, GeneID, UniProt, Panel) %>%
                 group_modify(~tidy(anova(lm(as.formula(formula_string), data=.x)))) %>%
                 ungroup() %>%
                 mutate(covariates = term %in% covariate_filter_string) %>% 
@@ -207,8 +207,7 @@ simple_lm_de <- function(
     logp_label=6,
     fc_label=c(-0.5, 1),
     plot_xlab="Log2 Fold Change (P-N)",
-    plot_title="plasma case/control",
-    return_pvals=FALSE
+    plot_title="plasma case/control"
 ) {
     
     if (!is.na(case_control_to_remove)) {
@@ -216,19 +215,17 @@ simple_lm_de <- function(
     }
     
     cctrl_cov_pvals <- olink_lm(long, variable, covariates=covariates)
-    cctrl__cov_models <- olink_lm(long, variable, return.models = TRUE)
+    cctrl__cov_models <- olink_lm(long, variable, covariates=covariates, return.models = TRUE)
+    
+    cctrl_cov_pvals <- cctrl_cov_pvals[!is.na(cctrl_cov_pvals$p.value),]
     
     fc <- sapply(cctrl__cov_models, function(lm_model) {return(lm_model$coefficients[2])})
-    
-    fc_df <- data.frame(UniqueGeneID=names(cctrl__cov_models), fc=fc)
+
+    fc_df <- data.frame(GeneID=names(cctrl__cov_models), fc=fc)
     cctrl_cov_pvals <- left_join(cctrl_cov_pvals, fc_df)
     cctrl_cov_pvals$logp <- -log10(cctrl_cov_pvals$Adjusted_pval)
     
-    if (return_pvals) {
-        return(cctrl_cov_pvals)
-    }
-    
-    ggplot(cctrl_cov_pvals, aes(x=fc, y=logp, colour=factor(ifelse(Adjusted_pval < 0.05, "<0.05", "NS"), levels=c("NS", "<0.05")))) +
+    print(ggplot(cctrl_cov_pvals, aes(x=fc, y=logp, colour=factor(ifelse(Adjusted_pval < 0.05, "<0.05", "NS"), levels=c("NS", "<0.05")))) +
         geom_point(alpha=0.5) +
         ylab("-log10(Adjusted Pvalue)") +
         xlab(plot_xlab) +
@@ -237,5 +234,7 @@ simple_lm_de <- function(
         geom_text_repel(data=subset(cctrl_cov_pvals,
                                     logp > logp_label | 
                                         ((fc > fc_label[2] | fc < fc_label[1]) & Adjusted_pval < 0.05)),
-                        aes(fc, logp, label = UniqueGeneID), size = 3, color="steelblue")
+                        aes(fc, logp, label = GeneID), size = 3, color="steelblue"))
+    
+    return(cctrl_cov_pvals)
 }

@@ -1,6 +1,6 @@
 #'Function which performs a linear mixed model per protein
 #'
-#'Fits a linear mixed effects model for every protein (by UniqueGeneID) in every panel, using lmerTest::lmer and stats::anova.
+#'Fits a linear mixed effects model for every protein (by GeneID) in every panel, using lmerTest::lmer and stats::anova.
 #'The function handles both factor and numerical variables and/or covariates. \cr\cr
 #'Samples that have no variable information or missing factor levels are automatically removed from the analysis (specified in a messsage if verbose = T).
 #'Character columns in the input dataframe are automatically converted to factors (specified in a message if verbose = T). 
@@ -19,7 +19,7 @@
 #'Output p-values are adjusted by stats::p.adjust according to the Benjamini-Hochberg method (“fdr”). 
 #'Adjusted p-values are logically evaluated towards adjusted p-value<0.05. 
 #'
-#' @param df NPX data frame in long format with at least protein name (Assay), UniqueGeneID, UniProt, 1-2 variables with at least 2 levels.
+#' @param df NPX data frame in long format with at least protein name (Assay), GeneID, UniProt, 1-2 variables with at least 2 levels.
 #' @param variable Single character value or character array. 
 #' Variable(s) to test. If length > 1, the included variable names will be used in crossed analyses .
 #' Also takes ':'/'*' notation. 
@@ -30,7 +30,7 @@
 #' @param return.covariates Boolean. Default: False. Returns results for the covariates. Note: Adjusted p-values will be NA for the covariates.
 #' @param verbose Boolean. Deafult: True. If information about removed samples, factor conversion and final model formula is to be printed to the console. 
 #'
-#' @return A tibble containing the results of fitting the linear mixed effects model to every protein by UniqueGeneID, ordered by ascending p-value. 
+#' @return A tibble containing the results of fitting the linear mixed effects model to every protein by GeneID, ordered by ascending p-value. 
 #' @export
 #' @examples
 #' \donttest{
@@ -91,11 +91,11 @@ olink_lmer <- function(df,
     
     #Not testing assays that have all NA:s
     all_nas <- df  %>%
-      group_by(UniqueGeneID) %>%
+      group_by(GeneID) %>%
       summarise(n = n(), n_na = sum(is.na(!!rlang::ensym(outcome)))) %>%
       ungroup() %>%
       filter(n == n_na) %>%
-      pull(UniqueGeneID)
+      pull(GeneID)
     
     
     if(length(all_nas) > 0) {
@@ -141,13 +141,13 @@ olink_lmer <- function(df,
     for(effect in single_fixed_effects){
       
       current_nas <- df %>%
-        filter(!(UniqueGeneID %in% all_nas)) %>%
-        group_by(UniqueGeneID, !!rlang::ensym(effect)) %>%
+        filter(!(GeneID %in% all_nas)) %>%
+        group_by(GeneID, !!rlang::ensym(effect)) %>%
         summarise(n = n(), n_na = sum(is.na(!!rlang::ensym(outcome)))) %>%
         ungroup() %>%
         filter(n == n_na) %>%
-        distinct(UniqueGeneID) %>%
-        pull(UniqueGeneID)
+        distinct(GeneID) %>%
+        pull(GeneID)
       
       if(length(current_nas) > 0) {
         
@@ -231,28 +231,28 @@ olink_lmer <- function(df,
     if (return.models) {
       #make LMM
       lmer_model<- df %>%
-        filter(!(UniqueGeneID %in% all_nas)) %>%
-        filter(!(UniqueGeneID %in% nas_in_var)) %>%
-        group_by(Assay, UniqueGeneID, UniProt, Panel) %>%
+        filter(!(GeneID %in% all_nas)) %>%
+        filter(!(GeneID %in% nas_in_var)) %>%
+        group_by(Assay, GeneID, UniProt, Panel) %>%
         group_map(~single_lmer(data=.x, formula_string = formula_string))
       
       mod_names <- df %>%
-        filter(!(UniqueGeneID %in% all_nas)) %>%
-        filter(!(UniqueGeneID %in% nas_in_var)) %>%
-        group_by(Assay, UniqueGeneID, UniProt, Panel) %>%
+        filter(!(GeneID %in% all_nas)) %>%
+        filter(!(GeneID %in% nas_in_var)) %>%
+        group_by(Assay, GeneID, UniProt, Panel) %>%
         group_data() %>% 
-        select("UniqueGeneID")
+        select("GeneID")
       
-      names(lmer_model) <- as.vector(mod_names$UniqueGeneID)
+      names(lmer_model) <- as.vector(mod_names$GeneID)
       
       return(lmer_model)
       
     } else {
       ##make LMM
       lmer_model<-df %>%
-        filter(!(UniqueGeneID %in% all_nas)) %>%
-        filter(!(UniqueGeneID %in% nas_in_var)) %>%
-        group_by(Assay, UniqueGeneID, UniProt, Panel) %>%
+        filter(!(GeneID %in% all_nas)) %>%
+        filter(!(GeneID %in% nas_in_var)) %>%
+        group_by(Assay, GeneID, UniProt, Panel) %>%
         group_modify(~tidy(anova(single_lmer(data=.x, formula_string = formula_string)))) %>%
         ungroup() %>%
         mutate(covariates = term %in% covariate_filter_string) %>% 
@@ -321,8 +321,7 @@ simple_mixed_de <- function(
   logp_label=6,
   fc_label=c(-0.5, 1),
   plot_xlab="Log2 Fold Change (P-N)",
-  plot_title="plasma case/control",
-  return_pvals=FALSE
+  plot_title="plasma case/control"
 ) {
   
   if (!is.na(case_control_to_remove)) {
@@ -334,15 +333,11 @@ simple_mixed_de <- function(
   
   fc <- sapply(cctrl__cov_models, function(lmer_model) {return(lmer_model@beta[2])})
   
-  fc_df <- data.frame(UniqueGeneID=names(cctrl__cov_models), fc=fc)
+  fc_df <- data.frame(GeneID=names(cctrl__cov_models), fc=fc)
   cctrl_cov_pvals <- left_join(cctrl_cov_pvals, fc_df)
   cctrl_cov_pvals$logp <- -log10(cctrl_cov_pvals$Adjusted_pval)
   
-  if (return_pvals) {
-    return(cctrl_cov_pvals)
-  }
-  
-  ggplot(cctrl_cov_pvals, aes(x=fc, y=logp, colour=factor(ifelse(Adjusted_pval < 0.05, "<0.05", "NS"), levels=c("NS", "<0.05")))) +
+  print(ggplot(cctrl_cov_pvals, aes(x=fc, y=logp, colour=factor(ifelse(Adjusted_pval < 0.05, "<0.05", "NS"), levels=c("NS", "<0.05")))) +
     geom_point(alpha=0.5) +
     ylab("-log10(Adjusted Pvalue)") +
     xlab(plot_xlab) +
@@ -351,5 +346,7 @@ simple_mixed_de <- function(
     geom_text_repel(data=subset(cctrl_cov_pvals,
                                 logp > logp_label | 
                                   ((fc > fc_label[2] | fc < fc_label[1]) & Adjusted_pval < 0.05)),
-                    aes(fc, logp, label = UniqueGeneID), size = 3, color="steelblue")
+                    aes(fc, logp, label = GeneID), size = 3, color="steelblue"))
+  
+  return(cctrl_cov_pvals)
 }

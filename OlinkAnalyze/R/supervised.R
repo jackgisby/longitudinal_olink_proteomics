@@ -44,24 +44,29 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
 #' @import caret randomForestExplainer
 #' 
 plot_rf <- function(rf, importance_title="Plasma - Severity random forest importance plot",
-                    no_of_trees_label=40, accuracy_decrease_label=0.004) {
+                    no_of_trees_label=40, accuracy_decrease_label=0.004, return_imp_frame=FALSE) {
     
     imp_frame <- measure_importance(rf$finalModel)
     
     imp_frame$p_adj <- p.adjust(imp_frame$p_value, "fdr")
     imp_frame$p_s <- factor(ifelse(imp_frame$p_adj < 0.05, "<0.05", "NS"), levels=c("NS", "<0.05"))
     
+    if (return_imp_frame) {
+        return(imp_frame)
+    }
+    
     imp_plot <- ggplot(imp_frame, aes(no_of_trees, accuracy_decrease, col=p_s)) + 
         theme_pubr() +
         xlab("Number of Trees") + ylab("Accuracy Decrease") +
         geom_point() + 
         ggtitle(importance_title) +
+        labs(col = "PValue") +
         geom_text_repel(data=subset(imp_frame, no_of_trees > no_of_trees_label | accuracy_decrease_label > 0.004),
                         aes(no_of_trees, accuracy_decrease, label = variable), size = 3, color="steelblue")
     
     print(imp_plot)
-    print(plot_importance_ggpairs(imp_frame, c("no_of_trees", "accuracy_decrease", "p_adj", "mean_min_depth", "gini_decrease")) + 
-              theme_pubr(border = TRUE))
+    # print(plot_importance_ggpairs(imp_frame, c("no_of_trees", "accuracy_decrease", "p_adj", "mean_min_depth", "gini_decrease")) + 
+    #           theme_pubr(border = TRUE))
     
     return(important_variables(imp_frame, k = 30, measures = c("mean_min_depth", "no_of_trees")))
 }

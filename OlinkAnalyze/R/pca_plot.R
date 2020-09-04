@@ -207,10 +207,20 @@ olink_pca_plot <- function (df,
     
   }else{
     
-    pca_plot <- pca_plot +
-      geom_point(aes(color = observation_colors), size = 2.5) +
-      labs(color = color_g) +
-      guides(size = FALSE)
+    if (any(is.na(observation_colors))) {
+      pca_plot <- pca_plot +
+        geom_point(aes(color = observation_colors, alpha=ifelse(is.na(observation_colors), 0.6, 1)), size = 2.5) +
+        guides(alpha=FALSE) +
+        labs(color = color_g) +
+        guides(size = FALSE)
+    } else {
+      pca_plot <- pca_plot +
+        geom_point(aes(color = observation_colors), size = 2.5) +
+        guides(alpha=FALSE) +
+        labs(color = color_g) +
+        guides(size = FALSE)
+    }
+    
     
   }
   
