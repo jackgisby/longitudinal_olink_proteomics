@@ -3,7 +3,6 @@
 #' @import caret randomForestExplainer
 
 run_rf <- function(long, variable="grouped_severity", sampling=NULL,
-                   plt_title="Distribution of minimal depth and its mean",
                    selected_features=NULL) {
     
     prot_matrix <- long %>% 
@@ -33,8 +32,7 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
     
     print(plot_min_depth_distribution(min_depth_distribution(rf$finalModel), k = 15) +
               theme_minimal() +
-              theme(panel.grid.major = element_blank()) +
-              ggtitle(plt_title))
+              theme(title=element_blank(), panel.grid.major = element_blank()))
         
     return(rf)
 }
@@ -43,7 +41,7 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
 #' @export
 #' @import caret randomForestExplainer
 #' 
-plot_rf <- function(rf, importance_title="Plasma - Severity random forest importance plot",
+plot_rf <- function(rf,
                     no_of_trees_label=40, accuracy_decrease_label=0.004, return_imp_frame=FALSE) {
     
     imp_frame <- measure_importance(rf$finalModel)
@@ -59,7 +57,6 @@ plot_rf <- function(rf, importance_title="Plasma - Severity random forest import
         theme_pubr() +
         xlab("Number of Trees") + ylab("Accuracy Decrease") +
         geom_point() + 
-        ggtitle(importance_title) +
         labs(col = "PValue") +
         geom_text_repel(data=subset(imp_frame, no_of_trees > no_of_trees_label | accuracy_decrease_label > 0.004),
                         aes(no_of_trees, accuracy_decrease, label = variable), size = 3, color="steelblue")
@@ -130,8 +127,7 @@ plot_rf_interactions <- function(long, rf, vars, variable="grouped_severity",
 #' plot the interaction between two variables according to rf predictions
 #' @export
 #' @import randomForestExplainer reshape2
-plot_interactions <- function(final_rf, x, var1, var2, grid=300, virtis_option="D",
-                              plt_title="") {
+plot_interactions <- function(final_rf, x, var1, var2, grid=300, virtis_option="D") {
 
     inter_plot <- plot_predict_interaction(final_rf, 
                                            x, 
@@ -165,6 +161,5 @@ plot_interactions <- function(final_rf, x, var1, var2, grid=300, virtis_option="
         geom_tile(aes(var1, var2, fill=Prediction)) +
         xlab(var1) +
         ylab(var2) +
-        theme_minimal() +
-        ggtitle(paste0(plt_title))
+        theme_minimal()
 }
