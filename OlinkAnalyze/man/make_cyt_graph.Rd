@@ -13,5 +13,10 @@ make_cyt_graph(
 )
 }
 \description{
-send topGO GO terms to cytoscape
+can be useful to visualise the topGO terms in a network - so here's a function
+for exporting results to cytoscape
+}
+\details{
+there's actually a built in function for creating a plot based on this network,
+but it was not suitable as there were so many terms
 }

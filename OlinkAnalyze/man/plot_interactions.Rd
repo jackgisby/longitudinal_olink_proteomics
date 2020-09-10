@@ -4,15 +4,7 @@
 \alias{plot_interactions}
 \title{plot the interaction between two variables according to rf predictions}
 \usage{
-plot_interactions(
-  final_rf,
-  x,
-  var1,
-  var2,
-  grid = 300,
-  virtis_option = "D",
-  plt_title = ""
-)
+plot_interactions(final_rf, x, var1, var2, grid = 300, virtis_option = "D")
 }
 \description{
 plot the interaction between two variables according to rf predictions

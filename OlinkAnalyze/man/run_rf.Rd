@@ -8,7 +8,6 @@ run_rf(
   long,
   variable = "grouped_severity",
   sampling = NULL,
-  plt_title = "Distribution of minimal depth and its mean",
   selected_features = NULL
 )
 }

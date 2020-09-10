@@ -2,10 +2,10 @@
 % Please edit documentation in R/enrichment.R
 \name{prot_to_go}
 \alias{prot_to_go}
-\title{prot to go term}
+\title{prot to go terms}
 \usage{
 prot_to_go(gene_names)
 }
 \description{
-prot to go term
+Maps gene symbols to GO ids using biomarRt
 }

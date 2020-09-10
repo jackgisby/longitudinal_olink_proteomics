@@ -17,7 +17,7 @@ olink_lmer(
 )
 }
 \arguments{
-\item{df}{NPX data frame in long format with at least protein name (Assay), UniqueGeneID, UniProt, 1-2 variables with at least 2 levels.}
+\item{df}{NPX data frame in long format with at least protein name (Assay), GeneID, UniProt, 1-2 variables with at least 2 levels.}
 
 \item{variable}{Single character value or character array. 
 Variable(s) to test. If length > 1, the included variable names will be used in crossed analyses .
@@ -35,10 +35,10 @@ Covariates to include. Takes ':'/'*' notation. Crossed analysis will not be infe
 \item{verbose}{Boolean. Deafult: True. If information about removed samples, factor conversion and final model formula is to be printed to the console.}
 }
 \value{
-A tibble containing the results of fitting the linear mixed effects model to every protein by UniqueGeneID, ordered by ascending p-value.
+A tibble containing the results of fitting the linear mixed effects model to every protein by GeneID, ordered by ascending p-value.
 }
 \description{
-Fits a linear mixed effects model for every protein (by UniqueGeneID) in every panel, using lmerTest::lmer and stats::anova.
+Fits a linear mixed effects model for every protein (by GeneID) in every panel, using lmerTest::lmer and stats::anova.
 The function handles both factor and numerical variables and/or covariates. \cr\cr
 Samples that have no variable information or missing factor levels are automatically removed from the analysis (specified in a messsage if verbose = T).
 Character columns in the input dataframe are automatically converted to factors (specified in a message if verbose = T). 

@@ -2,11 +2,8 @@
 
 export(colMap)
 export(make_cyt_graph)
-export(median_impute)
-export(olink_consensus_clustering)
 export(olink_corrplot)
 export(olink_heatmap)
-export(olink_kmeans)
 export(olink_lm)
 export(olink_lmer)
 export(olink_pca_plot)

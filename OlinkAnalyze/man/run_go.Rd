@@ -8,7 +8,7 @@ run_go(
   pvals,
   go_annot_list,
   p_label = 2.7,
-  size_label = c(0.9, 1.5),
+  size_label = 1,
   plt_title = NULL,
   return_res = FALSE,
   test_stat = "ks"

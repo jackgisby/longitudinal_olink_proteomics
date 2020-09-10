@@ -6,9 +6,9 @@
 \usage{
 plot_rf(
   rf,
-  importance_title = "Plasma - Severity random forest importance plot",
   no_of_trees_label = 40,
-  accuracy_decrease_label = 0.004
+  accuracy_decrease_label = 0.004,
+  return_imp_frame = FALSE
 )
 }
 \description{

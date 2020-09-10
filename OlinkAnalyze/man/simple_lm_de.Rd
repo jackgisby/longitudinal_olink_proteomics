@@ -12,8 +12,7 @@ simple_lm_de(
   logp_label = 6,
   fc_label = c(-0.5, 1),
   plot_xlab = "Log2 Fold Change (P-N)",
-  plot_title = "plasma case/control",
-  return_pvals = FALSE
+  plot_title = "plasma case/control"
 )
 }
 \description{
