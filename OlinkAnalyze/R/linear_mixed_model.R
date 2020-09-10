@@ -56,7 +56,7 @@ olink_lmer <- function(df,
     stop('The df and variable and random arguments need to be specified.')
   }
   
-  withCallingHandlers({
+  withCallingHandlers({  # muffle particular warnings
     
     #Allow for :/* notation in covariates
     variable <- gsub("\\*",":",variable)
@@ -323,20 +323,23 @@ simple_mixed_de <- function(
   plot_xlab="Log2 Fold Change (P-N)",
   plot_title="plasma case/control"
 ) {
-  
+  # remove a particular case/control group prior to analysis
   if (!is.na(case_control_to_remove)) {
     long <- filter(long, case.control != case_control_to_remove)
   }
   
+  # get model outputs in i) dataframe format ii) the models themselves
   cctrl_cov_pvals <- olink_lmer(long, variable, random=random, covariates=covariates)
   cctrl__cov_models <- olink_lmer(long, variable, random=random, covariates=covariates, return.models = TRUE)
   
+  # calculate fold change
   fc <- sapply(cctrl__cov_models, function(lmer_model) {return(lmer_model@beta[2])})
   
   fc_df <- data.frame(GeneID=names(cctrl__cov_models), fc=fc)
   cctrl_cov_pvals <- left_join(cctrl_cov_pvals, fc_df)
   cctrl_cov_pvals$logp <- -log10(cctrl_cov_pvals$Adjusted_pval)
   
+  # volcano plot
   print(ggplot(cctrl_cov_pvals, aes(x=fc, y=logp, colour=factor(ifelse(Adjusted_pval < 0.05, "<0.05", "NS"), levels=c("NS", "<0.05")))) +
     geom_point(alpha=0.5) +
     ylab("-log10(Adjusted Pvalue)") +

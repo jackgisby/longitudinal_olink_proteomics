@@ -143,6 +143,7 @@ olink_pca_plot <- function (df,
     
   }
   
+  # convert long format to matrix
   df_wide <- df_wide %>% 
     left_join(colors_for_pca,
               by = c('SampleID',
@@ -161,6 +162,7 @@ olink_pca_plot <- function (df,
     stop('Missingness imputation failed.')
   }
   
+  # calculate pca via svd
   pca_fit <- prcomp(df_wide_matrix, scale. = FALSE, center = FALSE)
   
   if (return_prcomp) {

@@ -81,6 +81,7 @@ olink_heatmap <- function(
     stop('Missingness imputation failed.')
   }
   
+  # convert data to the format pheatmap wants
   ccontrol <- data.frame(case.control=df_wide$case.control, WHO.severity=df_wide$WHO.severity)
   rownames(ccontrol) <- df_wide$SampleID
   
@@ -227,6 +228,7 @@ olink_corrplot <- function(
     df_wide_matrix <- t(df_wide_matrix)
   }
   
+  # if additional annotation is available, convert it to correct format
   if (!is.null(additional_annotation)) {
     annotations$SampleID <- rownames(annotations)
     additional_annotation <- data.frame(SampleID=names(additional_annotation),

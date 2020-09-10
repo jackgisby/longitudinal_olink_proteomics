@@ -5,22 +5,26 @@
 run_rf <- function(long, variable="grouped_severity", sampling=NULL,
                    selected_features=NULL) {
     
+    # convert data from long format to a matrix
     prot_matrix <- long %>% 
         dplyr::select(SampleID, GeneID, NPX, variable) %>% 
         filter(!is.na(NPX)) %>% 
         spread(GeneID, NPX) %>%
         column_to_rownames('SampleID')
     
+    # select specific features for model
     if (!(is.null(selected_features))) {
         prot_matrix <- prot_matrix[,colnames(prot_matrix) %in% selected_features
                                     | colnames(prot_matrix) == variable]
     }
     
+    # train model using caret
     rf <- train(as.formula(paste0(variable, " ~ .")), 
                 data = prot_matrix, 
                 localImp = TRUE,
                 method = "rf", 
                 metric = "Kappa",
+                proximity=TRUE,
                 preProcess = c("knnImpute", "scale", "center"),
                 na.action = na.pass,
                 tuneGrid = data.frame(mtry = floor(sqrt(ncol(prot_matrix) - 1))),
@@ -30,6 +34,7 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
     print(rf)
     print(rf$finalModel)
     
+    # plot feature importance (ntrees, minimal depth)
     print(plot_min_depth_distribution(min_depth_distribution(rf$finalModel), k = 15) +
               theme_minimal() +
               theme(title=element_blank(), panel.grid.major = element_blank()))
@@ -44,8 +49,10 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
 plot_rf <- function(rf,
                     no_of_trees_label=40, accuracy_decrease_label=0.004, return_imp_frame=FALSE) {
     
+    # get feature importances
     imp_frame <- measure_importance(rf$finalModel)
     
+    # adjust p values
     imp_frame$p_adj <- p.adjust(imp_frame$p_value, "fdr")
     imp_frame$p_s <- factor(ifelse(imp_frame$p_adj < 0.05, "<0.05", "NS"), levels=c("NS", "<0.05"))
     
@@ -53,6 +60,7 @@ plot_rf <- function(rf,
         return(imp_frame)
     }
     
+    # secondary feature importance plot
     imp_plot <- ggplot(imp_frame, aes(no_of_trees, accuracy_decrease, col=p_s)) + 
         theme_pubr() +
         xlab("Number of Trees") + ylab("Accuracy Decrease") +
@@ -74,6 +82,8 @@ plot_rf <- function(rf,
 
 plot_rf_interactions <- function(long, rf, vars, variable="grouped_severity", 
                                  num_interactions=15, make_the_plot=TRUE) {
+    
+    # convert from long format to matrix
     prot_matrix <- long %>% 
         dplyr::select(SampleID, GeneID, NPX, variable) %>% 
         filter(!is.na(NPX)) %>% 
@@ -81,8 +91,10 @@ plot_rf_interactions <- function(long, rf, vars, variable="grouped_severity",
         column_to_rownames('SampleID')
     
     if (make_the_plot) {
+        # lots of warnings produced by function
         suppressWarnings(interactions_frame <- min_depth_interactions(rf$finalModel, vars))
         
+        # look at commonly "interacting" featuress
         inter_plot <- plot_min_depth_interactions(interactions_frame, k=num_interactions) + 
             ylab("Mean minimum depth")
         
@@ -115,6 +127,7 @@ plot_rf_interactions <- function(long, rf, vars, variable="grouped_severity",
         print(inter_plot)
     }
     
+    # generate imputed data matrix
     x <- prot_matrix %>%
         preProcess(method = c("knnImpute", "scale", "center")) %>%
         predict(prot_matrix %>% select(-variable))
@@ -128,7 +141,7 @@ plot_rf_interactions <- function(long, rf, vars, variable="grouped_severity",
 #' @export
 #' @import randomForestExplainer reshape2
 plot_interactions <- function(final_rf, x, var1, var2, grid=300, virtis_option="D") {
-
+    
     inter_plot <- plot_predict_interaction(final_rf, 
                                            x, 
                                            var1, var2, 
