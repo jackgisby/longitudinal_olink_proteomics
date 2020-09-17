@@ -206,7 +206,7 @@ run_lasso <- function(long, variable="grouped_severity", sampling=NULL,
                 proximity=TRUE,
                 family="binomial",
                 preProcess = c("knnImpute", "scale", "center"), 
-                tuneGrid=expand.grid(alpha=1, lambda=seq(0.0001, 1, length = 20)),
+                tuneGrid=expand.grid(alpha=1, lambda=seq(0.0001, 0.2, length = 50)),
                 na.action = na.pass,
                 trControl = trainControl(method = "repeatedcv", p = 0.7, number=10, repeats=10, sampling=sampling))
 
