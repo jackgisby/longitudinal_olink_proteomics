@@ -15,7 +15,7 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
     # select specific features for model
     if (!(is.null(selected_features))) {
         prot_matrix <- prot_matrix[,colnames(prot_matrix) %in% selected_features
-                                    | colnames(prot_matrix) == variable]
+                                   | colnames(prot_matrix) == variable]
     }
     
     # train model using caret
@@ -38,7 +38,7 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
     print(plot_min_depth_distribution(min_depth_distribution(rf$finalModel), k = 15) +
               theme_minimal() +
               theme(title=element_blank(), panel.grid.major = element_blank()))
-        
+    
     return(rf)
 }
 
@@ -155,9 +155,9 @@ plot_interactions <- function(final_rf, x, var1, var2, grid=300, virtis_option="
     var2_breaks <- seq(var2_min, var2_max, (var2_max - var2_min) / 30)
     
     a <- melt(tapply(inter_plot$data$prediction,
-                list(x=cut(inter_plot$data[[var1]], labels=FALSE, breaks=var1_breaks), 
-                     y=cut(inter_plot$data[[var2]], labels=FALSE, breaks=var2_breaks)),
-                mean))
+                     list(x=cut(inter_plot$data[[var1]], labels=FALSE, breaks=var1_breaks), 
+                          y=cut(inter_plot$data[[var2]], labels=FALSE, breaks=var2_breaks)),
+                     mean))
     
     colnames(a) <- c("var1", "var2", "Prediction")
     
@@ -175,4 +175,43 @@ plot_interactions <- function(final_rf, x, var1, var2, grid=300, virtis_option="
         xlab(var1) +
         ylab(var2) +
         theme_minimal()
+}
+
+#' run lasso
+#' @export
+#' @import caret
+
+run_lasso <- function(long, variable="grouped_severity", sampling=NULL,
+                   selected_features=NULL) {
+    
+    # convert data from long format to a matrix
+    prot_matrix <- long %>% 
+        dplyr::select(SampleID, GeneID, NPX, variable) %>% 
+        filter(!is.na(NPX)) %>% 
+        spread(GeneID, NPX) %>%
+        column_to_rownames('SampleID')
+    
+    # select specific features for model
+    if (!(is.null(selected_features))) {
+        prot_matrix <- prot_matrix[,colnames(prot_matrix) %in% selected_features
+                                   | colnames(prot_matrix) == variable]
+    }
+    
+    # train model using caret
+    lasso <- train(as.formula(paste0(variable, " ~ .")), 
+                data = prot_matrix, 
+                localImp = TRUE,
+                method = "glmnet", 
+                metric = "Kappa",
+                proximity=TRUE,
+                family="binomial",
+                preProcess = c("knnImpute", "scale", "center"), 
+                tuneGrid=expand.grid(alpha=1, lambda=seq(0.0001, 1, length = 20)),
+                na.action = na.pass,
+                trControl = trainControl(method = "repeatedcv", p = 0.7, number=10, repeats=10, sampling=sampling))
+
+    lasso$finalModel$call$formula <- eval(lasso$call$form)
+    print(lasso)
+    
+    return(lasso)
 }
