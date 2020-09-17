@@ -15,7 +15,7 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
     # select specific features for model
     if (!(is.null(selected_features))) {
         prot_matrix <- prot_matrix[,colnames(prot_matrix) %in% selected_features
-                                   | colnames(prot_matrix) == variable]
+                                    | colnames(prot_matrix) == variable]
     }
     
     # train model using caret
@@ -38,7 +38,7 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
     print(plot_min_depth_distribution(min_depth_distribution(rf$finalModel), k = 15) +
               theme_minimal() +
               theme(title=element_blank(), panel.grid.major = element_blank()))
-    
+        
     return(rf)
 }
 
@@ -46,8 +46,8 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
 #' @export
 #' @import caret randomForestExplainer
 #' 
-plot_rf <- function(rf,
-                    no_of_trees_label=40, accuracy_decrease_label=0.004, return_imp_frame=FALSE) {
+plot_rf <- function(rf, lasso_imp, lasso_label=1, accuracy_decrease_label=1, 
+                    return_imp_frame=FALSE) {
     
     # get feature importances
     imp_frame <- measure_importance(rf$finalModel)
@@ -60,20 +60,27 @@ plot_rf <- function(rf,
         return(imp_frame)
     }
     
+    # use lasso importance metric
+    imp_frame <- lasso_imp %>%
+        rownames_to_column(var = "GeneID") %>%
+        left_join(imp_frame, by=c("GeneID"="variable")) %>%
+        filter(accuracy_decrease != 0 & lasso != 0)
+    
     # secondary feature importance plot
-    imp_plot <- ggplot(imp_frame, aes(no_of_trees, accuracy_decrease, col=p_s)) + 
+    imp_plot <- ggplot(imp_frame, aes(lasso, accuracy_decrease, col=p_s)) + 
         theme_pubr() +
-        xlab("Number of Trees") + ylab("Accuracy Decrease") +
+        xlab("Standardised Ridge Coefficient") + ylab("Random Forest Accuracy Decrease") +
         geom_point() + 
-        labs(col = "PValue") +
-        geom_text_repel(data=subset(imp_frame, no_of_trees > no_of_trees_label | accuracy_decrease_label > 0.004),
-                        aes(no_of_trees, accuracy_decrease, label = variable), size = 3, color="steelblue")
+        labs(col = "Random Forest Adjusted PValue") +
+        geom_text_repel(data=subset(imp_frame, lasso > lasso_label | accuracy_decrease > accuracy_decrease_label),
+                        aes(lasso, accuracy_decrease, label = GeneID), size = 3, color="steelblue")
+    
     
     print(imp_plot)
     # print(plot_importance_ggpairs(imp_frame, c("no_of_trees", "accuracy_decrease", "p_adj", "mean_min_depth", "gini_decrease")) + 
     #           theme_pubr(border = TRUE))
     
-    return(important_variables(imp_frame, k = 30, measures = c("mean_min_depth", "no_of_trees")))
+    # return(important_variables(select(imp_frame, -lasso), k = 30, measures = c("mean_min_depth", "no_of_trees")))
 }
 
 #' plot random forest interactions
@@ -155,9 +162,9 @@ plot_interactions <- function(final_rf, x, var1, var2, grid=300, virtis_option="
     var2_breaks <- seq(var2_min, var2_max, (var2_max - var2_min) / 30)
     
     a <- melt(tapply(inter_plot$data$prediction,
-                     list(x=cut(inter_plot$data[[var1]], labels=FALSE, breaks=var1_breaks), 
-                          y=cut(inter_plot$data[[var2]], labels=FALSE, breaks=var2_breaks)),
-                     mean))
+                list(x=cut(inter_plot$data[[var1]], labels=FALSE, breaks=var1_breaks), 
+                     y=cut(inter_plot$data[[var2]], labels=FALSE, breaks=var2_breaks)),
+                mean))
     
     colnames(a) <- c("var1", "var2", "Prediction")
     
@@ -206,7 +213,7 @@ run_lasso <- function(long, variable="grouped_severity", sampling=NULL,
                 proximity=TRUE,
                 family="binomial",
                 preProcess = c("knnImpute", "scale", "center"), 
-                tuneGrid=expand.grid(alpha=1, lambda=seq(0.0001, 0.2, length = 50)),
+                tuneGrid=expand.grid(alpha=0, lambda=seq(0, 10, length = 50)),
                 na.action = na.pass,
                 trControl = trainControl(method = "repeatedcv", p = 0.7, number=10, repeats=10, sampling=sampling))
 

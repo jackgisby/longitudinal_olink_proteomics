@@ -6,8 +6,9 @@
 \usage{
 plot_rf(
   rf,
-  no_of_trees_label = 40,
-  accuracy_decrease_label = 0.004,
+  lasso_imp,
+  lasso_label = 1,
+  accuracy_decrease_label = 1,
   return_imp_frame = FALSE
 )
 }
