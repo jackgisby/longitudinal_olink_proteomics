@@ -231,3 +231,38 @@ run_lasso <- function(long, variable="grouped_severity", sampling=NULL,
     
     return(lasso)
 }
+
+#' get first sample for each individual
+#' @export
+
+get_first_samples <- function(long) {
+    unique_sample_ids <- unique(long$SampleID)
+    unique_sample_ids_to_remove <- vector("logical", length(unique_sample_ids))
+    
+    for (ind in unique(long$Individual.ID)) {
+        possible_unique_sample_ids <- unique_sample_ids[grepl(paste0(ind, "_"), unique_sample_ids)]
+        stopifnot(length(possible_unique_sample_ids) > 0)
+        
+        if (length(possible_unique_sample_ids) > 1) {
+            sample_id_dates <- unique(data.frame(
+                samp=long$SampleID[long$Individual.ID == ind],
+                date=as.Date(long$sample_date[long$Individual.ID == ind], format = "%d/%m/%Y")))
+            
+            early_sample <- sample_id_dates$samp[which.min(sample_id_dates$date)]
+            stopifnot(length(which(possible_unique_sample_ids == early_sample)) == 1)
+            
+            possible_unique_sample_ids <- 
+                possible_unique_sample_ids[-which(possible_unique_sample_ids == early_sample)]
+            
+            stopifnot(length(possible_unique_sample_ids) == nrow(sample_id_dates) - 1)
+            unique_sample_ids_to_remove[unique_sample_ids %in% possible_unique_sample_ids] <- TRUE
+        }
+    }
+    
+    independent_long <- 
+        long[!(long$SampleID %in% unique_sample_ids[unique_sample_ids_to_remove]),]
+    
+    stopifnot(length(unique(independent_long$SampleID)) == length(unique(long$Individual.ID)))
+    
+    return(independent_long)
+}
