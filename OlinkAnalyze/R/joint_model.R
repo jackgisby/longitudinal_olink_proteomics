@@ -1,9 +1,9 @@
 #' Run joint models on olink data
 #' @export
-#' @import JMBayes
+#' @import JMbayes
 
 joint_model <- function(long, prot="CCL2") {
-    long <- long[long$GeneID == "CCL2",]
+    long <- long[long$GeneID == prot,]
     
     # remove negative values of Time_From_First_Symptoms
     long <- long[long$Time_From_First_Symptoms > 0 & !is.na(long$Time_From_First_Symptoms) & long$Time_From_First_Symptoms <= 28,]
