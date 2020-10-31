@@ -29,7 +29,7 @@ read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_mod=0, pan
       
       manifest <- manifest %>%
         left_join(pheno_df) %>%
-        select(-Research.ID)
+        dplyr::select(-Research.ID)
     }
   }
   
@@ -89,7 +89,7 @@ read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_mod=0, pan
     NORM_FLAG <- T
   }
   
-  # return(dat)
+  # return(data.frame(UniProt=as.character(meta_dat[2,-1]), target=as.character(meta_dat[1,-1])))
   
   
   gene_ids <- uniprot_to_gene(data.frame(UniProt=as.character(meta_dat[2,-1]), target=as.character(meta_dat[1,-1])))
@@ -204,7 +204,7 @@ read_multitab_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_m
   for (i in 1:num_tabs) {
     if (i == 1) {
       long_npx <- read_NPX(filename=filename, sample_manifest=sample_manifest, pheno=pheno, skip_mod=skip_mod[i], panel=panel[i], this_exp=this_exp)
-    } else {
+      } else {
       long_npx <- rbind(long_npx,
                         read_NPX(filename=filename, 
                                  sample_manifest=sample_manifest,
@@ -345,8 +345,7 @@ uniprot_to_gene <- function(df) {
   
   # hg19/GRCh37
   ensembl.hg19 <- biomaRt::useMart(biomart= "ENSEMBL_MART_ENSEMBL",
-                          dataset="hsapiens_gene_ensembl",
-                          host = 'http://grch37.ensembl.org')
+                          dataset="hsapiens_gene_ensembl")
   
   # note attribute names differ in the older release
   gene.pos <- biomaRt::getBM(attributes = c('uniprotswissprot', 'hgnc_symbol', # 'entrezgene',

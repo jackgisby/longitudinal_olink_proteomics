@@ -119,3 +119,48 @@ make_cyt_graph <- function(pvals, go_annot_list, test_stat = "ks", graph_name="m
     
     return(sig_graph$dag)
 }
+
+#' prot to kegg terms
+#' 
+#' Maps gene symbols to GO ids using biomarRt
+#' 
+#' @export
+#' @import topGO biomaRt
+
+prot_to_entrez <- function(gene_names, kegg_rno) {
+    # connected to mart
+    mart <- useMart(biomart = "ensembl", dataset = "hsapiens_gene_ensembl", host="useast.ensembl.org")
+    
+    # get mappings
+    hgnc_go <- biomaRt::getBM(attributes = c('hgnc_symbol', "entrezgene_id"), 
+                              filters = 'hgnc_symbol', 
+                              values = gene_names, 
+                              mart = mart)
+    
+    # convert mappings to list required by topGO
+    go_annot_list <- list()
+    for (prot in unique(hgnc_go$hgnc_symbol)) {
+        go_annot_list[[prot]] = hgnc_go$entrezgene_id[hgnc_go$hgnc_symbol == prot & !is.na(hgnc_go$entrezgene_id) & hgnc_go$entrezgene_id != ""]
+    }
+    
+    go_annot_list[["IGLC2"]] <- 3538
+    go_annot_list[["GIF"]] <- 2694
+    go_annot_list[["FIGF"]] <- 2277
+    go_annot_list[["IL8"]] <- 3576
+    
+    return(go_annot_list)
+}
+
+#' run kegg DE
+#' 
+#' @export
+#' @import topGO biomaRt
+
+run_kegg <- function(pvals, entrez_annot_list) {
+    
+    for (i in 1:length(pvals)) {
+        names(pvals)[i] <- entrez_annot_list[[names(pvals)[i]]]
+    }
+    
+    enrichKEGG(names(pvals)[pvals < 0.05], keyType="ncbi-geneid", minGSSize=3, universe=names(pvals),pAdjustMethod="none")
+}

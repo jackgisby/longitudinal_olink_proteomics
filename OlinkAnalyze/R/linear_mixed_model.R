@@ -241,7 +241,7 @@ olink_lmer <- function(df,
         filter(!(GeneID %in% nas_in_var)) %>%
         group_by(Assay, GeneID, UniProt, Panel) %>%
         group_data() %>% 
-        select("GeneID")
+        dplyr::select("GeneID")
       
       names(lmer_model) <- as.vector(mod_names$GeneID)
       
@@ -262,7 +262,7 @@ olink_lmer <- function(df,
         mutate(Adjusted_pval = ifelse(covariates,NA,Adjusted_pval),
                Threshold = ifelse(covariates,NA,Threshold)) %>% 
         ungroup() %>% 
-        select(-covariates) %>% 
+        dplyr::select(-covariates) %>% 
         arrange(p.value)
       
       if(return.covariates){
@@ -318,10 +318,10 @@ simple_mixed_de <- function(
   variable="case.control", 
   covariates=NULL,
   random = c("Individual.ID"),
-  logp_label=6,
-  fc_label=c(-0.5, 1),
   plot_xlab="Log2 Fold Change (P-N)",
-  plot_title="plasma case/control"
+  plot_title="plasma case/control",
+  labels=0.1,
+  logp_label=10
 ) {
   # remove a particular case/control group prior to analysis
   if (!is.na(case_control_to_remove)) {
@@ -339,17 +339,22 @@ simple_mixed_de <- function(
   cctrl_cov_pvals <- left_join(cctrl_cov_pvals, fc_df)
   cctrl_cov_pvals$logp <- -log10(cctrl_cov_pvals$Adjusted_pval)
   
+  high_fc <- Rfast::nth(cctrl_cov_pvals$fc[cctrl_cov_pvals$Adjusted_pval < 0.05], labels * length(cctrl_cov_pvals$fc[cctrl_cov_pvals$Adjusted_pval < 0.05 & fc > 0]), descending = TRUE)
+  low_fc <- Rfast::nth(cctrl_cov_pvals$fc[cctrl_cov_pvals$Adjusted_pval < 0.05], labels * length(cctrl_cov_pvals$fc[cctrl_cov_pvals$Adjusted_pval < 0.05 & fc < 0]), descending = FALSE)
+  
   # volcano plot
-  print(ggplot(cctrl_cov_pvals, aes(x=fc, y=logp, colour=factor(ifelse(Adjusted_pval < 0.05, "<0.05", "NS"), levels=c("NS", "<0.05")))) +
+  print(ggplot(cctrl_cov_pvals, aes(x=fc, y=logp, colour=factor(ifelse(Adjusted_pval < 0.05, ifelse(fc > 0, "Abundant in severe COVID", "Down-regulated in severe COVID"), "NS"), 
+                                                                levels=c("NS", "Down-regulated in severe COVID", "Abundant in severe COVID")))) +
     geom_point(alpha=0.5) +
+    scale_color_manual(values=c("black", "#2C7BB6", "#D7191C")) +
     ylab("-log10(Adjusted Pvalue)") +
     xlab(plot_xlab) +
     labs(colour = "Adjusted Pvalue") +
     ggtitle(plot_title) +
     geom_text_repel(data=subset(cctrl_cov_pvals,
-                                logp > logp_label | 
-                                  ((fc > fc_label[2] | fc < fc_label[1]) & Adjusted_pval < 0.05)),
-                    aes(fc, logp, label = GeneID), size = 3, color="steelblue"))
+                                logp > logp_label | ((fc >= high_fc | fc <= low_fc) & Adjusted_pval < 0.05)),
+                    aes(fc, logp, label = GeneID), size = 2.25, color="black") +
+      theme(legend.position = "none"))
   
   return(cctrl_cov_pvals)
 }

@@ -23,7 +23,7 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
                 data = prot_matrix, 
                 localImp = TRUE,
                 method = "rf", 
-                metric = "Kappa",
+                metric = "Accuracy",
                 proximity=TRUE,
                 preProcess = c("knnImpute", "scale", "center"),
                 na.action = na.pass,
@@ -35,9 +35,13 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
     print(rf$finalModel)
     
     # plot feature importance (ntrees, minimal depth)
-    print(plot_min_depth_distribution(min_depth_distribution(rf$finalModel), k = 15) +
+    print(plot_min_depth_distribution(min_depth_distribution(rf$finalModel), k = 12
+    ) +
               theme_minimal() +
-              theme(title=element_blank(), panel.grid.major = element_blank()))
+              theme(title=element_blank(), panel.grid.major = element_blank(), text = element_text(size=11),
+                    legend.position = "top") +
+              guides(fill=guide_legend(title = "Number of Nodes", nrow=1,byrow=TRUE)) +
+              xlab("Number of Trees"))
         
     return(rf)
 }
@@ -62,19 +66,16 @@ plot_rf <- function(rf, lasso_imp, lasso_label=1, accuracy_decrease_label=1,
     
     # use lasso importance metric
     imp_frame <- lasso_imp %>%
-        rownames_to_column(var = "GeneID") %>%
         left_join(imp_frame, by=c("GeneID"="variable")) %>%
-        filter(accuracy_decrease != 0 & lasso != 0)
+        filter(accuracy_decrease != 0 & ridge != 0)
     
     # secondary feature importance plot
-    imp_plot <- ggplot(imp_frame, aes(lasso, accuracy_decrease, col=p_s)) + 
+    imp_plot <- ggplot(imp_frame, aes(ridge, accuracy_decrease)) + 
         theme_pubr() +
         xlab("Standardised Ridge Coefficient") + ylab("Random Forest Accuracy Decrease") +
-        geom_point() + 
-        labs(col = "Random Forest Adjusted PValue") +
-        geom_text_repel(data=subset(imp_frame, lasso > lasso_label | accuracy_decrease > accuracy_decrease_label),
-                        aes(lasso, accuracy_decrease, label = GeneID), size = 3, color="steelblue")
-    
+        geom_point(alpha=0.75) + 
+        geom_text_repel(data=subset(imp_frame, ridge > lasso_label | accuracy_decrease > accuracy_decrease_label),
+                        aes(ridge, accuracy_decrease, label = GeneID), size = 3, color="black")
     
     print(imp_plot)
     # print(plot_importance_ggpairs(imp_frame, c("no_of_trees", "accuracy_decrease", "p_adj", "mean_min_depth", "gini_decrease")) + 
@@ -189,7 +190,7 @@ plot_interactions <- function(final_rf, x, var1, var2, grid=300, virtis_option="
 #' @import caret
 
 run_lasso <- function(long, variable="grouped_severity", sampling=NULL,
-                   selected_features=NULL) {
+                   selected_features=NULL, lasso=TRUE) {
     
     # convert data from long format to a matrix
     prot_matrix <- long %>% 
@@ -204,16 +205,24 @@ run_lasso <- function(long, variable="grouped_severity", sampling=NULL,
                                    | colnames(prot_matrix) == variable]
     }
     
+    if (lasso) {
+        a <- 1
+        l <- seq(0, 0.2, length = 50)
+    } else {
+        a <- 0
+        l <- seq(0, 10, length = 50)
+    }
+    
     # train model using caret
     lasso <- train(as.formula(paste0(variable, " ~ .")), 
                 data = prot_matrix, 
                 localImp = TRUE,
                 method = "glmnet", 
-                metric = "Kappa",
+                metric = "Accuracy",
                 proximity=TRUE,
                 family="binomial",
                 preProcess = c("knnImpute", "scale", "center"), 
-                tuneGrid=expand.grid(alpha=0, lambda=seq(0, 10, length = 50)),
+                tuneGrid=expand.grid(alpha=a, lambda=l),
                 na.action = na.pass,
                 trControl = trainControl(method = "repeatedcv", p = 0.7, number=10, repeats=10, sampling=sampling))
 

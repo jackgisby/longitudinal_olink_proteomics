@@ -8,7 +8,8 @@ run_lasso(
   long,
   variable = "grouped_severity",
   sampling = NULL,
-  selected_features = NULL
+  selected_features = NULL,
+  lasso = TRUE
 )
 }
 \description{

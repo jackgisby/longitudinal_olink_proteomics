@@ -10,10 +10,10 @@ simple_mixed_de(
   variable = "case.control",
   covariates = NULL,
   random = c("Individual.ID"),
-  logp_label = 6,
-  fc_label = c(-0.5, 1),
   plot_xlab = "Log2 Fold Change (P-N)",
-  plot_title = "plasma case/control"
+  plot_title = "plasma case/control",
+  labels = 0.1,
+  logp_label = 10
 )
 }
 \description{
