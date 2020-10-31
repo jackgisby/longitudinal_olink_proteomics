@@ -281,6 +281,8 @@ olink_lmer <- function(df,
   
 }
 
+#' run a single mixed model
+#' @export
 single_lmer <- function(data, formula_string) {
   
   out.model <- tryCatch(lmerTest::lmer(as.formula(formula_string),

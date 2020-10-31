@@ -236,33 +236,33 @@ run_lasso <- function(long, variable="grouped_severity", sampling=NULL,
 #' @export
 
 get_first_samples <- function(long) {
-    unique_sample_ids <- unique(long$SampleID)
-    unique_sample_ids_to_remove <- vector("logical", length(unique_sample_ids))
-    
-    for (ind in unique(long$Individual.ID)) {
-        possible_unique_sample_ids <- unique_sample_ids[grepl(paste0(ind, "_"), unique_sample_ids)]
-        stopifnot(length(possible_unique_sample_ids) > 0)
+    unique_SampleIDs <- unique(long$SampleID)
+    unique_SampleIDs_to_remove <- vector("logical", length(unique_SampleIDs))
+
+    for (ind in unique(long$Individual_ID)) {
+        possible_unique_SampleIDs <- unique_SampleIDs[grepl(paste0(ind, "_"), unique_SampleIDs)]
+        stopifnot(length(possible_unique_SampleIDs) > 0)
         
-        if (length(possible_unique_sample_ids) > 1) {
-            sample_id_dates <- unique(data.frame(
-                samp=long$SampleID[long$Individual.ID == ind],
-                date=as.Date(long$sample_date[long$Individual.ID == ind], format = "%d/%m/%Y")))
+        if (length(possible_unique_SampleIDs) > 1) {
+            SampleID_dates <- unique(data.frame(
+                samp=long$SampleID[long$Individual_ID == ind],
+                date=long$Time_From_First_Symptoms[long$Individual_ID == ind]))
             
-            early_sample <- sample_id_dates$samp[which.min(sample_id_dates$date)]
-            stopifnot(length(which(possible_unique_sample_ids == early_sample)) == 1)
+            early_sample <- SampleID_dates$samp[which.min(SampleID_dates$date)]
+            stopifnot(length(which(possible_unique_SampleIDs == early_sample)) == 1)
             
-            possible_unique_sample_ids <- 
-                possible_unique_sample_ids[-which(possible_unique_sample_ids == early_sample)]
+            possible_unique_SampleIDs <- 
+                possible_unique_SampleIDs[-which(possible_unique_SampleIDs == early_sample)]
             
-            stopifnot(length(possible_unique_sample_ids) == nrow(sample_id_dates) - 1)
-            unique_sample_ids_to_remove[unique_sample_ids %in% possible_unique_sample_ids] <- TRUE
+            stopifnot(length(possible_unique_SampleIDs) == nrow(SampleID_dates) - 1)
+            unique_SampleIDs_to_remove[unique_SampleIDs %in% possible_unique_SampleIDs] <- TRUE
         }
     }
     
     independent_long <- 
-        long[!(long$SampleID %in% unique_sample_ids[unique_sample_ids_to_remove]),]
+        long[!(long$SampleID %in% unique_SampleIDs[unique_SampleIDs_to_remove]),]
     
-    stopifnot(length(unique(independent_long$SampleID)) == length(unique(long$Individual.ID)))
+    stopifnot(length(unique(independent_long$SampleID)) == length(unique(long$Individual_ID)))
     
     return(independent_long)
 }
