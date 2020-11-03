@@ -3,8 +3,7 @@ title: "Example Analyses"
 author: "Jack Gisby"
 date: "`r Sys.Date()`"
 output:
-  html_document:
-    keep_md: true
+  github_document:
     df_print: paged
     toc: true
     toc_depth: 2
