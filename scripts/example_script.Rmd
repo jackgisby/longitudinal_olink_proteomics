@@ -29,7 +29,18 @@ library(OlinkAnalyzeModified)
 
 theme_set(theme_pubr())
 theme_update(text = element_text(size=11))
+
+set.seed(1)
 ```
+
+# Modified OlinkAnalyze Package
+
+To run the analyses we have generated a modified version of the OlinkAnalyze package.
+This includes functions for applying linear mixed models and joint models to all
+proteins in the dataset. 
+
+The package, also contained in this repository, must be installed in order to run this
+script. This also contains the code used to generate the models if of interest.
 
 ```{r custom_functions, eval=FALSE, include=TRUE}
 devtools::install_github(repo ='jackgisby/longitudinal_olink_proteomics/OlinkAnalyze_Modified')
@@ -37,6 +48,17 @@ library(OlinkAnalyzeModified)
 ```
 
 # The Dataset
+
+A public version of the dataset is provided for replication of results and further
+investigation. We have split the primary (plasma) and validation (serum) into
+seperate CSVs. The NPX (protein expression) level data contains a row for each data point whilst the
+sample level data contains phenotypic data and clinical measurementst; the `serum_samples` 
+dataframe has less columns than the `plasma_samples` dataframe as it does not 
+contain contemporaneous sample data. 
+
+Note that for the models we generated exact age was used, however we have only
+provided binned age in the public dataset. Therefore, exact results may differ
+slightly depending on the analysis.
 
 ```{r load_data}
 # load protein expression data
@@ -54,6 +76,12 @@ serum_full <- dplyr::left_join(serum_long, serum_samples)
 
 
 # COVID +ve vs -ve Differential Abundance
+
+The following code chunk generates linear mixed models that predict NPX levels for
+each protein from `Case_Control` status and covariates. The `Individual_ID` is used
+as a random term to account for repeated measurements. Volcano plots are generated
+and the proteins with the highest logp values and fold changes are labelled.
+
 ```{r da, warning=FALSE}
 plasma_case_control <- simple_mixed_de(
     plasma_full, 
@@ -83,6 +111,13 @@ head(serum_case_control)
 ```
 
 # Severity Differential Abundance
+
+The following code chunk generates linear mixed models that predict NPX levels for
+each protein using WHO severity at time of sampling encoded as an ordinal variable. 
+By default, polynomial contrasts (`?contr.poly`) are generated for ordered factors. 
+As with the `Case_Control` analysis, covariates are entered into
+the model and `Individual_ID` is used as a random term. 
+
 ```{r severity, warning=FALSE}
 plasma_full$WHO_Severity_Contemporaneous <- ordered(plasma_full$WHO_Severity_Contemporaneous, c("NEGATIVE", "mild", "moderate", "severe", "critical"))
 
@@ -99,11 +134,23 @@ plasma_severity <- simple_mixed_de(
 ```
 
 # Joint Models
+
+In our analysis, we generated joint models for each protein that combine 
+linear mixed models and Cox regression to predict risk of death using a 
+continuous covariate (NPX). The joint models are estimated using Markov chain
+Monte Carlo (MCMC) and so take some time to run; therefore, in this example we
+only generate a model for a single protein (AZU1).
+
 ```{r JM, message=FALSE, warning=FALSE}
 summary(joint_model(plasma_full[plasma_full$Case_Control == "POSITIVE",], "AZU1"))
 ```
 
 # Random Forests
+
+We used the first sample for each individual to predict overall (peak) WHO severity. 
+A random forests model is generated using caret (using 10-fold cross-validation repeated
+10 times). Variable importance measures are then calculated for each protein.
+
 ```{r RF, warning=FALSE}
 plasma_independent <- get_first_samples(plasma_full[plasma_full$Case_Control == "POSITIVE",])
 
@@ -121,6 +168,12 @@ head(var_imp)
 ```
 
 # Longitudinal Models
+
+Finally, we generate linear mixed models for each protein to predict NPX from
+the interaction between overall WHO severity and time. Proteins with a significant
+(FDR < 0.05) interaction term were considered to have a differential temporal
+expression depending on the severity of the overall disease course. 
+
 ```{r longt, message=FALSE, warning=FALSE}
 formula_string <- "NPX ~ bs(Time_From_First_Symptoms, degree = 2) * WHO_Severity_Peak + Age + Sex + Ethnicity + (bs(Time_From_First_Symptoms, degree = 2) | Individual_ID)"
 

@@ -240,7 +240,7 @@ get_first_samples <- function(long) {
     # samples a different way
     long$Time_From_First_Symptoms[long$SampleID %in% c("C24_211", "C11_219", "C32_188")] <- 1
     long <- long[!is.na(long$Time_From_First_Symptoms),]
-    
+    long <- long[long$Individual_ID != "C105",]  # has sample before COVID symptoms
     
     # now order the remaining samples by their time from first symptoms
     unique_SampleIDs <- unique(long$SampleID)
