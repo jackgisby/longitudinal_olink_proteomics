@@ -6,10 +6,8 @@ output:
   github_document:
     toc: true
     toc_depth: 2
-    number_sections: true
     fig_width: 10
     fig_height: 7
-    
 ---
 
 ```{r setup, include = FALSE}
