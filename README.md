@@ -1,6 +1,6 @@
 # Longitudinal Olink Proteomics Data and Code
 
-Repository for the paper: “Longitudinal proteomic profiling of high-risk patients with COVID*19 reveals markers of severity and predictors of fatal disease” by Gisby et al, published TBC. 
+Repository for the paper: “Longitudinal proteomic profiling of high-risk patients with COVID*19 reveals markers of severity and predictors of fatal disease” by Gisby et al, in review. 
 
 Here, we have stored:
 * A public version of the dataset used in the paper (`data`)
