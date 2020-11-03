@@ -11,7 +11,7 @@ joint_model <- function(long, prot="CCL2") {
     # long must be sorted properly for the JM package to work
     long <- long[order(long$Individual_ID, long$Time_From_First_Symptoms),]
     
-    prot <- long[long$Time_From_First_Symptoms <= max(long$Time_From_First_Symptoms[long$Fatal_Disease == "yes"]),]
+    prot <- long[long$Time_From_First_Symptoms <= max(long$Time_From_First_Symptoms[long$Fatal_Disease]),]
     prot <- prot[prot$Individual_ID != "C77",] # C77 has no measurements near date of death
     prot <- prot[prot$Individual_ID %in% names(table(prot$Individual_ID))[table(prot$Individual_ID) > 1],]  # remove single measurements
     prot$NPX <- scale(prot$NPX, center = TRUE, scale = TRUE)
@@ -39,16 +39,16 @@ joint_model <- function(long, prot="CCL2") {
         
         stopifnot(length(unique(individual_long$Fatal_Disease)) == 1)
         
-        if (unique(individual_long$Fatal_Disease) == "no") { # non-fatal
+        if (!unique(individual_long$Fatal_Disease)) { # non-fatal
             surv_long$is_fatal[j] <- FALSE
-        } else if (unique(individual_long$Fatal_Disease) == "yes") { # else: fatal
+        } else if (unique(individual_long$Fatal_Disease)) { # else: fatal
             surv_long$is_fatal[j] <- TRUE
         } else {
             stopifnot(FALSE)
         }
         
         if (surv_long$is_fatal[j]) {
-            surv_long$time_fatal[j] <- as.numeric(individual_long$Time_Of_Discharge)[1]
+            surv_long$time_fatal[j] <- as.numeric(individual_long$Time_Of_Death_From_First_Symptoms)[1]
         } else {
             surv_long$time_fatal[j] <- max(individual_long$Time_From_First_Symptoms) + 1
         }

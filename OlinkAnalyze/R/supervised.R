@@ -236,6 +236,13 @@ run_lasso <- function(long, variable="grouped_severity", sampling=NULL,
 #' @export
 
 get_first_samples <- function(long) {
+    # samples c("C24", "C32", "C11") have NA for date of first symptoms, so get the first
+    # samples a different way
+    long$Time_From_First_Symptoms[long$SampleID %in% c("C24_211", "C11_219", "C32_188")] <- 1
+    long <- long[!is.na(long$Time_From_First_Symptoms),]
+    
+    
+    # now order the remaining samples by their time from first symptoms
     unique_SampleIDs <- unique(long$SampleID)
     unique_SampleIDs_to_remove <- vector("logical", length(unique_SampleIDs))
 
