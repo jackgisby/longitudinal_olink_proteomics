@@ -99,13 +99,17 @@ plasma_case_control <- simple_mixed_de(
 head(plasma_case_control)
 ```
 
-<div data-pagedtable="false">
-
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Assay"],"name":[1],"type":["chr"],"align":["left"]},{"label":["GeneID"],"name":[2],"type":["chr"],"align":["left"]},{"label":["UniProt"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Panel"],"name":[4],"type":["chr"],"align":["left"]},{"label":["term"],"name":[5],"type":["chr"],"align":["left"]},{"label":["sumsq"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["meansq"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["NumDF"],"name":[8],"type":["int"],"align":["right"]},{"label":["DenDF"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["Adjusted_pval"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["Threshold"],"name":[13],"type":["chr"],"align":["left"]},{"label":["fc"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["logp"],"name":[15],"type":["dbl"],"align":["right"]}],"data":[{"1":"DDX58","2":"DDX58","3":"O95786","4":"IR","5":"Case_Control","6":"95.7004025","7":"95.7004025","8":"1","9":"173.2489","10":"56.26839","11":"3.156401e-12","12":"1.376191e-09","13":"Significant","14":"2.0393357","15":"8.861321"},{"1":"PSIP1","2":"PSIP1","3":"O75475","4":"IR","5":"Case_Control","6":"26.5835392","7":"26.5835392","8":"1","9":"166.4407","10":"50.42369","11":"3.426830e-11","12":"7.470489e-09","13":"Significant","14":"1.1272961","15":"8.126651"},{"1":"Gal-9","2":"LGALS9","3":"O00182","4":"CVD2","5":"Case_Control","6":"0.7592593","7":"0.7592593","8":"1","9":"121.3817","10":"49.29065","11":"1.372587e-10","12":"1.648551e-08","13":"Significant","14":"0.2719898","15":"7.782898"},{"1":"MCP-3","2":"CCL7","3":"P80098","4":"In","5":"Case_Control","6":"44.8342677","7":"44.8342677","8":"1","9":"156.5364","10":"46.97765","11":"1.558324e-10","12":"1.648551e-08","13":"Significant","14":"1.6156756","15":"7.782898"},{"1":"BLM hydrolase","2":"BLMH","3":"Q13867","4":"CVD3","5":"Case_Control","6":"6.7400930","7":"6.7400930","8":"1","9":"149.0238","10":"46.81328","11":"1.890541e-10","12":"1.648551e-08","13":"Significant","14":"0.6098393","15":"7.782898"},{"1":"HO-1","2":"HMOX1","3":"P09601","4":"CVD2","5":"Case_Control","6":"3.8380890","7":"3.8380890","8":"1","9":"133.5094","10":"41.61134","11":"1.884815e-09","12":"1.369632e-07","13":"Significant","14":"0.5489894","15":"6.863396"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-
-</div>
+    ## # A tibble: 6 x 15
+    ##   Assay GeneID UniProt Panel term   sumsq meansq NumDF DenDF statistic  p.value
+    ##   <chr> <chr>  <chr>   <chr> <chr>  <dbl>  <dbl> <int> <dbl>     <dbl>    <dbl>
+    ## 1 DDX58 DDX58  O95786  IR    Case~ 95.7   95.7       1  173.      56.3 3.16e-12
+    ## 2 PSIP1 PSIP1  O75475  IR    Case~ 26.6   26.6       1  166.      50.4 3.43e-11
+    ## 3 Gal-9 LGALS9 O00182  CVD2  Case~  0.759  0.759     1  121.      49.3 1.37e-10
+    ## 4 MCP-3 CCL7   P80098  In    Case~ 44.8   44.8       1  157.      47.0 1.56e-10
+    ## 5 BLM ~ BLMH   Q13867  CVD3  Case~  6.74   6.74      1  149.      46.8 1.89e-10
+    ## 6 HO-1  HMOX1  P09601  CVD2  Case~  3.84   3.84      1  134.      41.6 1.88e- 9
+    ## # ... with 4 more variables: Adjusted_pval <dbl>, Threshold <chr>, fc <dbl>,
+    ## #   logp <dbl>
 
 ``` r
 serum_case_control <- simple_mixed_de(
@@ -136,13 +140,17 @@ serum_case_control <- simple_mixed_de(
 head(serum_case_control)
 ```
 
-<div data-pagedtable="false">
-
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Assay"],"name":[1],"type":["chr"],"align":["left"]},{"label":["GeneID"],"name":[2],"type":["chr"],"align":["left"]},{"label":["UniProt"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Panel"],"name":[4],"type":["chr"],"align":["left"]},{"label":["term"],"name":[5],"type":["chr"],"align":["left"]},{"label":["sumsq"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["meansq"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["NumDF"],"name":[8],"type":["int"],"align":["right"]},{"label":["DenDF"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["Adjusted_pval"],"name":[12],"type":["dbl"],"align":["right"]},{"label":["Threshold"],"name":[13],"type":["chr"],"align":["left"]},{"label":["fc"],"name":[14],"type":["dbl"],"align":["right"]},{"label":["logp"],"name":[15],"type":["dbl"],"align":["right"]}],"data":[{"1":"EIF4G1","2":"EIF4G1","3":"Q04637","4":"IR","5":"Case_Control","6":"10.53830","7":"10.53830","8":"1","9":"57.79370","10":"226.31859","11":"1.205961e-21","12":"5.257989e-19","13":"Significant","14":"2.599213","15":"18.27918"},{"1":"DDX58","2":"DDX58","3":"O95786","4":"IR","5":"Case_Control","6":"203.79550","7":"203.79550","8":"1","9":"63.00000","10":"133.04750","11":"3.560083e-17","12":"7.760981e-15","13":"Significant","14":"4.859691","15":"14.11008"},{"1":"TRIM21","2":"TRIM21","3":"P19474","4":"IR","5":"Case_Control","6":"34.16020","7":"34.16020","8":"1","9":"58.12509","10":"122.04850","11":"6.604889e-16","12":"9.599106e-14","13":"Significant","14":"3.018151","15":"13.01777"},{"1":"CASP-8","2":"CASP8","3":"Q14790","4":"In","5":"Case_Control","6":"33.50487","7":"33.50487","8":"1","9":"58.70328","10":"114.85454","11":"1.921335e-15","12":"2.094255e-13","13":"Significant","14":"2.551284","15":"12.67897"},{"1":"IL6","2":"IL6","3":"P05231","4":"In","5":"Case_Control","6":"99.38443","7":"99.38443","8":"1","9":"59.52984","10":"82.80872","11":"7.191124e-13","12":"6.154584e-11","13":"Significant","14":"5.222276","15":"10.21080"},{"1":"TRIM5","2":"TRIM5","3":"Q9C035","4":"IR","5":"Case_Control","6":"81.18545","7":"81.18545","8":"1","9":"63.00000","10":"79.79181","11":"8.469611e-13","12":"6.154584e-11","13":"Significant","14":"3.067259","15":"10.21080"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-
-</div>
+    ## # A tibble: 6 x 15
+    ##   Assay GeneID UniProt Panel term  sumsq meansq NumDF DenDF statistic  p.value
+    ##   <chr> <chr>  <chr>   <chr> <chr> <dbl>  <dbl> <int> <dbl>     <dbl>    <dbl>
+    ## 1 EIF4~ EIF4G1 Q04637  IR    Case~  10.5   10.5     1  57.8     226.  1.21e-21
+    ## 2 DDX58 DDX58  O95786  IR    Case~ 204.   204.      1  63.0     133.  3.56e-17
+    ## 3 TRIM~ TRIM21 P19474  IR    Case~  34.2   34.2     1  58.1     122.  6.60e-16
+    ## 4 CASP~ CASP8  Q14790  In    Case~  33.5   33.5     1  58.7     115.  1.92e-15
+    ## 5 IL6   IL6    P05231  In    Case~  99.4   99.4     1  59.5      82.8 7.19e-13
+    ## 6 TRIM5 TRIM5  Q9C035  IR    Case~  81.2   81.2     1  63.0      79.8 8.47e-13
+    ## # ... with 4 more variables: Adjusted_pval <dbl>, Threshold <chr>, fc <dbl>,
+    ## #   logp <dbl>
 
 # Severity Differential Abundance
 
@@ -328,13 +336,20 @@ var_imp <- measure_importance(plasma_rf$finalModel)
 head(var_imp)
 ```
 
-<div data-pagedtable="false">
-
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["variable"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["mean_min_depth"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["no_of_nodes"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["accuracy_decrease"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["gini_decrease"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["no_of_trees"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["times_a_root"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["p_value"],"name":[8],"type":["dbl"],"align":["right"]}],"data":[{"1":"ACE2","2":"3.721313","3":"5","4":"1.000000e-04","5":"0.03604089","6":"5","7":"0","8":"0.805588033","_rn_":"1"},{"1":"ACP5","2":"3.873313","3":"1","4":"0.000000e+00","5":"0.01484848","6":"1","7":"0","8":"0.998864537","_rn_":"2"},{"1":"ADA","2":"3.658813","3":"5","4":"-1.000000e-04","5":"0.02412664","6":"5","7":"0","8":"0.805588033","_rn_":"3"},{"1":"ADAMTS13","2":"2.638187","3":"15","4":"2.526544e-04","5":"0.18474913","6":"15","7":"5","8":"0.004233153","_rn_":"4"},{"1":"ADM","2":"3.750438","3":"3","4":"9.090909e-05","5":"0.01436667","6":"3","7":"0","8":"0.965002070","_rn_":"5"},{"1":"AGER","2":"3.904563","3":"1","4":"0.000000e+00","5":"0.00300000","6":"1","7":"0","8":"0.998864537","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-
-</div>
+    ##   variable mean_min_depth no_of_nodes accuracy_decrease gini_decrease
+    ## 1     ACE2       3.721313           5      1.000000e-04    0.03604089
+    ## 2     ACP5       3.873313           1      0.000000e+00    0.01484848
+    ## 3      ADA       3.658813           5     -1.000000e-04    0.02412664
+    ## 4 ADAMTS13       2.638187          15      2.526544e-04    0.18474913
+    ## 5      ADM       3.750438           3      9.090909e-05    0.01436667
+    ## 6     AGER       3.904563           1      0.000000e+00    0.00300000
+    ##   no_of_trees times_a_root     p_value
+    ## 1           5            0 0.805588033
+    ## 2           1            0 0.998864537
+    ## 3           5            0 0.805588033
+    ## 4          15            5 0.004233153
+    ## 5           3            0 0.965002070
+    ## 6           1            0 0.998864537
 
 # Longitudinal Models
 
@@ -357,10 +372,12 @@ lmm_prot_time <- plasma_full %>%
 head(lmm_prot_time)
 ```
 
-<div data-pagedtable="false">
-
-<script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Assay"],"name":[1],"type":["chr"],"align":["left"]},{"label":["GeneID"],"name":[2],"type":["chr"],"align":["left"]},{"label":["UniProt"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Panel"],"name":[4],"type":["chr"],"align":["left"]},{"label":["term"],"name":[5],"type":["chr"],"align":["left"]},{"label":["sumsq"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["meansq"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["NumDF"],"name":[8],"type":["int"],"align":["right"]},{"label":["DenDF"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["statistic"],"name":[10],"type":["dbl"],"align":["right"]},{"label":["p.value"],"name":[11],"type":["dbl"],"align":["right"]}],"data":[{"1":"4E-BP1","2":"EIF4EBP1","3":"Q13541","4":"In","5":"bs(Time_From_First_Symptoms, degree = 2):WHO_Severity_Peak","6":"0.13324727","7":"0.02220788","8":"6","9":"29.43675","10":"0.7415007","11":"0.62064033"},{"1":"ACE2","2":"ACE2","3":"Q9BYF1","4":"CVD2","5":"bs(Time_From_First_Symptoms, degree = 2):WHO_Severity_Peak","6":"1.22491407","7":"0.20415234","8":"6","9":"36.00525","10":"3.2940033","11":"0.01094728"},{"1":"ADA","2":"ADA","3":"P00813","4":"In","5":"bs(Time_From_First_Symptoms, degree = 2):WHO_Severity_Peak","6":"0.35681167","7":"0.05946861","8":"6","9":"51.56472","10":"0.4729582","11":"0.82525352"},{"1":"ADAM-TS13","2":"ADAMTS13","3":"Q76LX8","4":"CVD2","5":"bs(Time_From_First_Symptoms, degree = 2):WHO_Severity_Peak","6":"0.09279069","7":"0.01546512","8":"6","9":"28.72827","10":"1.4971155","11":"0.21450088"},{"1":"ADM","2":"ADM","3":"P35318","4":"CVD2","5":"bs(Time_From_First_Symptoms, degree = 2):WHO_Severity_Peak","6":"0.06984951","7":"0.01164158","8":"6","9":"41.68371","10":"0.8566824","11":"0.53438388"},{"1":"AGRP","2":"AGRP","3":"O00253","4":"CVD2","5":"bs(Time_From_First_Symptoms, degree = 2):WHO_Severity_Peak","6":"1.19945941","7":"0.19990990","8":"6","9":"43.57498","10":"1.9297722","11":"0.09732055"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
-  </script>
-
-</div>
+    ## # A tibble: 6 x 11
+    ##   Assay  GeneID UniProt Panel term    sumsq meansq NumDF DenDF statistic p.value
+    ##   <chr>  <chr>  <chr>   <chr> <chr>   <dbl>  <dbl> <int> <dbl>     <dbl>   <dbl>
+    ## 1 4E-BP1 EIF4E~ Q13541  In    bs(Ti~ 0.133  0.0222     6  29.4     0.742  0.621 
+    ## 2 ACE2   ACE2   Q9BYF1  CVD2  bs(Ti~ 1.22   0.204      6  36.0     3.29   0.0109
+    ## 3 ADA    ADA    P00813  In    bs(Ti~ 0.357  0.0595     6  51.6     0.473  0.825 
+    ## 4 ADAM-~ ADAMT~ Q76LX8  CVD2  bs(Ti~ 0.0928 0.0155     6  28.7     1.50   0.215 
+    ## 5 ADM    ADM    P35318  CVD2  bs(Ti~ 0.0698 0.0116     6  41.7     0.857  0.534 
+    ## 6 AGRP   AGRP   O00253  CVD2  bs(Ti~ 1.20   0.200      6  43.6     1.93   0.0973
