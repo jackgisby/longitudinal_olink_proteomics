@@ -1,0 +1,308 @@
+"SampleID","Individual_ID","Plate_ID","Case_Control","WHO_Severity_Peak","WHO_Severity_Contemporaneous","Sex","Ethnicity","Age","Ever_Admitted","Fatal_Disease","Time_From_First_Symptoms","Time_Of_Death_From_First_Symptoms","Time_From_First_Swab","Time_Of_Death_From_First_Swab","WCC","Neutrophil","Monocyte","Lymphocyte","CRP","DDimer","Ferritin","Troponin"
+"C60_1","C60","plate.1","POSITIVE","severe","moderate","M","White","(80,100]",TRUE,FALSE,37,NA,35,NA,5.8,3.3,0.4,1.7,21.4,NA,NA,23
+"C31_2","C31","plate.1","POSITIVE","mild","mild","F","Black","(20,40]",FALSE,FALSE,8,NA,4,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C60_3","C60","plate.1","POSITIVE","severe","moderate","M","White","(80,100]",TRUE,FALSE,9,NA,7,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C10_6","C10","plate.1","POSITIVE","severe","moderate","F","Black","(80,100]",TRUE,FALSE,13,NA,13,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C114_7","C114","plate.1","POSITIVE","severe","mild","M","South Asian","(60,80]",TRUE,FALSE,31,NA,30,NA,9.9,6.7,0.8,1.8,48.1,NA,NA,31
+"C60_8","C60","plate.1","POSITIVE","severe","severe","M","White","(80,100]",TRUE,FALSE,16,NA,14,NA,3.8,3.3,0.1,0.4,239.7,NA,NA,NA
+"C123_9","C123","plate.1","POSITIVE","severe","severe","M","South Asian","(60,80]",TRUE,FALSE,14,NA,11,NA,10.3,9.4,0.6,0.3,100.5,6523,6942,47
+"C201_10","C201","plate.1","NEGATIVE","NEGATIVE","NEGATIVE","M","Black","(40,60]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C65_11","C65","plate.1","POSITIVE","critical","critical","M","White","(60,80]",TRUE,FALSE,15,NA,10,NA,7,5.9,0.2,0.8,182.4,NA,2597,137
+"C114_14","C114","plate.1","POSITIVE","severe","moderate","M","South Asian","(60,80]",TRUE,FALSE,11,NA,10,NA,11.3,10.1,0.8,0.8,67.2,2611,292,81
+"C60_15","C60","plate.1","POSITIVE","severe","moderate","M","White","(80,100]",TRUE,FALSE,6,NA,4,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C65_16","C65","plate.1","POSITIVE","critical","severe","M","White","(60,80]",TRUE,FALSE,36,NA,31,NA,7,5.1,0.3,0.8,93.7,2256,1351,175
+"C10_18","C10","plate.1","POSITIVE","severe","moderate","F","Black","(80,100]",TRUE,FALSE,21,NA,21,NA,11.9,9.5,1.6,0.7,216.3,NA,NA,NA
+"C257_19","C257","plate.1","NEGATIVE","NEGATIVE","NEGATIVE","F","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C31_20","C31","plate.1","POSITIVE","mild","mild","F","Black","(20,40]",FALSE,FALSE,6,NA,2,NA,3.8,2.6,0.6,0.8,1.2,3760,642,6
+"C33_21","C33","plate.1","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C60_22","C60","plate.1","POSITIVE","severe","moderate","M","White","(80,100]",TRUE,FALSE,33,NA,31,NA,4.8,2.8,0.3,1.5,24.3,NA,NA,NA
+"C60_23","C60","plate.1","POSITIVE","severe","moderate","M","White","(80,100]",TRUE,FALSE,11,NA,9,NA,3.3,2.4,0.2,0.7,135.2,NA,3718,80
+"C40_26","C40","plate.1","POSITIVE","critical","moderate","M","Black","(40,60]",TRUE,FALSE,9,NA,9,NA,7.8,6.1,0.5,1,112.9,NA,3136,29
+"C65_28","C65","plate.1","POSITIVE","critical","moderate","M","White","(60,80]",TRUE,FALSE,9,NA,4,NA,6,5,0.3,0.7,78.7,1772,2692,146
+"C65_29","C65","plate.1","POSITIVE","critical","critical","M","White","(60,80]",TRUE,FALSE,27,NA,22,NA,9,7.4,0.6,1,176.3,6629,3172,419
+"C60_30","C60","plate.1","POSITIVE","severe","moderate","M","White","(80,100]",TRUE,FALSE,17,NA,15,NA,3.6,3,0.1,0.4,260.5,NA,NA,NA
+"C123_31","C123","plate.1","POSITIVE","severe","severe","M","South Asian","(60,80]",TRUE,FALSE,12,NA,9,NA,7.6,6.4,0.5,0.5,87.9,3860,1578,47
+"C65_33","C65","plate.1","POSITIVE","critical","critical","M","White","(60,80]",TRUE,FALSE,23,NA,18,NA,7.8,6.6,0.6,0.6,150.8,3489,1804,65
+"C238_34","C238","plate.1","NEGATIVE","NEGATIVE","NEGATIVE","F","Black","(20,40]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C162_35","C162","plate.1","NEGATIVE","NEGATIVE","NEGATIVE","M","White","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C123_36","C123","plate.1","POSITIVE","severe","mild","M","South Asian","(60,80]",TRUE,FALSE,35,NA,32,NA,8.8,7,0.6,1.1,2.8,NA,NA,NA
+"C114_37","C114","plate.1","POSITIVE","severe","mild","M","South Asian","(60,80]",TRUE,FALSE,27,NA,26,NA,12.4,9,1.2,1.7,66.4,NA,NA,NA
+"C65_38","C65","plate.1","POSITIVE","critical","critical","M","White","(60,80]",TRUE,FALSE,17,NA,12,NA,6.9,6.1,0.2,0.6,158.1,NA,2355,94
+"C40_39","C40","plate.1","POSITIVE","critical","mild","M","Black","(40,60]",TRUE,FALSE,31,NA,31,NA,8.7,5.8,1,1.5,38.2,NA,490,NA
+"C10_40","C10","plate.1","POSITIVE","severe","severe","F","Black","(80,100]",TRUE,FALSE,12,NA,12,NA,9.3,8,0.6,0.6,354.1,NA,2302,NA
+"C10_42","C10","plate.1","POSITIVE","severe","moderate","F","Black","(80,100]",TRUE,FALSE,18,NA,18,NA,11.7,9.3,1.7,0.5,279.7,NA,NA,NA
+"C40_43","C40","plate.1","POSITIVE","critical","moderate","M","Black","(40,60]",TRUE,FALSE,11,NA,11,NA,3.8,2.4,0.1,1.2,52.9,NA,2965,22
+"C65_44","C65","plate.1","POSITIVE","critical","severe","M","White","(60,80]",TRUE,FALSE,41,NA,36,NA,6.6,5.2,0.4,1,35.5,NA,1142,NA
+"C10_47","C10","plate.1","POSITIVE","severe","moderate","F","Black","(80,100]",TRUE,FALSE,16,NA,16,NA,11.5,9.2,1.5,0.6,280.9,NA,NA,NA
+"C114_49","C114","plate.1","POSITIVE","severe","moderate","M","South Asian","(60,80]",TRUE,FALSE,16,NA,15,NA,11.9,8.7,1.2,1.5,56.6,NA,NA,NA
+"C10_50","C10","plate.1","POSITIVE","severe","mild","F","Black","(80,100]",TRUE,FALSE,30,NA,30,NA,15.6,12.4,1.8,1.2,73.3,NA,NA,NA
+"C60_52","C60","plate.1","POSITIVE","severe","moderate","M","White","(80,100]",TRUE,FALSE,4,NA,2,NA,3.8,2.5,0.2,0.9,16.8,1005,1936,35
+"C114_56","C114","plate.1","POSITIVE","severe","moderate","M","South Asian","(60,80]",TRUE,FALSE,5,NA,4,NA,4.6,3.3,0.3,1.2,102.5,NA,NA,NA
+"C123_57","C123","plate.1","POSITIVE","severe","severe","M","South Asian","(60,80]",TRUE,FALSE,10,NA,7,NA,7.9,6.1,0.5,1.2,44,NA,2179,NA
+"C123_58","C123","plate.1","POSITIVE","severe","moderate","M","South Asian","(60,80]",TRUE,FALSE,25,NA,22,NA,9.5,6.6,1.1,1.6,9.2,1140,1092,32
+"C60_59","C60","plate.1","POSITIVE","severe","moderate","M","White","(80,100]",TRUE,FALSE,13,NA,11,NA,2.5,1.7,0.1,0.7,NA,NA,NA,94
+"C114_60","C114","plate.1","POSITIVE","severe","mild","M","South Asian","(60,80]",TRUE,FALSE,24,NA,23,NA,15.4,13.5,1,0.9,76.3,2262,304,11
+"C60_61","C60","plate.1","POSITIVE","severe","moderate","M","White","(80,100]",TRUE,FALSE,29,NA,27,NA,2.7,1.6,0.2,0.8,48.4,NA,NA,NA
+"C114_62","C114","plate.1","POSITIVE","severe","severe","M","South Asian","(60,80]",TRUE,FALSE,9,NA,8,NA,8,6,0.8,1.2,76.6,NA,NA,NA
+"C139_63","C139","plate.1","NEGATIVE","NEGATIVE","NEGATIVE","M","White","(80,100]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C31_65","C31","plate.1","POSITIVE","mild","mild","F","Black","(20,40]",FALSE,FALSE,15,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C40_66","C40","plate.1","POSITIVE","critical","moderate","M","Black","(40,60]",TRUE,FALSE,14,NA,14,NA,11.5,8.8,0.8,1.8,20.1,11683,10398,33
+"C58_67","C58","plate.1","NEGATIVE","NEGATIVE","NEGATIVE","F","White","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C40_69","C40","plate.1","POSITIVE","critical","moderate","M","Black","(40,60]",TRUE,FALSE,4,NA,4,NA,10.2,7.5,1.2,1.4,NA,9668,1299,74
+"C104_71","C104","plate.1","NEGATIVE","NEGATIVE","NEGATIVE","M","Other","(80,100]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C187_72","C187","plate.1","NEGATIVE","NEGATIVE","NEGATIVE","M","Other","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C31_73","C31","plate.1","POSITIVE","mild","mild","F","Black","(20,40]",FALSE,FALSE,13,NA,9,NA,5.5,3.9,0.5,1,4.3,306,38,NA
+"C65_74","C65","plate.1","POSITIVE","critical","severe","M","White","(60,80]",TRUE,FALSE,13,NA,8,NA,5.8,4.6,0.2,0.8,178.2,1302,3643,212
+"C65_75","C65","plate.1","POSITIVE","critical","severe","M","White","(60,80]",TRUE,FALSE,20,NA,15,NA,8.1,6.7,0.8,0.6,124.8,2279,1916,76
+"C31_78","C31","plate.1","POSITIVE","mild","mild","F","Black","(20,40]",FALSE,FALSE,18,NA,14,NA,6.9,5.5,0.6,0.8,1.2,NA,359,NA
+"C31_79","C31","plate.1","POSITIVE","mild","mild","F","Black","(20,40]",FALSE,FALSE,11,NA,7,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C40_80","C40","plate.1","POSITIVE","critical","critical","M","Black","(40,60]",TRUE,FALSE,18,NA,18,NA,12.6,8.8,1.6,1.8,92.5,3524,3440,37
+"C141_81","C141","plate.1","NEGATIVE","NEGATIVE","NEGATIVE","M","Black","(80,100]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C123_82","C123","plate.1","POSITIVE","severe","severe","M","South Asian","(60,80]",TRUE,FALSE,7,NA,4,NA,6.1,4.9,0.4,0.8,106.5,NA,NA,NA
+"C123_84","C123","plate.1","POSITIVE","severe","moderate","M","South Asian","(60,80]",TRUE,FALSE,18,NA,15,NA,12.6,10.6,0.9,1.1,64.1,2908,3125,23
+"C31_85","C31","plate.1","POSITIVE","mild","mild","F","Black","(20,40]",FALSE,FALSE,4,NA,0,NA,3.7,2.3,0.2,1,2.7,NA,500,5
+"C40_86","C40","plate.1","POSITIVE","critical","mild","M","Black","(40,60]",TRUE,FALSE,2,NA,2,NA,7.5,4.7,1,1.7,60.3,9325,1022,50
+"C40_87","C40","plate.1","POSITIVE","critical","severe","M","Black","(40,60]",TRUE,FALSE,21,NA,21,NA,9.5,5.6,1.5,2,107.4,2884,1691,NA
+"C116_88","C116","plate.2","POSITIVE","critical","critical","M","White","(80,100]",TRUE,FALSE,13,NA,12,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C34_89","C34","plate.2","POSITIVE","mild","mild","F","White","(60,80]",FALSE,FALSE,7,NA,7,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C113_90","C113","plate.2","POSITIVE","severe","severe","F","White","(60,80]",TRUE,FALSE,12,NA,20,NA,3.7,3,0.2,0.5,31.3,NA,NA,NA
+"C21_91","C21","plate.2","POSITIVE","critical","critical","M","White","(80,100]",TRUE,TRUE,20,28,19,27,7.9,7.1,0.4,0.4,163.5,NA,1086,122
+"C47_93","C47","plate.2","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,16,NA,14,NA,9.2,2.9,0.3,0.6,8.5,2016,485,12
+"C132_94","C132","plate.2","POSITIVE","moderate","mild","F","South Asian","(60,80]",FALSE,FALSE,10,NA,9,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C113_95","C113","plate.2","POSITIVE","severe","mild","F","White","(60,80]",TRUE,FALSE,27,NA,35,NA,2.9,1.9,0.3,0.5,34.3,NA,NA,NA
+"C23_96","C23","plate.2","POSITIVE","moderate","moderate","F","South Asian","(60,80]",FALSE,FALSE,15,NA,14,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C237_97","C237","plate.2","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C126_98","C126","plate.2","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,2,NA,2,NA,6.4,3.8,0.7,1.6,0.6,982,206,20
+"C47_99","C47","plate.2","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,6,NA,4,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C47_100","C47","plate.2","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,4,NA,2,NA,4.3,3.3,0.2,0.6,6.5,1168,340,16
+"C127_101","C127","plate.2","POSITIVE","moderate","moderate","F","Other","(60,80]",FALSE,FALSE,16,NA,13,NA,8.1,5.4,0.7,1.7,5.1,NA,494,NA
+"C113_102","C113","plate.2","POSITIVE","severe","severe","F","White","(60,80]",TRUE,FALSE,10,NA,18,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C126_103","C126","plate.2","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,13,NA,13,NA,6.4,3.7,0.6,1.8,NA,1228,NA,11
+"C110_105","C110","plate.2","POSITIVE","moderate","moderate","M","Black","(60,80]",FALSE,FALSE,4,NA,4,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C167_106","C167","plate.2","NEGATIVE","NEGATIVE","NEGATIVE","F","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C34_107","C34","plate.2","POSITIVE","mild","mild","F","White","(60,80]",FALSE,FALSE,4,NA,4,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C69_108","C69","plate.2","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C116_109","C116","plate.2","POSITIVE","critical","mild","M","White","(80,100]",TRUE,FALSE,9,NA,8,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C113_110","C113","plate.2","POSITIVE","severe","severe","F","White","(60,80]",TRUE,FALSE,15,NA,23,NA,3.6,2.7,0.3,0.6,11.6,NA,NA,NA
+"C42_111","C42","plate.2","POSITIVE","moderate","mild","M","White","(40,60]",FALSE,FALSE,14,NA,24,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C42_112","C42","plate.2","POSITIVE","moderate","mild","M","White","(40,60]",FALSE,FALSE,9,NA,19,NA,4.2,3,0.3,0.8,22.2,3266,788,10
+"C132_113","C132","plate.2","POSITIVE","moderate","mild","F","South Asian","(60,80]",FALSE,FALSE,19,NA,18,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C116_115","C116","plate.2","POSITIVE","critical","moderate","M","White","(80,100]",TRUE,FALSE,16,NA,15,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C126_116","C126","plate.2","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,11,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C116_117","C116","plate.2","POSITIVE","critical","moderate","M","White","(80,100]",TRUE,FALSE,4,NA,3,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C23_118","C23","plate.2","POSITIVE","moderate","moderate","F","South Asian","(60,80]",FALSE,FALSE,13,NA,12,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C21_119","C21","plate.2","POSITIVE","critical","critical","M","White","(80,100]",TRUE,TRUE,16,28,15,27,6.7,5.8,0.4,0.5,147.8,3865,891,76
+"C126_120","C126","plate.2","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,9,NA,9,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C248_121","C248","plate.2","NEGATIVE","NEGATIVE","NEGATIVE","F","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C153_122","C153","plate.2","NEGATIVE","NEGATIVE","NEGATIVE","M","Asian (other)","(40,60]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C34_123","C34","plate.2","POSITIVE","mild","mild","F","White","(60,80]",FALSE,FALSE,0,NA,0,NA,2.1,1.4,1.2,1.3,41.6,5130,561,107
+"C132_124","C132","plate.2","POSITIVE","moderate","moderate","F","South Asian","(60,80]",FALSE,FALSE,8,NA,7,NA,8.2,4.5,0.6,2.7,3.2,1686,465,16
+"C126_125","C126","plate.2","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,5,NA,5,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C47_127","C47","plate.2","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,13,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C21_128","C21","plate.2","POSITIVE","critical","moderate","M","White","(80,100]",TRUE,TRUE,5,28,4,27,2.1,1.6,0.1,0.4,107.1,NA,NA,152
+"C110_129","C110","plate.2","POSITIVE","moderate","moderate","M","Black","(60,80]",FALSE,FALSE,2,NA,2,NA,5,3.9,0.4,0.7,102.9,934,1312,68
+"C127_131","C127","plate.2","POSITIVE","moderate","moderate","F","Other","(60,80]",FALSE,FALSE,5,NA,2,NA,6.1,4.8,0.3,1,176.9,1895,1918,61
+"C21_133","C21","plate.2","POSITIVE","critical","severe","M","White","(80,100]",TRUE,TRUE,10,28,9,27,4.5,4,0.1,0.4,201.8,NA,NA,NA
+"C47_134","C47","plate.2","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,18,NA,16,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C127_136","C127","plate.2","POSITIVE","moderate","mild","F","Other","(60,80]",FALSE,FALSE,23,NA,20,NA,8.2,6.2,0.4,1.2,NA,NA,NA,NA
+"C110_137","C110","plate.2","POSITIVE","moderate","mild","M","Black","(60,80]",FALSE,FALSE,11,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C21_138","C21","plate.2","POSITIVE","critical","critical","M","White","(80,100]",TRUE,TRUE,26,28,25,27,NA,NA,NA,NA,NA,NA,NA,NA
+"C113_139","C113","plate.2","POSITIVE","severe","severe","F","White","(60,80]",TRUE,FALSE,6,NA,14,NA,2.5,1.6,0.1,0.3,154.2,1562,1211,55
+"C42_142","C42","plate.2","POSITIVE","moderate","mild","M","White","(40,60]",FALSE,FALSE,11,NA,21,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C127_143","C127","plate.2","POSITIVE","moderate","moderate","F","Other","(60,80]",FALSE,FALSE,11,NA,8,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C23_144","C23","plate.2","POSITIVE","moderate","moderate","F","South Asian","(60,80]",FALSE,FALSE,11,NA,10,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C23_145","C23","plate.2","POSITIVE","moderate","moderate","F","South Asian","(60,80]",FALSE,FALSE,20,NA,19,NA,5.2,3.8,0.6,0.8,7.5,417,1381,42
+"C113_146","C113","plate.2","POSITIVE","severe","moderate","F","White","(60,80]",TRUE,FALSE,19,NA,27,NA,3.7,2.8,0.3,0.5,15.3,NA,NA,NA
+"C132_147","C132","plate.2","POSITIVE","moderate","moderate","F","South Asian","(60,80]",FALSE,FALSE,6,NA,5,NA,8.2,3.8,0.8,3.2,2.6,1978,450,18
+"C116_148","C116","plate.2","POSITIVE","critical","moderate","M","White","(80,100]",TRUE,FALSE,6,NA,5,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C127_149","C127","plate.2","POSITIVE","moderate","moderate","F","Other","(60,80]",FALSE,FALSE,14,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C163_150","C163","plate.2","NEGATIVE","NEGATIVE","NEGATIVE","M","Asian (other)","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C110_151","C110","plate.2","POSITIVE","moderate","mild","M","Black","(60,80]",FALSE,FALSE,14,NA,14,NA,4.9,2.8,0.6,1.3,4.7,NA,951,NA
+"C42_152","C42","plate.2","POSITIVE","moderate","moderate","M","White","(40,60]",FALSE,FALSE,2,NA,12,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C152_154","C152","plate.2","NEGATIVE","NEGATIVE","NEGATIVE","M","Other","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C47_155","C47","plate.2","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,9,NA,7,NA,4,2.9,0.3,0.6,35.9,1347,937,19
+"C132_156","C132","plate.2","POSITIVE","moderate","mild","F","South Asian","(60,80]",FALSE,FALSE,14,NA,13,NA,7.6,4.1,0.7,2.6,3.2,1988,NA,13
+"C127_157","C127","plate.2","POSITIVE","moderate","mild","F","Other","(60,80]",FALSE,FALSE,21,NA,18,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C108_159","C108","plate.2","NEGATIVE","NEGATIVE","NEGATIVE","F","White","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C196_160","C196","plate.2","NEGATIVE","NEGATIVE","NEGATIVE","M","White","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C34_161","C34","plate.2","POSITIVE","mild","mild","F","White","(60,80]",FALSE,FALSE,11,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C116_162","C116","plate.2","POSITIVE","critical","moderate","M","White","(80,100]",TRUE,FALSE,26,NA,25,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C126_163","C126","plate.2","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,7,NA,7,NA,6.4,3.6,0.7,1.7,0.6,913,200,12
+"C21_164","C21","plate.2","POSITIVE","critical","severe","M","White","(80,100]",TRUE,TRUE,12,28,11,27,4.8,4.1,0.2,0.4,200.7,4549,NA,NA
+"C42_166","C42","plate.2","POSITIVE","moderate","moderate","M","White","(40,60]",FALSE,FALSE,4,NA,14,NA,5.4,4.1,0.3,1,16.3,3262,1050,9
+"C34_167","C34","plate.2","POSITIVE","mild","mild","F","White","(60,80]",FALSE,FALSE,9,NA,9,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C103_169","C103","plate.2","NEGATIVE","NEGATIVE","NEGATIVE","M","Asian (other)","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C23_170","C23","plate.2","POSITIVE","moderate","moderate","F","South Asian","(60,80]",FALSE,FALSE,8,NA,7,NA,3.4,2.7,0.2,0.4,125.6,NA,2786,93
+"C42_171","C42","plate.2","POSITIVE","moderate","mild","M","White","(40,60]",FALSE,FALSE,7,NA,17,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C23_172","C23","plate.2","POSITIVE","moderate","moderate","F","South Asian","(60,80]",FALSE,FALSE,18,NA,17,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C34_173","C34","plate.2","POSITIVE","mild","mild","F","White","(60,80]",FALSE,FALSE,2,NA,2,NA,2.5,1.6,0.2,0.4,27.4,3409,573,28
+"C132_174","C132","plate.2","POSITIVE","moderate","mild","F","South Asian","(60,80]",FALSE,FALSE,12,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C80_176","C80","plate.3","POSITIVE","moderate","moderate","F","South Asian","(60,80]",FALSE,FALSE,11,NA,9,NA,10.5,7.7,0.5,1.7,17.2,NA,NA,NA
+"C24_177","C24","plate.3","POSITIVE","mild","mild","F","White","(60,80]",FALSE,FALSE,NA,NA,15,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C7_178","C7","plate.3","POSITIVE","mild","mild","M","Black","(80,100]",FALSE,FALSE,14,NA,14,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C20_179","C20","plate.3","POSITIVE","severe","moderate","M","South Asian","(60,80]",TRUE,FALSE,12,NA,11,NA,5.8,4.2,0.7,0.9,102.4,961,1379,39
+"C63_181","C63","plate.3","POSITIVE","moderate","moderate","M","Black","(40,60]",TRUE,FALSE,8,NA,5,NA,4.3,2.4,0.3,1.3,30.3,NA,NA,NA
+"C12_182","C12","plate.3","POSITIVE","severe","mild","M","South Asian","(40,60]",TRUE,FALSE,22,NA,19,NA,6.9,5.3,0.5,1.1,48,NA,NA,NA
+"C7_183","C7","plate.3","POSITIVE","mild","mild","M","Black","(80,100]",FALSE,FALSE,21,NA,21,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C22_184","C22","plate.3","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,13,NA,13,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C166_185","C166","plate.3","NEGATIVE","NEGATIVE","NEGATIVE","M","White","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C9_186","C9","plate.3","POSITIVE","moderate","mild","M","Other","(40,60]",FALSE,FALSE,12,NA,7,NA,6.3,3.3,0.5,2.4,44.6,961,NA,49
+"C50_187","C50","plate.3","POSITIVE","severe","moderate","M","Asian (other)","(60,80]",TRUE,FALSE,23,NA,22,NA,7.3,5.4,1,0.7,11.3,NA,NA,NA
+"C32_188","C32","plate.3","POSITIVE","critical","severe","M","White","(60,80]",TRUE,TRUE,NA,NA,14,16,13.7,12,1.3,0.4,NA,1608,NA,57
+"C11_189","C11","plate.3","POSITIVE","severe","moderate","M","White","(60,80]",TRUE,FALSE,NA,NA,19,NA,9.2,7.8,0.4,0.7,50.9,NA,NA,NA
+"C7_190","C7","plate.3","POSITIVE","mild","mild","M","Black","(80,100]",FALSE,FALSE,11,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C9_191","C9","plate.3","POSITIVE","moderate","mild","M","Other","(40,60]",FALSE,FALSE,24,NA,19,NA,10.6,6.7,0.8,2.9,16,1898,212,24
+"C63_193","C63","plate.3","POSITIVE","moderate","mild","M","Black","(40,60]",TRUE,FALSE,17,NA,14,NA,7.1,4.8,0.5,1.4,24.2,574,313,11
+"C169_194","C169","plate.3","NEGATIVE","NEGATIVE","NEGATIVE","F","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C24_195","C24","plate.3","POSITIVE","mild","mild","F","White","(60,80]",FALSE,FALSE,NA,NA,13,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C29_196","C29","plate.3","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C80_197","C80","plate.3","POSITIVE","moderate","moderate","F","South Asian","(60,80]",FALSE,FALSE,9,NA,7,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C7_198","C7","plate.3","POSITIVE","mild","mild","M","Black","(80,100]",FALSE,FALSE,16,NA,16,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C50_199","C50","plate.3","POSITIVE","severe","moderate","M","Asian (other)","(60,80]",TRUE,FALSE,16,NA,15,NA,7.9,6.1,0.9,0.8,30.8,NA,NA,NA
+"C27_200","C27","plate.3","POSITIVE","mild","mild","M","South Asian","(80,100]",FALSE,FALSE,15,NA,14,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C128_201","C128","plate.3","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,14,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C80_203","C80","plate.3","POSITIVE","moderate","mild","F","South Asian","(60,80]",FALSE,FALSE,14,NA,12,NA,10,7.8,0.4,1.3,8.5,764,1243,21
+"C9_204","C9","plate.3","POSITIVE","moderate","moderate","M","Other","(40,60]",FALSE,FALSE,23,NA,18,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C80_205","C80","plate.3","POSITIVE","moderate","moderate","F","South Asian","(60,80]",FALSE,FALSE,6,NA,4,NA,5.7,4.2,0.4,1.1,102.7,786,930,59
+"C22_206","C22","plate.3","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,11,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C20_207","C20","plate.3","POSITIVE","severe","moderate","M","South Asian","(60,80]",TRUE,FALSE,9,NA,8,NA,3,2.1,0.3,0.5,81.5,704,1227,28
+"C9_208","C9","plate.3","POSITIVE","moderate","moderate","M","Other","(40,60]",FALSE,FALSE,19,NA,14,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C89_209","C89","plate.3","NEGATIVE","NEGATIVE","NEGATIVE","F","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C212_210","C212","plate.3","NEGATIVE","NEGATIVE","NEGATIVE","M","White","(40,60]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C24_211","C24","plate.3","POSITIVE","mild","mild","F","White","(60,80]",FALSE,FALSE,NA,NA,8,NA,4.3,2,0.6,1.4,43.2,857,NA,NA
+"C12_212","C12","plate.3","POSITIVE","severe","mild","M","South Asian","(40,60]",TRUE,FALSE,19,NA,16,NA,5.6,4.1,0.5,0.9,67.4,NA,NA,NA
+"C9_213","C9","plate.3","POSITIVE","moderate","mild","M","Other","(40,60]",FALSE,FALSE,14,NA,9,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C63_215","C63","plate.3","POSITIVE","moderate","moderate","M","Black","(40,60]",TRUE,FALSE,5,NA,2,NA,5.5,4,0.4,1,27.4,NA,NA,NA
+"C63_217","C63","plate.3","POSITIVE","moderate","mild","M","Black","(40,60]",TRUE,FALSE,15,NA,12,NA,6.7,4.4,0.5,1.5,22,NA,NA,NA
+"C128_218","C128","plate.3","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,16,NA,13,NA,6.9,5.2,0.6,1,119.4,NA,NA,50
+"C11_219","C11","plate.3","POSITIVE","severe","moderate","M","White","(60,80]",TRUE,FALSE,NA,NA,13,NA,5.3,4.2,0.4,0.6,230.2,NA,638,NA
+"C63_222","C63","plate.3","POSITIVE","moderate","mild","M","Black","(40,60]",TRUE,FALSE,12,NA,9,NA,5.5,3.3,0.4,1.3,10.4,NA,NA,NA
+"C12_224","C12","plate.3","POSITIVE","severe","severe","M","South Asian","(40,60]",TRUE,FALSE,11,NA,8,NA,7,6,0.2,0.8,364.3,NA,NA,NA
+"C37_225","C37","plate.3","POSITIVE","critical","critical","F","Asian (other)","(80,100]",TRUE,TRUE,9,19,5,15,6.5,5.8,0.2,0.5,105.4,NA,NA,271
+"C20_226","C20","plate.3","POSITIVE","severe","mild","M","South Asian","(60,80]",TRUE,FALSE,14,NA,13,NA,5,3.8,0.4,0.7,82.8,NA,NA,NA
+"C7_227","C7","plate.3","POSITIVE","mild","mild","M","Black","(80,100]",FALSE,FALSE,9,NA,9,NA,5.8,3.1,0.7,1.9,11.2,1958,825,100
+"C50_230","C50","plate.3","POSITIVE","severe","severe","M","Asian (other)","(60,80]",TRUE,FALSE,14,NA,13,NA,8.6,7.1,1,0.4,66.7,NA,NA,NA
+"C11_231","C11","plate.3","POSITIVE","severe","moderate","M","White","(60,80]",TRUE,FALSE,NA,NA,15,NA,7.6,6,0.7,0.7,160.3,574,642,30
+"C22_232","C22","plate.3","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,8,NA,8,NA,4.6,3.3,0.5,0.9,97.1,26.1,3003,28
+"C22_233","C22","plate.3","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,18,NA,18,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C7_234","C7","plate.3","POSITIVE","mild","mild","M","Black","(80,100]",FALSE,FALSE,18,NA,18,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C12_235","C12","plate.3","POSITIVE","severe","moderate","M","South Asian","(40,60]",TRUE,FALSE,17,NA,14,NA,6.6,5.4,0.4,0.7,NA,NA,3082,NA
+"C80_236","C80","plate.3","POSITIVE","moderate","moderate","F","South Asian","(60,80]",FALSE,FALSE,7,NA,5,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C11_237","C11","plate.3","POSITIVE","severe","moderate","M","White","(60,80]",TRUE,FALSE,NA,NA,17,NA,6.3,5.1,0.3,0.5,65.8,371,516,21
+"C142_238","C142","plate.3","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C37_239","C37","plate.3","POSITIVE","critical","critical","F","Asian (other)","(80,100]",TRUE,TRUE,12,19,8,15,7.9,7,0.4,0.5,155.7,NA,NA,NA
+"C27_240","C27","plate.3","POSITIVE","mild","mild","M","South Asian","(80,100]",FALSE,FALSE,6,NA,5,NA,5.5,4.3,0.4,0.6,66,1824,748,37
+"C128_241","C128","plate.3","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,21,NA,18,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C193_242","C193","plate.3","NEGATIVE","NEGATIVE","NEGATIVE","M","White","(80,100]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C50_243","C50","plate.3","POSITIVE","severe","moderate","M","Asian (other)","(60,80]",TRUE,FALSE,27,NA,26,NA,6.1,4.5,0.8,0.6,8.2,NA,NA,NA
+"C128_244","C128","plate.3","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,5,NA,2,NA,4.6,2.6,0.8,1.2,4.2,598,299,29
+"C11_245","C11","plate.3","POSITIVE","severe","mild","M","White","(60,80]",TRUE,FALSE,NA,NA,21,NA,8,6.7,0.4,0.6,43.2,NA,NA,NA
+"C134_247","C134","plate.3","NEGATIVE","NEGATIVE","NEGATIVE","F","Black","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C240_248","C240","plate.3","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C27_249","C27","plate.3","POSITIVE","mild","mild","M","South Asian","(80,100]",FALSE,FALSE,3,NA,2,NA,8.1,7.1,0.5,0.5,172.6,NA,NA,90
+"C80_250","C80","plate.3","POSITIVE","moderate","mild","F","South Asian","(60,80]",FALSE,FALSE,16,NA,14,NA,9.9,7.6,0.3,1.7,12.4,818,1160,20
+"C9_251","C9","plate.3","POSITIVE","moderate","mild","M","Other","(40,60]",FALSE,FALSE,17,NA,12,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C20_252","C20","plate.3","POSITIVE","severe","moderate","M","South Asian","(60,80]",TRUE,FALSE,8,NA,7,NA,4.8,3.5,0.6,0.6,182.3,1019,1910,42
+"C27_254","C27","plate.3","POSITIVE","mild","mild","M","South Asian","(80,100]",FALSE,FALSE,8,NA,7,NA,8.1,6.7,0.8,0.5,71.3,NA,NA,NA
+"C32_255","C32","plate.3","POSITIVE","critical","critical","M","White","(60,80]",TRUE,TRUE,NA,NA,16,16,23.1,21.2,0.7,1.3,194.4,NA,NA,NA
+"C128_256","C128","plate.3","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,23,NA,20,NA,7.4,4.9,0.8,1.6,13.4,1286,1127,13
+"C234_257","C234","plate.3","NEGATIVE","NEGATIVE","NEGATIVE","F","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C20_258","C20","plate.3","POSITIVE","severe","mild","M","South Asian","(60,80]",TRUE,FALSE,16,NA,15,NA,6,3.6,0.7,1.4,32.1,NA,NA,NA
+"C27_259","C27","plate.3","POSITIVE","mild","mild","M","South Asian","(80,100]",FALSE,FALSE,13,NA,12,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C22_260","C22","plate.3","POSITIVE","mild","mild","M","South Asian","(60,80]",FALSE,FALSE,15,NA,15,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C24_261","C24","plate.3","POSITIVE","mild","mild","F","White","(60,80]",FALSE,FALSE,NA,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C12_262","C12","plate.3","POSITIVE","severe","mild","M","South Asian","(40,60]",TRUE,FALSE,24,NA,21,NA,5.3,3.9,0.4,1,50.3,NA,NA,NA
+"C87_264","C87","plate.4","POSITIVE","mild","mild","M","Asian (other)","(60,80]",FALSE,FALSE,13,NA,13,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C59_267","C59","plate.4","POSITIVE","severe","moderate","M","South Asian","(40,60]",TRUE,FALSE,9,NA,8,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C25_268","C25","plate.4","POSITIVE","moderate","mild","M","Black","(20,40]",TRUE,FALSE,11,NA,11,NA,5.2,3.7,0.3,0.8,30.6,3914,NA,NA
+"C48_269","C48","plate.4","POSITIVE","critical","critical","M","Other","(60,80]",TRUE,TRUE,4,6,2,4,5.9,4.9,0.4,0.4,328.5,1146,1932,65
+"C129_270","C129","plate.4","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,13,NA,12,NA,5.7,5,0.3,0.4,141.6,2694,3413,279
+"C87_271","C87","plate.4","POSITIVE","mild","mild","M","Asian (other)","(60,80]",FALSE,FALSE,2,NA,2,NA,5.9,4.9,0.4,0.6,92.2,1479,940,115
+"C73_272","C73","plate.4","POSITIVE","severe","mild","M","White","(80,100]",TRUE,FALSE,11,NA,7,NA,4.3,3.3,0.4,0.6,190,1562,NA,956
+"C242_273","C242","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","M","Other","(40,60]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C93_274","C93","plate.4","POSITIVE","moderate","moderate","M","White","(80,100]",TRUE,FALSE,13,NA,13,NA,12.7,10.6,0.8,1.2,7.2,1055,430,28
+"C82_275","C82","plate.4","POSITIVE","mild","mild","F","Other","(60,80]",TRUE,FALSE,8,NA,32,NA,1.9,0.5,0.2,1.1,3.5,NA,NA,NA
+"C82_276","C82","plate.4","POSITIVE","mild","mild","F","Other","(60,80]",TRUE,FALSE,6,NA,30,NA,4.7,2.8,0.5,1.4,8.7,NA,NA,NA
+"C125_277","C125","plate.4","POSITIVE","severe","mild","M","Asian (other)","(40,60]",TRUE,FALSE,27,NA,27,NA,3.7,2.5,0.6,0.5,27.3,NA,264,NA
+"C68_278","C68","plate.4","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,5,NA,5,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C124_279","C124","plate.4","POSITIVE","moderate","mild","M","South Asian","(80,100]",FALSE,FALSE,14,NA,9,NA,12.4,10.1,1.1,1,24.3,NA,1253,NA
+"C105_280","C105","plate.4","POSITIVE","mild","mild","F","South Asian","(60,80]",FALSE,FALSE,8,NA,5,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C66_281","C66","plate.4","POSITIVE","critical","severe","F","Black","(60,80]",TRUE,TRUE,5,9,0,4,13.1,12.1,0.6,0.4,386.1,1956,1287,93
+"C214_282","C214","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","F","White","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C99_283","C99","plate.4","POSITIVE","severe","severe","M","White","(60,80]",TRUE,FALSE,18,NA,8,NA,4.5,4,0.2,0.2,189.4,NA,NA,NA
+"C251_284","C251","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(40,60]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C87_285","C87","plate.4","POSITIVE","mild","mild","M","Asian (other)","(60,80]",FALSE,FALSE,11,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C68_286","C68","plate.4","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,9,NA,9,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C36_287","C36","plate.4","POSITIVE","moderate","mild","M","South Asian","(60,80]",TRUE,FALSE,16,NA,13,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C36_288","C36","plate.4","POSITIVE","moderate","mild","M","South Asian","(60,80]",TRUE,FALSE,10,NA,7,NA,7.5,6,NA,1,14.7,NA,NA,NA
+"C105_290","C105","plate.4","POSITIVE","mild","mild","F","South Asian","(60,80]",FALSE,FALSE,15,NA,12,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C93_291","C93","plate.4","POSITIVE","moderate","mild","M","White","(80,100]",TRUE,FALSE,7,NA,7,NA,7.8,5.4,1,1.2,43.8,NA,NA,NA
+"C124_292","C124","plate.4","POSITIVE","moderate","mild","M","South Asian","(80,100]",FALSE,FALSE,12,NA,7,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C87_293","C87","plate.4","POSITIVE","mild","mild","M","Asian (other)","(60,80]",FALSE,FALSE,6,NA,6,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C73_294","C73","plate.4","POSITIVE","severe","moderate","M","White","(80,100]",TRUE,FALSE,9,NA,5,NA,7.5,6.5,0.5,0.4,239,NA,NA,NA
+"C59_295","C59","plate.4","POSITIVE","severe","moderate","M","South Asian","(40,60]",TRUE,FALSE,7,NA,6,NA,4.9,3.1,0.2,1.5,140.8,2374,1224,73
+"C124_296","C124","plate.4","POSITIVE","moderate","moderate","M","South Asian","(80,100]",FALSE,FALSE,9,NA,4,NA,5,3.9,0.3,0.7,129.1,5144,638,69
+"C64_297","C64","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C137_298","C137","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","F","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C99_299","C99","plate.4","POSITIVE","severe","critical","M","White","(60,80]",TRUE,FALSE,13,NA,3,NA,4.2,4,0.1,0.1,342.5,1934,10440,591
+"C129_300","C129","plate.4","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,8,NA,7,NA,5.7,4.8,0.4,0.4,68.7,968,1155,76
+"C93_301","C93","plate.4","POSITIVE","moderate","mild","M","White","(80,100]",TRUE,FALSE,15,NA,15,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C18_302","C18","plate.4","POSITIVE","severe","mild","M","South Asian","(60,80]",TRUE,FALSE,14,NA,19,NA,4.9,3.8,0.1,1,17.5,NA,NA,NA
+"C48_303","C48","plate.4","POSITIVE","critical","moderate","M","Other","(60,80]",TRUE,TRUE,2,6,0,4,NA,NA,NA,NA,NA,NA,NA,NA
+"C25_304","C25","plate.4","POSITIVE","moderate","mild","M","Black","(20,40]",TRUE,FALSE,14,NA,14,NA,9.2,3.4,0.6,0.9,42,NA,NA,NA
+"C49_305","C49","plate.4","POSITIVE","critical","severe","M","White","(60,80]",TRUE,TRUE,7,9,5,7,6.2,5.8,0.2,0.1,343.8,NA,6512,NA
+"C124_307","C124","plate.4","POSITIVE","moderate","mild","M","South Asian","(80,100]",FALSE,FALSE,16,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C25_309","C25","plate.4","POSITIVE","moderate","mild","M","Black","(20,40]",TRUE,FALSE,16,NA,16,NA,8.3,3.5,0.7,0.5,78.4,NA,NA,NA
+"C49_310","C49","plate.4","POSITIVE","critical","moderate","M","White","(60,80]",TRUE,TRUE,2,9,0,7,2.9,2.3,0.3,0.3,156.8,1165,2038,NA
+"C129_312","C129","plate.4","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,3,NA,2,NA,4.2,3.1,0.5,0.6,15.6,523,381,41
+"C66_313","C66","plate.4","POSITIVE","critical","critical","F","Black","(60,80]",TRUE,TRUE,8,9,3,4,14.4,13.2,0.7,0.5,335.9,2256,1535,55
+"C59_314","C59","plate.4","POSITIVE","severe","mild","M","South Asian","(40,60]",TRUE,FALSE,12,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C68_315","C68","plate.4","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,2,NA,2,NA,5.8,4.4,0.8,0.6,71.9,3168,417,23
+"C105_316","C105","plate.4","POSITIVE","mild","mild","F","South Asian","(60,80]",FALSE,FALSE,5,NA,2,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C105_317","C105","plate.4","POSITIVE","mild","mild","F","South Asian","(60,80]",FALSE,FALSE,3,NA,0,NA,5.8,4.4,0.5,0.8,30.4,1986,1403,98
+"C36_318","C36","plate.4","POSITIVE","moderate","mild","M","South Asian","(60,80]",TRUE,FALSE,12,NA,9,NA,3.8,2.4,0.3,1.1,12.8,NA,NA,NA
+"C125_319","C125","plate.4","POSITIVE","severe","mild","M","Asian (other)","(40,60]",TRUE,FALSE,11,NA,11,NA,3.1,2,0.3,0.7,227.1,NA,NA,NA
+"C73_320","C73","plate.4","POSITIVE","severe","moderate","M","White","(80,100]",TRUE,FALSE,7,NA,3,NA,4,3.4,0.2,0.3,96.7,NA,NA,15749
+"C99_321","C99","plate.4","POSITIVE","severe","severe","M","White","(60,80]",TRUE,FALSE,11,NA,1,NA,2.5,2.3,0.1,0.1,271.6,NA,NA,NA
+"C68_322","C68","plate.4","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,12,NA,12,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C129_323","C129","plate.4","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,6,NA,5,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C87_324","C87","plate.4","POSITIVE","mild","mild","M","Asian (other)","(60,80]",FALSE,FALSE,9,NA,9,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C125_325","C125","plate.4","POSITIVE","severe","mild","M","Asian (other)","(40,60]",TRUE,FALSE,14,NA,14,NA,3.6,2.5,0.4,0.7,39.1,NA,NA,NA
+"C195_326","C195","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","M","Other","(80,100]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C105_327","C105","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","F","South Asian","(60,80]",FALSE,FALSE,-4,NA,-7,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C17_328","C17","plate.4","POSITIVE","severe","severe","M","Other","(80,100]",TRUE,FALSE,8,NA,6,NA,3.8,NA,NA,NA,45.8,NA,1923,53
+"C18_329","C18","plate.4","POSITIVE","severe","moderate","M","South Asian","(60,80]",TRUE,FALSE,9,NA,14,NA,5.2,4.5,0.3,0.5,70.5,NA,NA,NA
+"C164_330","C164","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C82_331","C82","plate.4","POSITIVE","mild","mild","F","Other","(60,80]",TRUE,FALSE,11,NA,35,NA,3.2,2,0.2,1,2,NA,NA,NA
+"C125_333","C125","plate.4","POSITIVE","severe","mild","M","Asian (other)","(40,60]",TRUE,FALSE,29,NA,29,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C105_334","C105","plate.4","POSITIVE","mild","mild","F","South Asian","(60,80]",FALSE,FALSE,10,NA,7,NA,6.6,4.9,0.6,1,5.7,NA,994,NA
+"C130_335","C130","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","M","Other","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C180_336","C180","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(40,60]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C149_337","C149","plate.4","POSITIVE","mild","mild","M","White","(60,80]",FALSE,FALSE,14,NA,14,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C93_338","C93","plate.4","POSITIVE","moderate","mild","M","White","(80,100]",TRUE,FALSE,10,NA,10,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C93_339","C93","plate.4","POSITIVE","moderate","mild","M","White","(80,100]",TRUE,FALSE,20,NA,20,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C25_340","C25","plate.4","POSITIVE","moderate","mild","M","Black","(20,40]",TRUE,FALSE,18,NA,18,NA,7.5,3.3,0.5,1,46,NA,NA,NA
+"C17_342","C17","plate.4","POSITIVE","severe","severe","M","Other","(80,100]",TRUE,FALSE,9,NA,7,NA,5,2.8,0.6,1.3,19.1,1969,1374,35
+"C105_343","C105","plate.4","POSITIVE","mild","mild","F","South Asian","(60,80]",FALSE,FALSE,17,NA,14,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C18_344","C18","plate.4","POSITIVE","severe","moderate","M","South Asian","(60,80]",TRUE,FALSE,10,NA,15,NA,3.9,3.1,0.1,0.6,50,NA,1768,NA
+"C189_345","C189","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","M","Black","(40,60]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C59_346","C59","plate.4","POSITIVE","severe","mild","M","South Asian","(40,60]",TRUE,FALSE,16,NA,15,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C17_347","C17","plate.4","POSITIVE","severe","mild","M","Other","(80,100]",TRUE,FALSE,14,NA,12,NA,4,2.4,0.3,1,12.1,1912,NA,NA
+"C73_348","C73","plate.4","POSITIVE","severe","mild","M","White","(80,100]",TRUE,FALSE,14,NA,10,NA,5.9,4.9,0.4,0.5,53.7,NA,NA,200
+"C99_349","C99","plate.4","POSITIVE","severe","severe","M","White","(60,80]",TRUE,FALSE,16,NA,6,NA,4.6,4.3,0.1,0.2,316.6,NA,NA,159
+"C18_351","C18","plate.4","POSITIVE","severe","mild","M","South Asian","(60,80]",TRUE,FALSE,12,NA,17,NA,4.3,3.4,0,0.8,25.5,NA,NA,NA
+"C246_352","C246","plate.5","NEGATIVE","NEGATIVE","NEGATIVE","M","White","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C84_353","C84","plate.5","POSITIVE","critical","moderate","M","South Asian","(60,80]",TRUE,TRUE,3,7,3,7,11.7,11,0.4,0.2,278,NA,5828,281
+"C241_354","C241","plate.5","NEGATIVE","NEGATIVE","NEGATIVE","M","Black","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C67_355","C67","plate.5","POSITIVE","moderate","moderate","F","Other","(60,80]",TRUE,FALSE,3,NA,2,NA,10.7,8.4,1.5,0.8,125.5,1424,1028,484
+"C106_360","C106","plate.5","NEGATIVE","NEGATIVE","NEGATIVE","M","White","(80,100]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C224_361","C224","plate.5","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C77_363","C77","plate.5","POSITIVE","critical","moderate","F","White","(60,80]",TRUE,TRUE,11,44,7,40,6.3,4.8,0.5,0.9,350.1,NA,NA,NA
+"C161_364","C161","plate.5","NEGATIVE","NEGATIVE","NEGATIVE","M","Other","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C85_365","C85","plate.5","NEGATIVE","NEGATIVE","NEGATIVE","F","White","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C197_366","C197","plate.5","NEGATIVE","NEGATIVE","NEGATIVE","F","Black","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C173_367","C173","plate.5","NEGATIVE","NEGATIVE","NEGATIVE","M","Black","(40,60]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C245_368","C245","plate.5","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C57_371","C57","plate.5","POSITIVE","critical","severe","F","South Asian","(60,80]",TRUE,TRUE,0,10,0,10,3.6,2.5,0.2,0.9,NA,330,NA,NA
+"C70_372","C70","plate.5","NEGATIVE","NEGATIVE","NEGATIVE","M","White","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"C77_374","C77","plate.5","POSITIVE","critical","mild","F","White","(60,80]",TRUE,TRUE,20,44,16,40,6.4,5,0.5,0.8,261.2,5094,734,40

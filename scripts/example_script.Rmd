@@ -1,0 +1,135 @@
+---
+title: "Example Analyses"
+author: "Jack Gisby"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_depth: 2
+  pdf_document: 
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include = FALSE}
+library(ggpubr)
+
+library(nlme)
+library(lmerTest)
+
+library(caret)
+library(randomForestExplainer)
+
+library(survival)
+library(JMbayes)
+library(splines)
+
+library(OlinkAnalyzeModified)
+
+theme_set(theme_pubr())
+theme_update(text = element_text(size=11))
+```
+
+```{r custom_functions, eval=FALSE, include=TRUE}
+devtools::install_github(repo ='jackgisby/longitudinal_olink_proteomics/OlinkAnalyze_Modified')
+library(OlinkAnalyzeModified)
+```
+
+# The Dataset
+
+```{r load_data}
+# load protein expression data
+plasma_long <- read.csv("../data/plasma_npx_level.csv")
+serum_long <- read.csv("../data/serum_npx_level.csv")
+
+# load related pheno data
+plasma_samples <- read.csv("../data/plasma_sample_level.csv")
+serum_samples <- read.csv("../data/serum_sample_level.csv")
+
+# combine into single dataframe
+plasma_full <- dplyr::left_join(plasma_long, plasma_samples)
+serum_full <- dplyr::left_join(serum_long, serum_samples)
+```
+
+
+# COVID +ve vs -ve Differential Abundance
+```{r da, warning=FALSE}
+plasma_case_control <- simple_mixed_de(
+    plasma_full, 
+    labels=0.1, 
+    logp_label=6.8,             
+    variable="Case_Control",       
+    plot_xlab = "Log2 Fold Change (COVID Positive - Negative)", 
+    plot_title="Primary Cohort (+ve vs -ve)",
+    random="Individual_ID",
+    covariates = c("Sex", "Age", "Ethnicity")
+)
+
+head(plasma_case_control)
+
+serum_case_control <- simple_mixed_de(
+    serum_full, 
+    labels=0.1, 
+    logp_label=7,
+    variable="Case_Control", 
+    plot_xlab = "Log2 Fold Change (COVID Positive - Negative)", 
+    plot_title="Validation Cohort (+ve vs -ve)",
+    random="Individual_ID",
+    covariates = c("Sex", "Age", "Ethnicity"),
+)
+
+head(serum_case_control)
+```
+
+# Severity Differential Abundance
+```{r severity, warning=FALSE}
+plasma_full$WHO_Severity_Contemporaneous <- ordered(plasma_full$WHO_Severity_Contemporaneous, c("NEGATIVE", "mild", "moderate", "severe", "critical"))
+
+plasma_severity <- simple_mixed_de(
+    plasma_full[plasma_full$Case_Control == "POSITIVE",], 
+    labels=0.1, 
+    logp_label = 8.5,
+    variable="WHO_Severity_Contemporaneous",
+    plot_xlab = "Linear Gradient", 
+    plot_title=waiver(),
+    random="Individual_ID",
+    covariates = c("Sex", "Age", "Ethnicity")
+)
+```
+
+# Joint Models
+```{r JM, message=FALSE, warning=FALSE}
+summary(joint_model(plasma_full[plasma_full$Case_Control == "POSITIVE",], "AZU1"))
+```
+
+# Random Forests
+```{r RF, warning=FALSE}
+plasma_independent <- get_first_samples(plasma_full[plasma_full$Case_Control == "POSITIVE",])
+
+plasma_independent$grouped_severity <- ifelse(
+    plasma_independent$WHO_Severity_Peak %in% c("mild", "moderate"), 
+    "mild_moderate", 
+    "severe_critical"
+)
+
+set.seed(1)
+plasma_rf <- run_rf(plasma_independent)
+var_imp <- measure_importance(plasma_rf$finalModel)
+
+head(var_imp)
+```
+
+# Longitudinal Models
+```{r longt, message=FALSE, warning=FALSE}
+formula_string <- "NPX ~ bs(Time_From_First_Symptoms, degree = 2) * WHO_Severity_Peak + Age + Sex + Ethnicity + (bs(Time_From_First_Symptoms, degree = 2) | Individual_ID)"
+
+lmm_prot_time <- plasma_full %>% 
+    filter(Case_Control=="POSITIVE") %>%
+    group_by(Assay, GeneID, UniProt, Panel) %>%
+    group_modify(~tidy(anova(single_lmer(data=.x, formula_string = formula_string)))) %>%
+    ungroup() %>%
+    filter(term == "bs(Time_From_First_Symptoms, degree = 2):WHO_Severity_Peak")
+
+head(lmm_prot_time)
+```
