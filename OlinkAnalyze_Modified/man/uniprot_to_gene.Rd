@@ -8,8 +8,6 @@ uniprot_to_gene(df)
 }
 \arguments{
 \item{df}{meta_dat dataframe}
-
-\item{tab}{(optional) tab number}
 }
 \value{
 Gene IDs

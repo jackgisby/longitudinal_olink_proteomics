@@ -32,12 +32,15 @@ Covariates to include. Takes ':'/'*' notation. Crossed analysis will not be infe
 
 \item{return.covariates}{Boolean. Default: False. Returns results for the covariates. Note: Adjusted p-values will be NA for the covariates.}
 
+\item{return.models}{Whether to return a list of the actual linear mixed models instead of a dataframe of results}
+
 \item{verbose}{Boolean. Deafult: True. If information about removed samples, factor conversion and final model formula is to be printed to the console.}
 }
 \value{
-A tibble containing the results of fitting the linear mixed effects model to every protein by GeneID, ordered by ascending p-value.
+If return.models = FALSE: A tibble containing the results of fitting the linear mixed effects model to every protein by GeneID, ordered by ascending p-value.
 }
 \description{
+Function originally part of the OlinkAnalyze package. 
 Fits a linear mixed effects model for every protein (by GeneID) in every panel, using lmerTest::lmer and stats::anova.
 The function handles both factor and numerical variables and/or covariates. \cr\cr
 Samples that have no variable information or missing factor levels are automatically removed from the analysis (specified in a messsage if verbose = T).
@@ -56,12 +59,4 @@ The random variable only takes main effect(s). \cr
 The formula notation of the final model is specified in a message if verbose = T. \cr\cr
 Output p-values are adjusted by stats::p.adjust according to the Benjamini-Hochberg method (“fdr”). 
 Adjusted p-values are logically evaluated towards adjusted p-value<0.05.
-}
-\examples{
-\donttest{
-# Results in model NPX~Time*Treatment+(1|Subject)+(1|Site)
-lmer_results <- olink_lmer(df = npx_df,
-variable=c("Time", 'Treatment'),
-random = c('Subject', 'Site'))
-}
 }

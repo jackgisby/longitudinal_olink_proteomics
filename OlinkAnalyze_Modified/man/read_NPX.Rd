@@ -16,13 +16,25 @@ read_NPX(
 }
 \arguments{
 \item{filename}{Path to file NPX Manager output file.}
+
+\item{sample_manifest}{Per individual phenotypic data}
+
+\item{pheno}{Per sample phenotypic data}
+
+\item{skip_mod}{How many lines to skip in the excel file}
+
+\item{panel}{Which panel is currently being read}
+
+\item{tab}{Which excel tab the data is being read from}
+
+\item{this_exp}{Whether the data is plasma or serum}
 }
 \value{
 A tibble in long format.
 }
 \description{
-Imports an NPX file exported from NPX Manager. 
-No alterations to the output NPX Manager format is allowed.
+Modifications have been made to allow the reading of our specific dataset and
+add GeneIDs in addition to the olink assay names.
 }
 \examples{
 \donttest{read_NPX("~/NPX data.xlsx")}

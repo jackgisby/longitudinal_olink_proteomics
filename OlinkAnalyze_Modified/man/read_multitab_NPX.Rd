@@ -14,6 +14,21 @@ read_multitab_NPX(
   this_exp = "plasma"
 )
 }
+\arguments{
+\item{filename}{Name of the multitab excel raw data}
+
+\item{sample_manifest}{Per individual pheno data}
+
+\item{pheno}{Per sample pheno data}
+
+\item{skip_mod}{The number of lines to skip in the excel file}
+
+\item{panel}{Which panel is being extracted}
+
+\item{num_tabs}{The number of tabs in the excel file}
+
+\item{this_exp}{The sample matrix}
+}
 \description{
 Multitab NPX data parsing
 }

@@ -1,5 +1,6 @@
 #' Function to plot a PCA of the data
 #'
+#' Function was originally part of the OlinkAnalyze package, description below:
 #' Generates a PCA projection of all samples from NPX data along two principal components (default PC2 vs. PC1) including the explained variance and dots colored by QC_Warning using stats::prcomp and ggplot2::ggplot. 
 #' The values are by default scaled and centered in the PCA and proteins with missing NPX values are by default removed from the corresponding assay. 
 #' Unique sample names are required. 
@@ -15,10 +16,11 @@
 #' @param n_loadings Integer. Will plot the top n_loadings based on size.
 #' @param loadings_list Character vector indicating for which GeneID's to plot as loadings. It is possible to use n_loadings and loadings_list simultaneously.
 #' @param verbose Logical. Whether warnings about the number of samples and/or assays dropped or imputed should be printed to the console.
+#' 
 #' @return An object of class "ggplot"
 #' @keywords NPX, PCA
+#' 
 #' @export
-#' @examples \donttest{olink_pca_plot(df=npx.data, color_g = "QC_Warning")  }
 #' @import dplyr stringr tidyr ggfortify ggrepel gridExtra
 
 olink_pca_plot <- function (df, 

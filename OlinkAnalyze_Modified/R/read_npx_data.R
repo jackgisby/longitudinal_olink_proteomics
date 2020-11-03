@@ -1,9 +1,16 @@
 #' Function to read NPX data into long format
 #'
-#' Imports an NPX file exported from NPX Manager. 
-#' No alterations to the output NPX Manager format is allowed.
+#' Modifications have been made to allow the reading of our specific dataset and
+#' add GeneIDs in addition to the olink assay names. 
 #'
 #' @param filename Path to file NPX Manager output file.
+#' @param sample_manifest Per individual phenotypic data
+#' @param pheno Per sample phenotypic data
+#' @param skip_mod How many lines to skip in the excel file
+#' @param panel Which panel is currently being read
+#' @param tab Which excel tab the data is being read from
+#' @param this_exp Whether the data is plasma or serum
+#' 
 #' @return A tibble in long format.
 #' @keywords NPX
 #' @export
@@ -197,6 +204,14 @@ read_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_mod=0, pan
 
 #' Multitab NPX data parsing
 #' 
+#' @param filename Name of the multitab excel raw data
+#' @param sample_manifest Per individual pheno data
+#' @param pheno Per sample pheno data
+#' @param skip_mod The number of lines to skip in the excel file
+#' @param panel Which panel is being extracted
+#' @param num_tabs The number of tabs in the excel file
+#' @param this_exp The sample matrix
+#' 
 #' @export
 #' @import dplyr stringr tidyr
 
@@ -220,7 +235,6 @@ read_multitab_NPX <- function(filename, sample_manifest=NULL, pheno=NULL, skip_m
 #' Map protein IDs to gene IDs. 
 #' 
 #' @param df meta_dat dataframe
-#' @param tab (optional) tab number
 #' 
 #' @return Gene IDs
 

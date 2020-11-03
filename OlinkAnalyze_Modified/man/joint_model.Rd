@@ -6,6 +6,19 @@
 \usage{
 joint_model(long, prot = "CCL2")
 }
+\arguments{
+\item{long}{The dataframe of NPX data}
+
+\item{prot}{The protein for which a model should be generated.}
+}
 \description{
-Run joint models on olink data
+Function allows for a joint model to be generated for a single protein. Death
+is predicted from longitudinal NPX data (time from first symptom onset).
+}
+\note{
+The function has been created for this specific dataset, and so may require
+modification for use on other datasets.
+}
+\author{
+Jack Gisby
 }

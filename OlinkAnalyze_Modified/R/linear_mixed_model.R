@@ -1,5 +1,6 @@
 #'Function which performs a linear mixed model per protein
 #'
+#'Function originally part of the OlinkAnalyze package. 
 #'Fits a linear mixed effects model for every protein (by GeneID) in every panel, using lmerTest::lmer and stats::anova.
 #'The function handles both factor and numerical variables and/or covariates. \cr\cr
 #'Samples that have no variable information or missing factor levels are automatically removed from the analysis (specified in a messsage if verbose = T).
@@ -29,16 +30,11 @@
 #' Covariates to include. Takes ':'/'*' notation. Crossed analysis will not be inferred from main effects.
 #' @param return.covariates Boolean. Default: False. Returns results for the covariates. Note: Adjusted p-values will be NA for the covariates.
 #' @param verbose Boolean. Deafult: True. If information about removed samples, factor conversion and final model formula is to be printed to the console. 
-#'
-#' @return A tibble containing the results of fitting the linear mixed effects model to every protein by GeneID, ordered by ascending p-value. 
+#' @param return.models Whether to return a list of the actual linear mixed models instead of a dataframe of results
+#' 
+#' @return If return.models = FALSE: A tibble containing the results of fitting the linear mixed effects model to every protein by GeneID, ordered by ascending p-value. 
 #' @export
 #' @examples
-#' \donttest{
-#' # Results in model NPX~Time*Treatment+(1|Subject)+(1|Site)
-#' lmer_results <- olink_lmer(df = npx_df,
-#' variable=c("Time", 'Treatment'),
-#' random = c('Subject', 'Site'))
-#' }
 #' @import dplyr stringr tidyr lmerTest purrr
 
 olink_lmer <- function(df,                        
@@ -282,6 +278,15 @@ olink_lmer <- function(df,
 }
 
 #' run a single mixed model
+#' 
+#' generates a model for a single protein. Attempts to use the default linear 
+#' mixed model optimizer but switches to Nelder_Mead given an error
+#' 
+#' @param data The NPX data for a single protein
+#' 
+#' @param formula_string The formula of the model to be fit
+#' 
+#' @import lmerTest
 #' @export
 single_lmer <- function(data, formula_string) {
   
@@ -311,6 +316,27 @@ single_lmer <- function(data, formula_string) {
 }
 
 #' simple mixed differential expression analysis plot
+#' 
+#' Fits linear mixed models for each protein before plotting as a volcano
+#' 
+#' @param long The dataframe of NPX data
+#' 
+#' @param case_control_to_remove Remove samples with this level of CaseControl
+#' 
+#' @param variable The variable to models
+#' 
+#' @param covariates Covariates to be included in the models
+#' 
+#' @param random The random term of the models
+#' 
+#' @param plot_xlab The x axis title
+#' 
+#' @param plot_title The main title of the plot
+#' 
+#' @param labels The top `labels` percent of fold changes will be plotted
+#' 
+#' @param logp_label Proteins below `logp_label` will not be plotted
+#' 
 #' @export
 #' @import ggplot2 dplyr
 

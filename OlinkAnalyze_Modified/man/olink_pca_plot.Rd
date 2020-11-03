@@ -43,13 +43,11 @@ olink_pca_plot(
 An object of class "ggplot"
 }
 \description{
+Function was originally part of the OlinkAnalyze package, description below:
 Generates a PCA projection of all samples from NPX data along two principal components (default PC2 vs. PC1) including the explained variance and dots colored by QC_Warning using stats::prcomp and ggplot2::ggplot. 
 The values are by default scaled and centered in the PCA and proteins with missing NPX values are by default removed from the corresponding assay. 
 Unique sample names are required. 
 Imputation by the median is done for assays with missingness <10\% for multi-plate projects and <5\% for single plate projects.
-}
-\examples{
-\donttest{olink_pca_plot(df=npx.data, color_g = "QC_Warning")  }
 }
 \keyword{NPX,}
 \keyword{PCA}

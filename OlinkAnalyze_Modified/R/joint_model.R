@@ -1,4 +1,17 @@
 #' Run joint models on olink data
+#' 
+#' Function allows for a joint model to be generated for a single protein. Death
+#' is predicted from longitudinal NPX data (time from first symptom onset).
+#' 
+#' @param long The dataframe of NPX data
+#' 
+#' @param prot The protein for which a model should be generated.
+#' 
+#' @author Jack Gisby
+#' 
+#' @note The function has been created for this specific dataset, and so may require
+#' modification for use on other datasets. 
+#' 
 #' @export
 #' @import JMbayes
 
@@ -11,8 +24,8 @@ joint_model <- function(long, prot="CCL2") {
     # long must be sorted properly for the JM package to work
     long <- long[order(long$Individual_ID, long$Time_From_First_Symptoms),]
     
-    prot <- long[long$Time_From_First_Symptoms <= max(long$Time_From_First_Symptoms[long$Fatal_Disease]),]
-    prot <- prot[prot$Individual_ID != "C77",] # C77 has no measurements near date of death
+    prot <- long[long$Time_From_First_Symptoms <= max(long$Time_From_First_Symptoms[long$Fatal_Disease]),]  # only use protein data up until the final date of death (28 days)
+    prot <- prot[prot$Individual_ID != "C77",] # C77 has no measurements near date of death (so unsuitable for modelling)
     prot <- prot[prot$Individual_ID %in% names(table(prot$Individual_ID))[table(prot$Individual_ID) > 1],]  # remove single measurements
     prot$NPX <- scale(prot$NPX, center = TRUE, scale = TRUE)
     
@@ -30,8 +43,7 @@ joint_model <- function(long, prot="CCL2") {
     surv_long$is_fatal <- vector("logical", length(unique(prot$Individual_ID)))
     surv_long$time_fatal <- vector("numeric", length(unique(prot$Individual_ID)))
     
-    # algorithm for finding time of event: transition to severe_critical
-    # for each individual
+    # algorithm for finding time of event (death) for each individual
     for (j in 1:length(unique(prot$Individual_ID))) {
         individual <- unique(prot$Individual_ID)[j]
         individual_long <- prot[prot$Individual_ID == individual,]
@@ -65,5 +77,6 @@ joint_model <- function(long, prot="CCL2") {
     # fit cox model
     fitSURV <- coxph(Surv(time_fatal, event=is_fatal) ~ 1, data = surv_long, x = TRUE)
     
+    # fit joint model
     return(jointModelBayes(fitLME, fitSURV, timeVar = "Time_From_First_Symptoms", control=list(n.iter=20000)))
 }

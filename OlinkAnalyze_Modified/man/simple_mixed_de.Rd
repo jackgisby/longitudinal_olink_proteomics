@@ -16,6 +16,25 @@ simple_mixed_de(
   logp_label = 10
 )
 }
+\arguments{
+\item{long}{The dataframe of NPX data}
+
+\item{case_control_to_remove}{Remove samples with this level of CaseControl}
+
+\item{variable}{The variable to models}
+
+\item{covariates}{Covariates to be included in the models}
+
+\item{random}{The random term of the models}
+
+\item{plot_xlab}{The x axis title}
+
+\item{plot_title}{The main title of the plot}
+
+\item{labels}{The top `labels` percent of fold changes will be plotted}
+
+\item{logp_label}{Proteins below `logp_label` will not be plotted}
+}
 \description{
-simple mixed differential expression analysis plot
+Fits linear mixed models for each protein before plotting as a volcano
 }

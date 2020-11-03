@@ -1,10 +1,10 @@
 Package: OlinkAnalyzeModified
 Type: Package
-Title: Package to facilitate NPX data handling
+Title: Functions for processing olink proteomics data - in particular for the use of linear mixed models and handling longitudinal data
 Version: 1.0.2
-Author: DS at Olink (given="Data", family="Science", email = "biostattools@olink.com", role = c("aut", "cre"))
-Description: Package for working with Olink NPX data, primarily exported from Olink NPX Manager. 
+Author: Jack Gisby - Originally forked from OlinkAnalyze package
+Description: Modified version of the OlinkAnalyze package for working with Olink NPX data, primarily exported from Olink NPX Manager. 
 Encoding: UTF-8
 LazyData: true
-Depends: broom, car, emmeans, ggfortify, ggrepel, lmerTest, openxlsx, stringr, tidyverse, readxl, dplyr
+Depends: broom, biomaRt, car, survival, JMbayes, emmeans, ggfortify, ggrepel, lmerTest, openxlsx, stringr, Rfast, tidyverse, readxl, dplyr, randomForestExplainer, caret, nlme, ggplot2
 RoxygenNote: 7.1.1

@@ -6,6 +6,12 @@
 \usage{
 single_lmer(data, formula_string)
 }
+\arguments{
+\item{data}{The NPX data for a single protein}
+
+\item{formula_string}{The formula of the model to be fit}
+}
 \description{
-run a single mixed model
+generates a model for a single protein. Attempts to use the default linear 
+mixed model optimizer but switches to Nelder_Mead given an error
 }
