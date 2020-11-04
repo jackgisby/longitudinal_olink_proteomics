@@ -31,9 +31,9 @@ library(OlinkAnalyzeModified)
 
 A public version of the dataset is provided for replication of results
 and further investigation. We have split the primary (plasma) and
-validation (serum) into seperate CSVs. The NPX (protein expression)
+validation (serum) into separate CSVs. The NPX (protein expression)
 level data contains a row for each data point whilst the sample level
-data contains phenotypic data and clinical measurementst; the
+data contains phenotypic data and clinical measurements; the
 `serum_samples` dataframe has less columns than the `plasma_samples`
 dataframe as it does not contain contemporaneous sample data.
 
@@ -278,14 +278,14 @@ summary(joint_model(plasma_full[plasma_full$Case_Control == "POSITIVE",], "AZU1"
     ## adapt: 3000 
     ## burn-in: 3000 
     ## thinning: 10 
-    ## time: 0.7 min
+    ## time: 0.6 min
 
 # Random Forests
 
-We used the first sample for each individual to predict overall (peak)
-WHO severity. A random forests model is generated using caret (using
-10-fold cross-validation repeated 10 times). Variable importance
-measures are then calculated for each protein.
+We used the first sample for each individual to predict peak WHO
+severity. A random forests model is generated using caret (using 10-fold
+cross-validation repeated 10 times). Variable importance measures are
+then calculated for each protein.
 
 ``` r
 plasma_independent <- get_first_samples(plasma_full[plasma_full$Case_Control == "POSITIVE",])
@@ -354,30 +354,36 @@ head(var_imp)
 # Longitudinal Models
 
 Finally, we generate linear mixed models for each protein to predict NPX
-from the interaction between overall WHO severity and time. Proteins
-with a significant (FDR \< 0.05) interaction term were considered to
-have a differential temporal expression depending on the severity of the
-overall disease course.
+from the interaction between peak WHO severity and time. Proteins with a
+significant (FDR \< 0.05) interaction term were considered to have a
+differential temporal expression depending on the severity of the
+disease course peak.
 
 ``` r
-formula_string <- "NPX ~ bs(Time_From_First_Symptoms, degree = 2) * WHO_Severity_Peak + Age + Sex + Ethnicity + (bs(Time_From_First_Symptoms, degree = 2) | Individual_ID)"
+formula_string <- "NPX ~ bs(Time_From_First_Symptoms, degree = 2) * grouped_severity + Age + Sex + Ethnicity + (bs(Time_From_First_Symptoms, degree = 2) | Individual_ID)"
+
+plasma_full$grouped_severity <- ifelse(
+    plasma_full$WHO_Severity_Peak %in% c("mild", "moderate"), 
+    "mild_moderate", 
+    "severe_critical"
+)
 
 lmm_prot_time <- plasma_full %>% 
-    filter(Case_Control=="POSITIVE") %>%
+    filter(Case_Control=="POSITIVE" & Time_From_First_Symptoms <= 21 & !is.na(Time_From_First_Symptoms)) %>%
     group_by(Assay, GeneID, UniProt, Panel) %>%
     group_modify(~tidy(anova(single_lmer(data=.x, formula_string = formula_string)))) %>%
     ungroup() %>%
-    filter(term == "bs(Time_From_First_Symptoms, degree = 2):WHO_Severity_Peak")
+    filter(term == "bs(Time_From_First_Symptoms, degree = 2):grouped_severity")
 
 head(lmm_prot_time)
 ```
 
     ## # A tibble: 6 x 11
-    ##   Assay  GeneID UniProt Panel term    sumsq meansq NumDF DenDF statistic p.value
-    ##   <chr>  <chr>  <chr>   <chr> <chr>   <dbl>  <dbl> <int> <dbl>     <dbl>   <dbl>
-    ## 1 4E-BP1 EIF4E~ Q13541  In    bs(Ti~ 0.133  0.0222     6  29.4     0.742  0.621 
-    ## 2 ACE2   ACE2   Q9BYF1  CVD2  bs(Ti~ 1.22   0.204      6  36.0     3.29   0.0109
-    ## 3 ADA    ADA    P00813  In    bs(Ti~ 0.357  0.0595     6  51.6     0.473  0.825 
-    ## 4 ADAM-~ ADAMT~ Q76LX8  CVD2  bs(Ti~ 0.0928 0.0155     6  28.7     1.50   0.215 
-    ## 5 ADM    ADM    P35318  CVD2  bs(Ti~ 0.0698 0.0116     6  41.7     0.857  0.534 
-    ## 6 AGRP   AGRP   O00253  CVD2  bs(Ti~ 1.20   0.200      6  43.6     1.93   0.0973
+    ##   Assay  GeneID UniProt Panel term   sumsq  meansq NumDF DenDF statistic p.value
+    ##   <chr>  <chr>  <chr>   <chr> <chr>  <dbl>   <dbl> <int> <dbl>     <dbl>   <dbl>
+    ## 1 4E-BP1 EIF4E~ Q13541  In    bs(T~ 0.185  0.0926      2  57.5     3.57  0.0346 
+    ## 2 ACE2   ACE2   Q9BYF1  CVD2  bs(T~ 0.584  0.292       2  18.7     5.96  0.00999
+    ## 3 ADA    ADA    P00813  In    bs(T~ 0.146  0.0730      2  49.1     0.619 0.543  
+    ## 4 ADAM-~ ADAMT~ Q76LX8  CVD2  bs(T~ 0.0281 0.0141      2  23.0     1.41  0.265  
+    ## 5 ADM    ADM    P35318  CVD2  bs(T~ 0.0122 0.00608     2  44.3     0.523 0.596  
+    ## 6 AGRP   AGRP   O00253  CVD2  bs(T~ 0.189  0.0944      2  25.1     0.988 0.386

@@ -49,8 +49,8 @@ library(OlinkAnalyzeModified)
 
 A public version of the dataset is provided for replication of results and further
 investigation. We have split the primary (plasma) and validation (serum) into
-seperate CSVs. The NPX (protein expression) level data contains a row for each data point whilst the
-sample level data contains phenotypic data and clinical measurementst; the `serum_samples` 
+separate CSVs. The NPX (protein expression) level data contains a row for each data point whilst the
+sample level data contains phenotypic data and clinical measurements; the `serum_samples` 
 dataframe has less columns than the `plasma_samples` dataframe as it does not 
 contain contemporaneous sample data. 
 
@@ -145,7 +145,7 @@ summary(joint_model(plasma_full[plasma_full$Case_Control == "POSITIVE",], "AZU1"
 
 # Random Forests
 
-We used the first sample for each individual to predict overall (peak) WHO severity. 
+We used the first sample for each individual to predict peak WHO severity. 
 A random forests model is generated using caret (using 10-fold cross-validation repeated
 10 times). Variable importance measures are then calculated for each protein.
 
@@ -168,19 +168,25 @@ head(var_imp)
 # Longitudinal Models
 
 Finally, we generate linear mixed models for each protein to predict NPX from
-the interaction between overall WHO severity and time. Proteins with a significant
+the interaction between peak WHO severity and time. Proteins with a significant
 (FDR < 0.05) interaction term were considered to have a differential temporal
-expression depending on the severity of the overall disease course. 
+expression depending on the severity of the disease course peak. 
 
 ```{r longt, message=FALSE, warning=FALSE}
-formula_string <- "NPX ~ bs(Time_From_First_Symptoms, degree = 2) * WHO_Severity_Peak + Age + Sex + Ethnicity + (bs(Time_From_First_Symptoms, degree = 2) | Individual_ID)"
+formula_string <- "NPX ~ bs(Time_From_First_Symptoms, degree = 2) * grouped_severity + Age + Sex + Ethnicity + (bs(Time_From_First_Symptoms, degree = 2) | Individual_ID)"
+
+plasma_full$grouped_severity <- ifelse(
+    plasma_full$WHO_Severity_Peak %in% c("mild", "moderate"), 
+    "mild_moderate", 
+    "severe_critical"
+)
 
 lmm_prot_time <- plasma_full %>% 
-    filter(Case_Control=="POSITIVE") %>%
+    filter(Case_Control=="POSITIVE" & Time_From_First_Symptoms <= 21 & !is.na(Time_From_First_Symptoms)) %>%
     group_by(Assay, GeneID, UniProt, Panel) %>%
     group_modify(~tidy(anova(single_lmer(data=.x, formula_string = formula_string)))) %>%
     ungroup() %>%
-    filter(term == "bs(Time_From_First_Symptoms, degree = 2):WHO_Severity_Peak")
+    filter(term == "bs(Time_From_First_Symptoms, degree = 2):grouped_severity")
 
 head(lmm_prot_time)
 ```

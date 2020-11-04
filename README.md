@@ -1,6 +1,6 @@
 # Longitudinal Olink Proteomics Data and Code
 
-Repository for the paper: “Longitudinal proteomic profiling of high-risk patients with COVID-19 reveals markers of severity and predictors of fatal disease” by Gisby et al, in review. 
+Repository for the paper: “Longitudinal proteomic profiling of high-risk patients with COVID-19 reveals markers of severity and predictors of fatal disease” by Gisby et al, MedRxiv link to come. 
 
 Here, we have stored:
 * A public version of the dataset used in the paper (`data`)
@@ -32,10 +32,7 @@ Index | Integer | Unique sample identifier
 
 ### Sample Level Data Features
 
-Note that the primary cohort table contains all the features below whereas the validation
-cohort only contains columns relevant to the serum dataset. The validation cohort was 
-used as a replication cohort for differential abundance analyses but temporal data was
-not collected or used.
+The features of the sample level datasets include:
 
 Column Name | Data Type | Description
 | :---: | :---: | :---:
@@ -43,7 +40,7 @@ SampleID  | Character | Unique identifier for samples
 Individual_ID | Character | Unique identifier for individuals
 Plate_ID | Character | The assay plate to which the sample was assigned (1-5)
 Case_Control | Character | Whether the individual was COVID `POSITIVE` or `NEGATIVE` at time of sampling
-WHO_Severity_Peak | Character | The overall (WHO) severity of the individual's disease course
+WHO_Severity_Peak | Character | The peak (WHO) severity for the patient over the disease course
 WHO_Severity_Contemporaneous | Character | The (WHO) severity at time of sampling
 Sex | Character | The individual's sex (M or F)
 Ethnicity | Character | The individual's ethnicity (White, Black, South Asian, Asian (other) or Other)

@@ -229,7 +229,7 @@
 "C105_280","C105","plate.4","POSITIVE","mild","mild","F","South Asian","(60,80]",FALSE,FALSE,8,NA,5,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "C66_281","C66","plate.4","POSITIVE","critical","severe","F","Black","(60,80]",TRUE,TRUE,5,9,0,4,13.1,12.1,0.6,0.4,386.1,1956,1287,93
 "C214_282","C214","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","F","White","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"C99_283","C99","plate.4","POSITIVE","severe","severe","M","White","(60,80]",TRUE,FALSE,18,NA,8,NA,4.5,4,0.2,0.2,189.4,NA,NA,NA
+"C99_283","C99","plate.4","POSITIVE","critical","severe","M","White","(60,80]",TRUE,FALSE,18,NA,8,NA,4.5,4,0.2,0.2,189.4,NA,NA,NA
 "C251_284","C251","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(40,60]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "C87_285","C87","plate.4","POSITIVE","mild","mild","M","Asian (other)","(60,80]",FALSE,FALSE,11,NA,11,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "C68_286","C68","plate.4","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,9,NA,9,NA,NA,NA,NA,NA,NA,NA,NA,NA
@@ -244,7 +244,7 @@
 "C124_296","C124","plate.4","POSITIVE","moderate","moderate","M","South Asian","(80,100]",FALSE,FALSE,9,NA,4,NA,5,3.9,0.3,0.7,129.1,5144,638,69
 "C64_297","C64","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","M","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "C137_298","C137","plate.4","NEGATIVE","NEGATIVE","NEGATIVE","F","South Asian","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
-"C99_299","C99","plate.4","POSITIVE","severe","critical","M","White","(60,80]",TRUE,FALSE,13,NA,3,NA,4.2,4,0.1,0.1,342.5,1934,10440,591
+"C99_299","C99","plate.4","POSITIVE","critical","critical","M","White","(60,80]",TRUE,FALSE,13,NA,3,NA,4.2,4,0.1,0.1,342.5,1934,10440,591
 "C129_300","C129","plate.4","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,8,NA,7,NA,5.7,4.8,0.4,0.4,68.7,968,1155,76
 "C93_301","C93","plate.4","POSITIVE","moderate","mild","M","White","(80,100]",TRUE,FALSE,15,NA,15,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "C18_302","C18","plate.4","POSITIVE","severe","mild","M","South Asian","(60,80]",TRUE,FALSE,14,NA,19,NA,4.9,3.8,0.1,1,17.5,NA,NA,NA
@@ -263,7 +263,7 @@
 "C36_318","C36","plate.4","POSITIVE","moderate","mild","M","South Asian","(60,80]",TRUE,FALSE,12,NA,9,NA,3.8,2.4,0.3,1.1,12.8,NA,NA,NA
 "C125_319","C125","plate.4","POSITIVE","severe","mild","M","Asian (other)","(40,60]",TRUE,FALSE,11,NA,11,NA,3.1,2,0.3,0.7,227.1,NA,NA,NA
 "C73_320","C73","plate.4","POSITIVE","severe","moderate","M","White","(80,100]",TRUE,FALSE,7,NA,3,NA,4,3.4,0.2,0.3,96.7,NA,NA,15749
-"C99_321","C99","plate.4","POSITIVE","severe","severe","M","White","(60,80]",TRUE,FALSE,11,NA,1,NA,2.5,2.3,0.1,0.1,271.6,NA,NA,NA
+"C99_321","C99","plate.4","POSITIVE","critical","severe","M","White","(60,80]",TRUE,FALSE,11,NA,1,NA,2.5,2.3,0.1,0.1,271.6,NA,NA,NA
 "C68_322","C68","plate.4","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,12,NA,12,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "C129_323","C129","plate.4","POSITIVE","mild","mild","M","Other","(60,80]",FALSE,FALSE,6,NA,5,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "C87_324","C87","plate.4","POSITIVE","mild","mild","M","Asian (other)","(60,80]",FALSE,FALSE,9,NA,9,NA,NA,NA,NA,NA,NA,NA,NA,NA
@@ -289,7 +289,7 @@
 "C59_346","C59","plate.4","POSITIVE","severe","mild","M","South Asian","(40,60]",TRUE,FALSE,16,NA,15,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "C17_347","C17","plate.4","POSITIVE","severe","mild","M","Other","(80,100]",TRUE,FALSE,14,NA,12,NA,4,2.4,0.3,1,12.1,1912,NA,NA
 "C73_348","C73","plate.4","POSITIVE","severe","mild","M","White","(80,100]",TRUE,FALSE,14,NA,10,NA,5.9,4.9,0.4,0.5,53.7,NA,NA,200
-"C99_349","C99","plate.4","POSITIVE","severe","severe","M","White","(60,80]",TRUE,FALSE,16,NA,6,NA,4.6,4.3,0.1,0.2,316.6,NA,NA,159
+"C99_349","C99","plate.4","POSITIVE","critical","severe","M","White","(60,80]",TRUE,FALSE,16,NA,6,NA,4.6,4.3,0.1,0.2,316.6,NA,NA,159
 "C18_351","C18","plate.4","POSITIVE","severe","mild","M","South Asian","(60,80]",TRUE,FALSE,12,NA,17,NA,4.3,3.4,0,0.8,25.5,NA,NA,NA
 "C246_352","C246","plate.5","NEGATIVE","NEGATIVE","NEGATIVE","M","White","(60,80]",FALSE,FALSE,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
 "C84_353","C84","plate.5","POSITIVE","critical","moderate","M","South Asian","(60,80]",TRUE,TRUE,3,7,3,7,11.7,11,0.4,0.2,278,NA,5828,281
