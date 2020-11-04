@@ -1,7 +1,7 @@
 Example Analyses
 ================
 Jack Gisby
-2020-11-03
+2020-11-04
 
   - [Modified OlinkAnalyze Package](#modified-olinkanalyze-package)
   - [The Dataset](#the-dataset)
@@ -170,7 +170,7 @@ plasma_severity <- simple_mixed_de(
     logp_label = 8.5,
     variable="WHO_Severity_Contemporaneous",
     plot_xlab = "Linear Gradient", 
-    plot_title=waiver(),
+    plot_title="Severity Analysis",
     random="Individual_ID",
     covariates = c("Sex", "Age", "Ethnicity")
 )
@@ -278,7 +278,7 @@ summary(joint_model(plasma_full[plasma_full$Case_Control == "POSITIVE",], "AZU1"
     ## adapt: 3000 
     ## burn-in: 3000 
     ## thinning: 10 
-    ## time: 0.6 min
+    ## time: 0.7 min
 
 # Random Forests
 

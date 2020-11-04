@@ -125,7 +125,7 @@ plasma_severity <- simple_mixed_de(
     logp_label = 8.5,
     variable="WHO_Severity_Contemporaneous",
     plot_xlab = "Linear Gradient", 
-    plot_title=waiver(),
+    plot_title="Severity Analysis",
     random="Individual_ID",
     covariates = c("Sex", "Age", "Ethnicity")
 )
