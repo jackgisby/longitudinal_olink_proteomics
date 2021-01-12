@@ -3,46 +3,55 @@
 #' @import caret randomForestExplainer
 
 run_rf <- function(long, variable="grouped_severity", sampling=NULL,
-                   selected_features=NULL) {
+                   selected_features=NULL, method="rf") {
     
     # convert data from long format to a matrix
     prot_matrix <- long %>% 
         dplyr::select(SampleID, GeneID, NPX, variable) %>% 
         filter(!is.na(NPX)) %>% 
-        spread(GeneID, NPX) %>%
-        column_to_rownames('SampleID')
+        tidyr::spread(GeneID, NPX) %>%
+        tibble::column_to_rownames('SampleID')
     
     # select specific features for model
     if (!(is.null(selected_features))) {
         prot_matrix <- prot_matrix[,colnames(prot_matrix) %in% selected_features
-                                    | colnames(prot_matrix) == variable]
+                                   | colnames(prot_matrix) == variable]
+    }
+    
+    if (method == "rf") {
+        tuneGrid <- data.frame(mtry = floor(sqrt(ncol(prot_matrix) - 1)))
+        
+    } else if (method == "glmnet") {
+        tuneGrid <- data.frame(alpha = 0.1,  # tried 0.1, 0.2... 1
+                               lambda = seq(0.1, 1, length = 1000))  # tried 0 to 10
     }
     
     # train model using caret
     rf <- train(as.formula(paste0(variable, " ~ .")), 
                 data = prot_matrix, 
                 localImp = TRUE,
-                method = "rf", 
+                method = method, 
                 metric = "Accuracy",
-                proximity=TRUE,
+                proximity = TRUE,
                 preProcess = c("knnImpute", "scale", "center"),
                 na.action = na.pass,
-                tuneGrid = data.frame(mtry = floor(sqrt(ncol(prot_matrix) - 1))),
-                trControl = trainControl(method = "repeatedcv", p = 0.7, number=10, repeats=10, sampling=sampling))
+                tuneGrid = tuneGrid,
+                trControl = trainControl(method = "repeatedcv", allowParallel = TRUE, number = 4, repeats = 100, p = 0.75, sampling=sampling))
     
     rf$finalModel$call$formula <- eval(rf$call$form)
     print(rf)
-    print(rf$finalModel)
     
-    # plot feature importance (ntrees, minimal depth)
-    print(plot_min_depth_distribution(min_depth_distribution(rf$finalModel), k = 12
-    ) +
-              theme_minimal() +
-              theme(title=element_blank(), panel.grid.major = element_blank(), text = element_text(size=11),
-                    legend.position = "top") +
-              guides(fill=guide_legend(title = "Number of Nodes", nrow=1,byrow=TRUE)) +
-              xlab("Number of Trees"))
-        
+    if (method == "rf") {
+        # plot feature importance (ntrees, minimal depth)
+        print(plot_min_depth_distribution(min_depth_distribution(rf$finalModel), k = 12
+        ) +
+            theme_minimal() +
+            theme(title=element_blank(), panel.grid.major = element_blank(), text = element_text(size=11),
+                  legend.position = "top") +
+            guides(fill=guide_legend(title = "Number of Nodes", nrow=1,byrow=TRUE)) +
+            xlab("Number of Trees"))
+    }
+    
     return(rf)
 }
 
@@ -50,7 +59,7 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
 #' @export
 #' @import caret randomForestExplainer
 #' 
-plot_rf <- function(rf, lasso_imp, lasso_label=1, accuracy_decrease_label=1, 
+plot_rf <- function(rf, enet_imp, enet_label=0.95, accuracy_decrease_label=0.002, 
                     return_imp_frame=FALSE) {
     
     # get feature importances
@@ -60,22 +69,21 @@ plot_rf <- function(rf, lasso_imp, lasso_label=1, accuracy_decrease_label=1,
     imp_frame$p_adj <- p.adjust(imp_frame$p_value, "fdr")
     imp_frame$p_s <- factor(ifelse(imp_frame$p_adj < 0.05, "<0.05", "NS"), levels=c("NS", "<0.05"))
     
+    # use lasso importance metric
+    imp_frame <- enet_imp %>%
+        left_join(imp_frame, by=c("protein"="variable"))
+    
     if (return_imp_frame) {
         return(imp_frame)
     }
     
-    # use lasso importance metric
-    imp_frame <- lasso_imp %>%
-        left_join(imp_frame, by=c("GeneID"="variable")) %>%
-        filter(accuracy_decrease != 0 & ridge != 0)
-    
     # secondary feature importance plot
-    imp_plot <- ggplot(imp_frame, aes(ridge, accuracy_decrease)) + 
+    imp_plot <- ggplot(imp_frame, aes(in_x_model, accuracy_decrease)) + 
         theme_pubr() +
-        xlab("Standardised Ridge Coefficient") + ylab("Random Forest Accuracy Decrease") +
-        geom_point(alpha=0.75) + 
-        geom_text_repel(data=subset(imp_frame, ridge > lasso_label | accuracy_decrease > accuracy_decrease_label),
-                        aes(ridge, accuracy_decrease, label = GeneID), size = 3, color="black")
+        xlab("Elastic Net Model Inclusion Proportion") + ylab("Random Forest Accuracy Decrease") +
+        geom_point(alpha=0.75) +
+        geom_text_repel(data=subset(imp_frame, in_x_model > enet_label & accuracy_decrease > accuracy_decrease_label),
+                        aes(in_x_model, accuracy_decrease, label = protein), size = 3, color="black")
     
     print(imp_plot)
     # print(plot_importance_ggpairs(imp_frame, c("no_of_trees", "accuracy_decrease", "p_adj", "mean_min_depth", "gini_decrease")) + 
@@ -163,9 +171,9 @@ plot_interactions <- function(final_rf, x, var1, var2, grid=300, virtis_option="
     var2_breaks <- seq(var2_min, var2_max, (var2_max - var2_min) / 30)
     
     a <- melt(tapply(inter_plot$data$prediction,
-                list(x=cut(inter_plot$data[[var1]], labels=FALSE, breaks=var1_breaks), 
-                     y=cut(inter_plot$data[[var2]], labels=FALSE, breaks=var2_breaks)),
-                mean))
+                     list(x=cut(inter_plot$data[[var1]], labels=FALSE, breaks=var1_breaks), 
+                          y=cut(inter_plot$data[[var2]], labels=FALSE, breaks=var2_breaks)),
+                     mean))
     
     colnames(a) <- c("var1", "var2", "Prediction")
     
@@ -190,7 +198,7 @@ plot_interactions <- function(final_rf, x, var1, var2, grid=300, virtis_option="
 #' @import caret
 
 run_lasso <- function(long, variable="grouped_severity", sampling=NULL,
-                   selected_features=NULL, lasso=TRUE) {
+                      selected_features=NULL, lasso=TRUE) {
     
     # convert data from long format to a matrix
     prot_matrix <- long %>% 
@@ -215,17 +223,17 @@ run_lasso <- function(long, variable="grouped_severity", sampling=NULL,
     
     # train model using caret
     lasso <- train(as.formula(paste0(variable, " ~ .")), 
-                data = prot_matrix, 
-                localImp = TRUE,
-                method = "glmnet", 
-                metric = "Accuracy",
-                proximity=TRUE,
-                family="binomial",
-                preProcess = c("knnImpute", "scale", "center"), 
-                tuneGrid=expand.grid(alpha=a, lambda=l),
-                na.action = na.pass,
-                trControl = trainControl(method = "repeatedcv", p = 0.7, number=10, repeats=10, sampling=sampling))
-
+                   data = prot_matrix, 
+                   localImp = TRUE,
+                   method = "glmnet", 
+                   metric = "Accuracy",
+                   proximity=TRUE,
+                   family="binomial",
+                   preProcess = c("knnImpute", "scale", "center"), 
+                   tuneGrid=expand.grid(alpha=a, lambda=l),
+                   na.action = na.pass,
+                   trControl = trainControl(method = "repeatedcv", p = 0.7, number=10, repeats=10, sampling=sampling))
+    
     lasso$finalModel$call$formula <- eval(lasso$call$form)
     print(lasso)
     
@@ -245,7 +253,7 @@ get_first_samples <- function(long) {
     # now order the remaining samples by their time from first symptoms
     unique_SampleIDs <- unique(long$SampleID)
     unique_SampleIDs_to_remove <- vector("logical", length(unique_SampleIDs))
-
+    
     for (ind in unique(long$Individual_ID)) {
         possible_unique_SampleIDs <- unique_SampleIDs[grepl(paste0(ind, "_"), unique_SampleIDs)]
         stopifnot(length(possible_unique_SampleIDs) > 0)
