@@ -8,7 +8,8 @@ run_rf(
   long,
   variable = "grouped_severity",
   sampling = NULL,
-  selected_features = NULL
+  method = "rf",
+  which_data = "protein"
 )
 }
 \description{

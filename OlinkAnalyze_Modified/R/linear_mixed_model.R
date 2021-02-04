@@ -349,7 +349,8 @@ simple_mixed_de <- function(
   plot_xlab="Log2 Fold Change (P-N)",
   plot_title="plasma case/control",
   labels=0.1,
-  logp_label=10
+  logp_label=10,
+  return_models=FALSE
 ) {
   # remove a particular case/control group prior to analysis
   if (!is.na(case_control_to_remove)) {
@@ -360,11 +361,22 @@ simple_mixed_de <- function(
   cctrl_cov_pvals <- olink_lmer(long, variable, random=random, covariates=covariates)
   cctrl__cov_models <- olink_lmer(long, variable, random=random, covariates=covariates, return.models = TRUE)
   
+  if (return_models) {
+    return(cctrl__cov_models)
+  }
   # calculate fold change
   fc <- sapply(cctrl__cov_models, function(lmer_model) {return(lmer_model@beta[2])})
-  
   fc_df <- data.frame(GeneID=names(cctrl__cov_models), fc=fc)
   cctrl_cov_pvals <- left_join(cctrl_cov_pvals, fc_df)
+  
+  # calculate se
+  fc2 <- sapply(cctrl__cov_models, function(lmer_model) {return(summary(lmer_model)$coefficients[2,1])})
+  stopifnot(all(fc == fc2))
+  
+  se <- sapply(cctrl__cov_models, function(lmer_model) {return(summary(lmer_model)$coefficients[2,2])})
+  se_df <- data.frame(GeneID=names(cctrl__cov_models), se=se)
+  cctrl_cov_pvals <- left_join(cctrl_cov_pvals, se_df)
+  
   cctrl_cov_pvals$logp <- -log10(cctrl_cov_pvals$Adjusted_pval)
   
   high_fc <- Rfast::nth(cctrl_cov_pvals$fc[cctrl_cov_pvals$Adjusted_pval < 0.05], labels * length(cctrl_cov_pvals$fc[cctrl_cov_pvals$Adjusted_pval < 0.05 & fc > 0]), descending = TRUE)

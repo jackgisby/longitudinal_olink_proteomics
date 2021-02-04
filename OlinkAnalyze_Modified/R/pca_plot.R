@@ -23,23 +23,21 @@
 #' @export
 #' @import dplyr stringr tidyr ggfortify ggrepel gridExtra
 
-olink_pca_plot <- function (df, 
-                            color_g = "QC_Warning", 
-                            x_val = 1, 
-                            y_val = 2, 
-                            label_samples = F, 
-                            drop_assays = F,
-                            drop_samples = F, 
-                            n_loadings = 0, 
-                            loadings_list = NULL,
-                            verbose = T,
-                            return_prcomp=FALSE){ 
+olink_pca_plot <- function(df, 
+                           color_g = "QC_Warning", 
+                           x_val = 1, 
+                           y_val = 2, 
+                           label_samples = FALSE, 
+                           drop_assays = FALSE,
+                           drop_samples = FALSE, 
+                           n_loadings = 0, 
+                           loadings_list = NULL,
+                           verbose = TRUE,
+                           return_prcomp=FALSE,
+                           return_df_wide_matrix=FALSE,
+                           predicted_prcomp=NULL){ 
   
-  #Filtering on valid GeneID
-  df <- df %>%
-    filter(stringr::str_detect(OlinkID,
-                               "OID[0-9]{5}"))
-  
+  # assigns colours to points based on grouping
   if (color_g == "QC_Warning"){
     
     df_temp <- df %>% 
@@ -79,19 +77,17 @@ olink_pca_plot <- function (df,
     
   }
   
-  #Checking if there are any proteins with 0 variance, they are filtered out
-  
+  # Checking if there are any proteins with 0 variance, they are filtered out
   df_temp <- df_temp %>% 
     group_by(GeneID) %>%
     mutate(assay_var = var(NPX, na.rm = T)) %>%
     ungroup() %>%
     filter(!(assay_var == 0 | is.na(assay_var))) %>%
-    select(-assay_var)
+    dplyr::select(-assay_var)
   
-  #wide format
-  
+  # wide format
   df_wide <- df_temp %>% 
-    select(SampleID, Index, GeneID, NPX) %>% 
+    dplyr::select(SampleID, Index, GeneID, NPX) %>% 
     filter(!is.na(NPX)) %>% 
     spread(GeneID, NPX)
   
@@ -150,27 +146,39 @@ olink_pca_plot <- function (df,
     left_join(colors_for_pca,
               by = c('SampleID',
                      'Index')) %>%
-    select(SampleID, Index, pca_colors, everything()) 
+    dplyr::select(SampleID, Index, pca_colors, everything()) 
   
   df_wide_matrix <- df_wide %>% 
-    select(-Index, -pca_colors) %>%
+    dplyr::select(-Index, -pca_colors) %>%
     column_to_rownames('SampleID')
   
+  # scales and centres data (imputes if there are any missing values)
   df_wide_matrix <- preProcess(df_wide_matrix, method = c("knnImpute", "scale", "center")) %>%
     predict(df_wide_matrix) %>%
     as.matrix()
+  
+  if (return_df_wide_matrix) {
+    return(df_wide_matrix)
+  }
   
   if(!all(colSums(is.na(df_wide_matrix[, -c(1:2)])) == 0)){
     stop('Missingness imputation failed.')
   }
   
   # calculate pca via svd
-  pca_fit <- prcomp(df_wide_matrix, scale. = FALSE, center = FALSE)
+  if (is.null(predicted_prcomp)) {  # applies prcomp to calculate PCA
+    pca_fit <- prcomp(df_wide_matrix, scale. = FALSE, center = FALSE)  # already scaled and centered data
+    
+  } else {  # if the prcomp is already calculated on another dataset, apply it to the new dataset
+    
+    pca_fit <- predicted_prcomp  # loadings etc. are going to stay the same so set pca_fit to be the previous value of prcomp
+    pca_fit$x <- predict(predicted_prcomp, newdata=df_wide_matrix)  # but the PCs will change so set this for the new dataset via predict
+  }
   
   if (return_prcomp) {
     return(pca_fit)
   }
-
+  
   #Standardizing and selecting components
   
   scaling_factor_lambda <- pca_fit$sdev*sqrt(nrow(df_wide_matrix))
@@ -211,7 +219,7 @@ olink_pca_plot <- function (df,
     
   }else{
     
-
+    
     pca_plot <- pca_plot +
       geom_point(aes(color = observation_colors), size=1.7, alpha=0.85) +
       guides(alpha=FALSE) +
@@ -231,7 +239,12 @@ olink_pca_plot <- function (df,
     
     L_loadings <- N_loadings
     
-    if(n_loadings > 0){
+    if (length(n_loadings) > 1) {
+      
+      # n_loadings is a vector of protein names
+      N_loadings <- loadings[loadings$variables %in% n_loadings,]
+      
+    } else if (n_loadings > 0) {
       
       #Largest loadings based on Pythagoras
       
@@ -239,7 +252,7 @@ olink_pca_plot <- function (df,
         mutate(abs_loading = sqrt(LX^2 + LY^2)) %>%
         arrange(desc(abs_loading)) %>%
         head(n_loadings) %>%
-        select(-abs_loading)
+        dplyr::select(-abs_loading)
     }
     
     if(!is.null(loadings_list)){

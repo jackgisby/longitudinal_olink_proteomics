@@ -2,28 +2,35 @@
 #' @export
 #' @import caret randomForestExplainer
 
-run_rf <- function(long, variable="grouped_severity", sampling=NULL,
-                   selected_features=NULL, method="rf") {
+run_rf <- function(long, variable="grouped_severity", sampling=NULL, 
+                   method="rf", which_data="protein") {
     
     # convert data from long format to a matrix
     prot_matrix <- long %>% 
         dplyr::select(SampleID, GeneID, NPX, variable) %>% 
-        filter(!is.na(NPX)) %>% 
-        tidyr::spread(GeneID, NPX) %>%
-        tibble::column_to_rownames('SampleID')
+        dplyr::filter(!is.na(NPX)) %>% 
+        tidyr::spread(GeneID, NPX)
     
-    # select specific features for model
-    if (!(is.null(selected_features))) {
-        prot_matrix <- prot_matrix[,colnames(prot_matrix) %in% selected_features
-                                   | colnames(prot_matrix) == variable]
+    if (which_data %in% c("both", "clinical")) {
+        
+        long <- unique(dplyr::select(long, SampleID, radiology.evidence.covid, ihd, previous.vte, copd, diabetes, smoking, Sex, calc.age, macro.ethnic, cause.eskd, temp_CRP, temp_neut, temp_mono, temp_lymph, temp_WCC, temp_ddimer))
+        prot_matrix <- dplyr::left_join(prot_matrix, long, by=c("SampleID"="SampleID"))
+        
     }
     
+    if (which_data == "clinical") {
+        
+        prot_matrix <- dplyr::select(prot_matrix, SampleID, radiology.evidence.covid, ihd, previous.vte, copd, grouped_severity, diabetes, smoking, Sex, calc.age, macro.ethnic, cause.eskd, temp_CRP, temp_neut, temp_mono, temp_lymph, temp_WCC, temp_ddimer)
+    }
+    
+    prot_matrix <- tibble::column_to_rownames(prot_matrix, "SampleID")
+
     if (method == "rf") {
         tuneGrid <- data.frame(mtry = floor(sqrt(ncol(prot_matrix) - 1)))
         
     } else if (method == "glmnet") {
-        tuneGrid <- data.frame(alpha = 0.1,  # tried 0.1, 0.2... 1
-                               lambda = seq(0.1, 1, length = 1000))  # tried 0 to 10
+        tuneGrid <- data.frame(alpha = 0,  # tried 0.1, 0.2... 1
+                               lambda = seq(0, 1, length = 1000))  # tried 0 to 10
     }
     
     # train model using caret
@@ -59,7 +66,7 @@ run_rf <- function(long, variable="grouped_severity", sampling=NULL,
 #' @export
 #' @import caret randomForestExplainer
 #' 
-plot_rf <- function(rf, enet_imp, enet_label=0.95, accuracy_decrease_label=0.002, 
+plot_rf <- function(rf, enet_imp, enet_label=0.95, mmdepth_label=2.5, 
                     return_imp_frame=FALSE) {
     
     # get feature importances
@@ -78,15 +85,15 @@ plot_rf <- function(rf, enet_imp, enet_label=0.95, accuracy_decrease_label=0.002
     }
     
     # secondary feature importance plot
-    imp_plot <- ggplot(imp_frame, aes(in_x_model, accuracy_decrease)) + 
+    imp_plot <- ggplot(imp_frame, aes(in_x_model, mean_min_depth)) + 
         theme_pubr() +
-        xlab("Elastic Net Model Inclusion Proportion") + ylab("Random Forest Accuracy Decrease") +
+        xlab("Elastic Net Model Inclusion Proportion") + ylab("Random Forest Mean Minimal Depth") +
         geom_point(alpha=0.75) +
-        geom_text_repel(data=subset(imp_frame, in_x_model > enet_label & accuracy_decrease > accuracy_decrease_label),
-                        aes(in_x_model, accuracy_decrease, label = protein), size = 3, color="black")
+        geom_text_repel(data=subset(imp_frame, in_x_model > enet_label & mean_min_depth < mmdepth_label),
+                        aes(in_x_model, mean_min_depth, label = protein), size = 3, color="black")
     
     print(imp_plot)
-    # print(plot_importance_ggpairs(imp_frame, c("no_of_trees", "accuracy_decrease", "p_adj", "mean_min_depth", "gini_decrease")) + 
+    # print(plot_importance_ggpairs(imp_frame, c("no_of_trees", "mean_min_depth", "p_adj", "mean_min_depth", "gini_decrease")) + 
     #           theme_pubr(border = TRUE))
     
     # return(important_variables(select(imp_frame, -lasso), k = 30, measures = c("mean_min_depth", "no_of_trees")))

@@ -6,9 +6,9 @@
 \usage{
 plot_rf(
   rf,
-  lasso_imp,
-  lasso_label = 1,
-  accuracy_decrease_label = 1,
+  enet_imp,
+  enet_label = 0.95,
+  accuracy_decrease_label = 0.002,
   return_imp_frame = FALSE
 )
 }
