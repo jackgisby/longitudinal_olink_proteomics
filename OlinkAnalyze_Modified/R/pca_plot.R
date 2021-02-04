@@ -35,7 +35,8 @@ olink_pca_plot <- function(df,
                            verbose = TRUE,
                            return_prcomp=FALSE,
                            return_df_wide_matrix=FALSE,
-                           predicted_prcomp=NULL){ 
+                           predicted_prcomp=NULL,
+                           plot_scores = TRUE){ 
   
   # assigns colours to points based on grouping
   if (color_g == "QC_Warning"){
@@ -210,22 +211,26 @@ olink_pca_plot <- function(df,
   
   #Drawing scores
   
+  if (plot_scores) {
+    plot_alpha <- 0.85
+  } else {
+    plot_alpha <- 0
+  }
+  
   if(label_samples){
     
     pca_plot <- pca_plot +
-      geom_text(aes(label = observation_names, color = observation_colors), size = 3) +
+      geom_text(aes(label = observation_names, color = observation_colors), size = 3, alpha=plot_alpha) +
       labs(color = color_g) +
       guides(size = FALSE)
     
-  }else{
-    
+  } else {
     
     pca_plot <- pca_plot +
-      geom_point(aes(color = observation_colors), size=1.7, alpha=0.85) +
+      geom_point(aes(color = observation_colors), size=1.7, alpha=plot_alpha) +
       guides(alpha=FALSE) +
       labs(color = color_g) +
       guides(size = FALSE)
-    
     
   }
   
@@ -251,8 +256,7 @@ olink_pca_plot <- function(df,
       N_loadings <- loadings %>%
         mutate(abs_loading = sqrt(LX^2 + LY^2)) %>%
         arrange(desc(abs_loading)) %>%
-        head(n_loadings) %>%
-        dplyr::select(-abs_loading)
+        head(n_loadings)
     }
     
     if(!is.null(loadings_list)){
@@ -283,7 +287,23 @@ olink_pca_plot <- function(df,
                        show.legend = F,
                        segment.colour = 'gray',
                        size=2.25)
+    
+    if (!plot_scores) {
+      pca_plot <- pca_plot +
+        geom_hline(yintercept=0) +
+        geom_vline(xintercept=0) +
+        geom_path(data=circleFun(max(loadings$abs_loading) * loadings_scaling_factor), aes(x, y))
+    }
   }
   
   return(pca_plot)
+}
+
+circleFun <- function(radius, center = c(0,0), npoints=1000) {
+  
+  tt <- seq(0, 2*pi, length.out = npoints)
+  xx <- center[1] + radius * cos(tt)
+  yy <- center[2] + radius * sin(tt)
+  
+  return(data.frame(x = xx, y = yy))
 }
