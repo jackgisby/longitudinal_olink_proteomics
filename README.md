@@ -10,12 +10,12 @@ Here, we have stored:
 ## Description of the Dataset
 
 The dataset has been split into a series of four CSV files:
-* `plasma_npx_level.csv` - Protein expression (NPX) data in long table format for the primary (plasma) cohort
-* `plasma_sample_level.csv` - Sample level phenotypic data for the primary (plasma) cohort
-* `serum_npx_level.csv` - Protein expression (NPX) data in long table format for the validation (serum) cohort
-* `serum_sample_level.csv` - Sample level phenotypic data for the validation (serum) cohort
+* `plasma_npx_level.csv` - Protein expression (NPX) data in long table format for the subcohort A (plasma)
+* `plasma_sample_level.csv` - Sample level phenotypic data for the subcohort A
+* `serum_npx_level.csv` - Protein expression (NPX) data in long table format for the subcohort B (serum)
+* `serum_sample_level.csv` - Sample level phenotypic data for the subcohort B
 
-Note that one individual ("C105") of the primary cohort was sampled both before and after
+Note that one individual ("C105") of the subcohort A was sampled both before and after
 their first positive swab, so the first sample is marked as "NEGATIVE" for `Case_Control`.
 
 ### Protein Expression Data Features

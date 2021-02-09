@@ -48,14 +48,15 @@ library(OlinkAnalyzeModified)
 # The Dataset
 
 A public version of the dataset is provided for replication of results and further
-investigation. We have split the primary (plasma) and validation (serum) into
+investigation. We have split subcohort A (plasma) and subcohort B (serum) into
 separate CSVs. The NPX (protein expression) level data contains a row for each data point whilst the
 sample level data contains phenotypic data and clinical measurements; the `serum_samples` 
 dataframe has less columns than the `plasma_samples` dataframe as it does not 
 contain contemporaneous sample data. 
 
-Note that for the models we generated exact age was used, however we have only
-provided binned age in the public dataset. Therefore, exact results may differ
+Note that for the models in the paper, we used the exact age and included more
+granular ethnicity groupings. However, we have only provided binned age and simplified
+ethnicity groupings in the public dataset. Therefore, exact results may differ
 slightly depending on the analysis.
 
 ```{r load_data}
@@ -87,7 +88,7 @@ plasma_case_control <- simple_mixed_de(
     logp_label=6.8,             
     variable="Case_Control",       
     plot_xlab = "Log2 Fold Change (COVID Positive - Negative)", 
-    plot_title="Primary Cohort (+ve vs -ve)",
+    plot_title="Subcohort A (+ve vs -ve)",
     random="Individual_ID",
     covariates = c("Sex", "Age", "Ethnicity")
 )
@@ -100,7 +101,7 @@ serum_case_control <- simple_mixed_de(
     logp_label=7,
     variable="Case_Control", 
     plot_xlab = "Log2 Fold Change (COVID Positive - Negative)", 
-    plot_title="Validation Cohort (+ve vs -ve)",
+    plot_title="Subcohort B (+ve vs -ve)",
     random="Individual_ID",
     covariates = c("Sex", "Age", "Ethnicity"),
 )

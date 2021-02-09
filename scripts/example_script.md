@@ -1,7 +1,7 @@
 Example Analyses
 ================
 Jack Gisby
-2020-11-04
+2021-02-09
 
   - [Modified OlinkAnalyze Package](#modified-olinkanalyze-package)
   - [The Dataset](#the-dataset)
@@ -30,16 +30,18 @@ library(OlinkAnalyzeModified)
 # The Dataset
 
 A public version of the dataset is provided for replication of results
-and further investigation. We have split the primary (plasma) and
-validation (serum) into separate CSVs. The NPX (protein expression)
+and further investigation. We have split subcohort A (plasma) and
+subcohort B (serum) into separate CSVs. The NPX (protein expression)
 level data contains a row for each data point whilst the sample level
 data contains phenotypic data and clinical measurements; the
 `serum_samples` dataframe has less columns than the `plasma_samples`
 dataframe as it does not contain contemporaneous sample data.
 
-Note that for the models we generated exact age was used, however we
-have only provided binned age in the public dataset. Therefore, exact
-results may differ slightly depending on the analysis.
+Note that for the models in the paper, we used the exact age and
+included more granular ethnicity groupings. However, we have only
+provided binned age and simplified ethnicity groupings in the public
+dataset. Therefore, exact results may differ slightly depending on the
+analysis.
 
 ``` r
 # load protein expression data
@@ -77,7 +79,7 @@ plasma_case_control <- simple_mixed_de(
     logp_label=6.8,             
     variable="Case_Control",       
     plot_xlab = "Log2 Fold Change (COVID Positive - Negative)", 
-    plot_title="Primary Cohort (+ve vs -ve)",
+    plot_title="Subcohort A (+ve vs -ve)",
     random="Individual_ID",
     covariates = c("Sex", "Age", "Ethnicity")
 )
@@ -92,6 +94,7 @@ plasma_case_control <- simple_mixed_de(
     ## Linear mixed effects model fit to each assay: NPX~Case_Control+Sex+Age+Ethnicity+(1|Individual_ID)
 
     ## Joining, by = "GeneID"
+    ## Joining, by = "GeneID"
 
 ![](example_script_files/figure-gfm/da-1.png)<!-- -->
 
@@ -99,7 +102,7 @@ plasma_case_control <- simple_mixed_de(
 head(plasma_case_control)
 ```
 
-    ## # A tibble: 6 x 15
+    ## # A tibble: 6 x 16
     ##   Assay GeneID UniProt Panel term   sumsq meansq NumDF DenDF statistic  p.value
     ##   <chr> <chr>  <chr>   <chr> <chr>  <dbl>  <dbl> <int> <dbl>     <dbl>    <dbl>
     ## 1 DDX58 DDX58  O95786  IR    Case~ 95.7   95.7       1  173.      56.3 3.16e-12
@@ -108,8 +111,8 @@ head(plasma_case_control)
     ## 4 MCP-3 CCL7   P80098  In    Case~ 44.8   44.8       1  157.      47.0 1.56e-10
     ## 5 BLM ~ BLMH   Q13867  CVD3  Case~  6.74   6.74      1  149.      46.8 1.89e-10
     ## 6 HO-1  HMOX1  P09601  CVD2  Case~  3.84   3.84      1  134.      41.6 1.88e- 9
-    ## # ... with 4 more variables: Adjusted_pval <dbl>, Threshold <chr>, fc <dbl>,
-    ## #   logp <dbl>
+    ## # ... with 5 more variables: Adjusted_pval <dbl>, Threshold <chr>, fc <dbl>,
+    ## #   se <dbl>, logp <dbl>
 
 ``` r
 serum_case_control <- simple_mixed_de(
@@ -118,7 +121,7 @@ serum_case_control <- simple_mixed_de(
     logp_label=7,
     variable="Case_Control", 
     plot_xlab = "Log2 Fold Change (COVID Positive - Negative)", 
-    plot_title="Validation Cohort (+ve vs -ve)",
+    plot_title="Subcohort B (+ve vs -ve)",
     random="Individual_ID",
     covariates = c("Sex", "Age", "Ethnicity"),
 )
@@ -133,6 +136,7 @@ serum_case_control <- simple_mixed_de(
     ## Linear mixed effects model fit to each assay: NPX~Case_Control+Sex+Age+Ethnicity+(1|Individual_ID)
 
     ## Joining, by = "GeneID"
+    ## Joining, by = "GeneID"
 
 ![](example_script_files/figure-gfm/da-2.png)<!-- -->
 
@@ -140,7 +144,7 @@ serum_case_control <- simple_mixed_de(
 head(serum_case_control)
 ```
 
-    ## # A tibble: 6 x 15
+    ## # A tibble: 6 x 16
     ##   Assay GeneID UniProt Panel term  sumsq meansq NumDF DenDF statistic  p.value
     ##   <chr> <chr>  <chr>   <chr> <chr> <dbl>  <dbl> <int> <dbl>     <dbl>    <dbl>
     ## 1 EIF4~ EIF4G1 Q04637  IR    Case~  10.5   10.5     1  57.8     226.  1.21e-21
@@ -149,8 +153,8 @@ head(serum_case_control)
     ## 4 CASP~ CASP8  Q14790  In    Case~  33.5   33.5     1  58.7     115.  1.92e-15
     ## 5 IL6   IL6    P05231  In    Case~  99.4   99.4     1  59.5      82.8 7.19e-13
     ## 6 TRIM5 TRIM5  Q9C035  IR    Case~  81.2   81.2     1  63.0      79.8 8.47e-13
-    ## # ... with 4 more variables: Adjusted_pval <dbl>, Threshold <chr>, fc <dbl>,
-    ## #   logp <dbl>
+    ## # ... with 5 more variables: Adjusted_pval <dbl>, Threshold <chr>, fc <dbl>,
+    ## #   se <dbl>, logp <dbl>
 
 # Severity Differential Abundance
 
@@ -184,6 +188,7 @@ plasma_severity <- simple_mixed_de(
 
     ## Linear mixed effects model fit to each assay: NPX~WHO_Severity_Contemporaneous+Sex+Age+Ethnicity+(1|Individual_ID)
 
+    ## Joining, by = "GeneID"
     ## Joining, by = "GeneID"
 
 ![](example_script_files/figure-gfm/severity-1.png)<!-- -->
@@ -221,64 +226,64 @@ summary(joint_model(plasma_full[plasma_full$Case_Control == "POSITIVE",], "AZU1"
     ##      baseline risk function
     ## Parameterization: Time-dependent value 
     ## 
-    ##  LPML     DIC      pD
-    ##  -Inf 9911683 4955316
+    ##  LPML      DIC       pD
+    ##  -Inf 15570.77 7260.756
     ## 
     ## Variance Components:
     ##                                                                        StdDev
-    ## (Intercept)                                                            1.1383
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1   1.2369
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2  13.7304
-    ## Residual                                                               0.8352
+    ## (Intercept)                                                            1.1457
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1   1.3067
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2  12.8405
+    ## Residual                                                               0.8313
     ##                                                                         Corr
     ## (Intercept)                                                           (Intr)
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1 -0.2945
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2 -0.0678
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1 -0.2869
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2 -0.0789
     ## Residual                                                                    
     ##                                                                              
     ## (Intercept)                                                          bd=2B=c2
     ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1         
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2  -0.0342
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2  -0.0252
     ## Residual                                                                     
     ## 
     ## Coefficients:
     ## Longitudinal Process
     ##                                                                        Value
-    ## (Intercept)                                                           0.2618
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1 -0.0373
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2  0.2460
+    ## (Intercept)                                                           0.2612
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1 -0.0395
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2  0.0348
     ##                                                                      Std.Err
-    ## (Intercept)                                                           0.0077
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1  0.0100
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2  0.1080
+    ## (Intercept)                                                           0.0072
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1  0.0120
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2  0.0856
     ##                                                                      Std.Dev
-    ## (Intercept)                                                           0.1943
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1  0.2388
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2  2.1091
+    ## (Intercept)                                                           0.1933
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1  0.2594
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2  1.9495
     ##                                                                         2.5%
-    ## (Intercept)                                                          -0.1280
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1 -0.4676
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2 -3.8760
+    ## (Intercept)                                                          -0.1262
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1 -0.5631
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2 -3.7100
     ##                                                                       97.5%
-    ## (Intercept)                                                          0.6367
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1 0.5138
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2 4.5490
+    ## (Intercept)                                                          0.6492
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1 0.5049
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2 3.8484
     ##                                                                          P
-    ## (Intercept)                                                          0.164
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1 0.793
-    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2 0.925
+    ## (Intercept)                                                          0.172
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))1 0.815
+    ## bs(Time_From_First_Symptoms, degree = 2, Boundary.knots = c(0, 29))2 0.980
     ## 
     ## Event Process
     ##           Value Std.Err  Std.Dev    2.5%    97.5%      P
-    ## Assoct   6.0922  0.4783   1.7287  3.6232   9.9025 <0.001
-    ## tauBs  259.2098 28.6904 218.8793 25.6816 839.3453     NA
+    ## Assoct   5.7878  0.4259   1.7406  2.4507   9.4047 <0.001
+    ## tauBs  281.5574 32.7428 219.9308 23.2653 831.6859     NA
     ## 
     ## MCMC summary:
     ## iterations: 20000 
     ## adapt: 3000 
     ## burn-in: 3000 
     ## thinning: 10 
-    ## time: 0.7 min
+    ## time: 0.4 min
 
 # Random Forests
 
@@ -307,26 +312,14 @@ plasma_rf <- run_rf(plasma_independent)
     ##   2 classes: 'mild_moderate', 'severe_critical' 
     ## 
     ## Pre-processing: nearest neighbor imputation (436), scaled (436), centered (436) 
-    ## Resampling: Cross-Validated (10 fold, repeated 10 times) 
-    ## Summary of sample sizes: 49, 49, 48, 48, 48, 49, ... 
+    ## Resampling: Cross-Validated (4 fold, repeated 100 times) 
+    ## Summary of sample sizes: 40, 42, 40, 40, 40, 41, ... 
     ## Resampling results:
     ## 
-    ##   Accuracy   Kappa    
-    ##   0.7126667  0.4272927
+    ##   Accuracy  Kappa    
+    ##   0.712951  0.4259232
     ## 
     ## Tuning parameter 'mtry' was held constant at a value of 20
-    ## 
-    ## Call:
-    ##  randomForest(x = x, y = y, mtry = param$mtry, localImp = TRUE,      proximity = TRUE, formula = grouped_severity ~ .) 
-    ##                Type of random forest: classification
-    ##                      Number of trees: 500
-    ## No. of variables tried at each split: 20
-    ## 
-    ##         OOB estimate of  error rate: 29.63%
-    ## Confusion matrix:
-    ##                 mild_moderate severe_critical class.error
-    ## mild_moderate              19               8   0.2962963
-    ## severe_critical             8              19   0.2962963
 
 ![](example_script_files/figure-gfm/RF-1.png)<!-- -->
 
@@ -337,19 +330,19 @@ head(var_imp)
 ```
 
     ##   variable mean_min_depth no_of_nodes accuracy_decrease gini_decrease
-    ## 1     ACE2       3.721313           5      1.000000e-04    0.03604089
-    ## 2     ACP5       3.873313           1      0.000000e+00    0.01484848
-    ## 3      ADA       3.658813           5     -1.000000e-04    0.02412664
-    ## 4 ADAMTS13       2.638187          15      2.526544e-04    0.18474913
-    ## 5      ADM       3.750438           3      9.090909e-05    0.01436667
-    ## 6     AGER       3.904563           1      0.000000e+00    0.00300000
-    ##   no_of_trees times_a_root     p_value
-    ## 1           5            0 0.805588033
-    ## 2           1            0 0.998864537
-    ## 3           5            0 0.805588033
-    ## 4          15            5 0.004233153
-    ## 5           3            0 0.965002070
-    ## 6           1            0 0.998864537
+    ## 1     ACE2       3.509882           6      0.0001267380   0.050050366
+    ## 2     ACP5       3.509529           7     -0.0002988304   0.048462201
+    ## 3      ADA       3.627529           6     -0.0000994152   0.032702820
+    ## 4 ADAMTS13       2.475529          20      0.0019060731   0.210438690
+    ## 5      ADM       3.893647           2      0.0000000000   0.010716293
+    ## 6     AGER       3.923059           2      0.0000000000   0.006977778
+    ##   no_of_trees times_a_root      p_value
+    ## 1           6            2 6.646197e-01
+    ## 2           7            1 5.104266e-01
+    ## 3           6            0 6.646197e-01
+    ## 4          20            4 2.559874e-05
+    ## 5           2            0 9.908688e-01
+    ## 6           2            0 9.908688e-01
 
 # Longitudinal Models
 
