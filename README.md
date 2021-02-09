@@ -1,6 +1,6 @@
 # Longitudinal Olink Proteomics Data and Code
 
-Repository for the paper: “Longitudinal proteomic profiling of high-risk patients with COVID-19 reveals markers of severity and predictors of fatal disease” by Gisby et al. doi: https://doi.org/10.1101/2020.11.05.20223289
+Repository for the paper: “Longitudinal proteomic profiling of dialysis patients with COVID-19 high-risk COVID-19 patients reveals markers of severity and predictors of death” by Gisby et al. doi: https://doi.org/10.1101/2020.11.05.20223289
 
 Here, we have stored:
 * A public version of the dataset used in the paper (`data`)
@@ -16,11 +16,11 @@ The dataset has been split into a series of four CSV files:
 * `serum_sample_level.csv` - Sample level phenotypic data for the validation (serum) cohort
 
 Note that one individual ("C105") of the primary cohort was sampled both before and after
-their first postivie swab, so the first sample is marked as "NEGATIVE" for `Case_Control`.
+their first positive swab, so the first sample is marked as "NEGATIVE" for `Case_Control`.
 
 ### Protein Expression Data Features
 
-For each of the primary and validation cohorts we provide the following columns:
+For each of subcohorts A and B we provide the following columns:
 
 Column Name | Data Type | Description
 | :---: | :---: | :---:
@@ -67,8 +67,9 @@ Troponin | Integer | Individual's blood troponin concentration (ng/L) at time of
 
 We have provided data and R code for replicating the major analyses. The RMD 
 script can be run (`scripts/example_script.Rmd`) to re-create the main results.
-Note that we used exact age, rather than binned age, in our models so results may 
-differ slightly.
+Note that for the models we generated exact age was used, however we have only
+provided binned age in the public dataset. Therefore, exact results may differ
+slightly depending on the analysis.
 
 The RMD script uses a modified OlinkAnalyze script to run the analyses and this
 must be installed prior to running. Code for this is also available in this 
