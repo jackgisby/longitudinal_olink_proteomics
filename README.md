@@ -1,6 +1,8 @@
-# Longitudinal Olink Proteomics Data and Code [![CC BY 4.0][cc-by-shield]][cc-by]
+[![CC BY 4.0][cc-by-shield]][cc-by]
 
-Repository for the paper: “Longitudinal proteomic profiling of dialysis patients with COVID-19 high-risk COVID-19 patients reveals markers of severity and predictors of death” by Gisby et al. doi: https://doi.org/10.1101/2020.11.05.20223289
+# Longitudinal Olink Proteomics Data and Code 
+
+Repository for the paper: “Longitudinal proteomic profiling of dialysis patients with COVID-19 reveals markers of severity and predictors of death” by Gisby _et al_. doi: https://doi.org/10.7554/eLife.64827
 
 Here, we have stored:
 * A public version of the dataset used in the paper (`data`)
