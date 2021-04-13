@@ -1,4 +1,4 @@
-# Longitudinal Olink Proteomics Data and Code
+# Longitudinal Olink Proteomics Data and Code [![CC BY 4.0][cc-by-shield]][cc-by]
 
 Repository for the paper: “Longitudinal proteomic profiling of dialysis patients with COVID-19 high-risk COVID-19 patients reveals markers of severity and predictors of death” by Gisby et al. doi: https://doi.org/10.1101/2020.11.05.20223289
 
@@ -76,8 +76,6 @@ must be installed prior to running. Code for this is also available in this
 repository if of interest. 
 
 # License
-
-Shield: [![CC BY 4.0][cc-by-shield]][cc-by]
 
 This work is licensed under a
 [Creative Commons Attribution 4.0 International License][cc-by].
